@@ -67,12 +67,12 @@ public class MorseTrainer {
 		byte out[] = createSine(samples, freqHz);
 		
 		// Ramp up at start and down at end
-		ramp(out, wpm);
+		ramp(samples, out, wpm);
 
 		return bytesToClip(out);
 	}
 
-	private void ramp(byte[] out, int wpm) {
+	private void ramp(int samples, byte[] out, int wpm) {
 		double ditLengthSeconds = (1.2 / wpm);
 		double rampLength = ditLengthSeconds / 16.0;
 		int rampLengthSamples = (int)(SAMPLE_RATE * rampLength);
