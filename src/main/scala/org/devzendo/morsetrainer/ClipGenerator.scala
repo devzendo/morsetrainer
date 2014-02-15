@@ -23,16 +23,17 @@ object ClipGenerator {
     val TWO_PI: Double = Math.PI * 2.0
 }
 
-class ClipGenerator(wpm: Int, fwpm: Int, freqHz: Int) {
+class ClipGenerator(var wpm: Int, var fwpm: Int, var freqHz: Int) {
 
-    var ditDurationSeconds = 0.0
-    var dit: Array[Byte] = null
-    var dah: Array[Byte] = null
-    var elementSpace: Array[Byte] = null
-    var characterSpace: Array[Byte] = null
-    var wordSpace: Array[Byte] = null
+    private var ditDurationSeconds = 0.0
+    private var dit: Array[Byte] = null
+    private var dah: Array[Byte] = null
+    private var elementSpace: Array[Byte] = null
+    private var characterSpace: Array[Byte] = null
+    private var wordSpace: Array[Byte] = null
 
     initialise()
+    initialiseSpacing()
 
     private def initialise() {
         // http://sv8gxc.blogspot.co.uk/2010/09/morse-code-101-in-wpm-bw-snr.html
@@ -40,7 +41,10 @@ class ClipGenerator(wpm: Int, fwpm: Int, freqHz: Int) {
         dit = createPulse(ditDurationSeconds)
         dah = createPulse(ditDurationSeconds * 3.0)
         elementSpace = createSilence(ditDurationSeconds)
-        characterSpace = createSilence(ditDurationSeconds * 3.0)
+    }
+
+    private def initialiseSpacing() {
+        characterSpace = createSilence(wpmToSeconds(fwpm) * 3.0)
         wordSpace = createSilence(wpmToSeconds(fwpm) * 7.0)
     }
 
@@ -49,6 +53,21 @@ class ClipGenerator(wpm: Int, fwpm: Int, freqHz: Int) {
     def getElementSpace = bytesToClip(elementSpace)
     def getCharacterSpace = bytesToClip(characterSpace)
     def getWordSpace = bytesToClip(wordSpace)
+
+    def setWpm(w: Int) {
+        wpm = w
+        initialise()
+    }
+
+    def setFarnsworthWpm(w: Int) {
+        fwpm = w
+        initialiseSpacing()
+    }
+
+    def setFrequency(hz: Int) {
+        freqHz = hz
+        initialise()
+    }
 
     private def wpmToSeconds(wpm: Int) = 1.2 / wpm
 
