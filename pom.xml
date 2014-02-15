@@ -5,4 +5,201 @@
   <version>0.0.1-SNAPSHOT</version>
   <name>morsetrainer</name>
   <description>A Morse Code trainer, using the Koch method and user-selected sets of characters.</description>
+
+    <parent>
+        <groupId>org.devzendo</groupId>
+        <artifactId>group-parent-scala</artifactId>
+        <version>0.0.1-SNAPSHOT</version>
+        <relativePath></relativePath>
+    </parent>
+
+    <properties>
+        <appName>MorseTrainer</appName>
+    </properties>
+
+
+    <build>
+        <plugins>
+            <!--
+              Create the Mac OS X MorseTrainer.app launcher structure under
+              target/macosx.
+            -->
+            <plugin>
+                <groupId>org.devzendo</groupId>
+                <artifactId>CrossPlatformLauncherPlugin</artifactId>
+                <version>0.2.1</version>
+                <configuration>
+                    <os>MacOSX</os>
+                    <applicationName>${appName}</applicationName>
+                    <mainClassName>org.devzendo.morsetrainer.MorseTrainer
+                    </mainClassName>
+                    <iconsFileName>MorseTrainer.icns</iconsFileName>
+                    <!--
+                      I don't have an assigned creator code
+                      <bundleSignature>BM</bundleSignature>
+                    -->
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>createlauncher</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>createlauncher</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <!--
+              Copy the Quaqua native libraries into the correct location in the
+              Mac OS X launcher structure created above.
+            -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>unpack-quaqua-dependencies</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>unpack</goal>
+                        </goals>
+                        <configuration>
+                            <artifactItems>
+                                <artifactItem>
+                                    <groupId>org.devzendo</groupId>
+                                    <artifactId>LibQuaqua</artifactId>
+                                    <version>7.3.4</version>
+                                    <type>zip</type>
+                                    <overWrite>true</overWrite>
+                                    <includes>*</includes>
+                                    <outputDirectory>
+                                        ${project.build.directory}/macosx/${appName}.app/Contents/Resources/Java/lib
+                                    </outputDirectory>
+                                </artifactItem>
+                            </artifactItems>
+                            <!-- other configurations here -->
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.devzendo</groupId>
+            <artifactId>Quaqua</artifactId>
+            <version>7.3.4</version>
+            <!--  started with 5.2.1, 6.5 -->
+        </dependency>
+
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <version>1.7.5</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.devzendo</groupId>
+            <artifactId>CommonGui</artifactId>
+            <version>0.4.0</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.devzendo</groupId>
+            <artifactId>CommonGui</artifactId>
+            <version>0.4.0</version>
+            <classifier>tests</classifier>
+            <scope>test</scope>
+        </dependency>
+
+        <!--
+        <dependency>
+            <groupId>org.devzendo</groupId>
+            <artifactId>CommonCode</artifactId>
+            <version>1.0.3-SNAPSHOT</version>
+        </dependency>
+        -->
+
+        <!--
+        <dependency>
+            <groupId>com.jgoodies</groupId>
+            <artifactId>forms</artifactId>
+            <version>1.4.0</version>
+        </dependency>
+        -->
+
+        <!-- knocked out until they have a sensible dependency on the scala
+        library - currently it's 2.10.+ which does not exist
+        <dependency>
+            <groupId>com.netflix.rxjava</groupId>
+            <artifactId>rxjava-scala</artifactId>
+            <version>0.15.1</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.scala</groupId>
+                    <artifactId>scala-library</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        -->
+
+        <!-- testing -->
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.10</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.easymock</groupId>
+            <artifactId>easymock</artifactId>
+            <version>3.1</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.scalatest</groupId>
+            <artifactId>scalatest_${scalatest.scala.version}</artifactId>
+            <version>1.8</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.scalacheck</groupId>
+            <artifactId>scalacheck_${scalacheck.scala.version}</artifactId>
+            <version>1.10.1</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>log4j</groupId>
+            <artifactId>log4j</artifactId>
+            <version>1.2.16</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>jul-to-slf4j</artifactId>
+            <version>1.6.4</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>log4j-over-slf4j</artifactId>
+            <version>1.6.4</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-log4j12</artifactId>
+            <version>1.6.4</version>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+
 </project>
