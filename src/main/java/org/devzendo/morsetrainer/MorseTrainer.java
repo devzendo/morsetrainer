@@ -19,16 +19,6 @@ public class MorseTrainer {
 
 	public MorseTrainer() throws UnsupportedAudioFileException, IOException,
 			LineUnavailableException, InterruptedException {
-		// specify the sound to play
-		// (assuming the sound can be played by the audio system)
-		// File soundFile = new File("src/main/resources/sound.wav");
-		// AudioInputStream sound = AudioSystem.getAudioInputStream(soundFile);
-
-		// load the sound into memory (a Clip)
-		// DataLine.Info info = new DataLine.Info(Clip.class,
-		// sound.getFormat());
-		// Clip clip = (Clip) AudioSystem.getLine(info);
-		// clip.open(sound);
 
 		Clip clip = createDit(18, 600);
 //		System.out.println("data length is " + data.length);
