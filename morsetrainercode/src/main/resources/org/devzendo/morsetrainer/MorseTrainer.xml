@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd"
+       default-lazy-init="true" >
+
+    <bean id="cursorManager" class="org.devzendo.commonapp.gui.DefaultCursorManager" />
+
+    <bean id="windowGeometryStorePersistence" class="org.devzendo.morsetrainer.gui.MorseTrainerWindowGeometryStorePersistence" >
+        <constructor-arg ref="prefs" />
+    </bean>
+
+    <bean id="windowGeometryStore" class="org.devzendo.commonapp.gui.WindowGeometryStore" >
+        <constructor-arg ref="windowGeometryStorePersistence" />
+    </bean>
+
+    <bean id="mainFrameFactory" class="org.devzendo.commonapp.gui.MainFrameFactory" />
+
+    <bean id="morseMainFrameFactory" class="org.devzendo.morsetrainer.gui.MorseMainFrameFactory">
+        <constructor-arg ref="cursorManager" />
+        <constructor-arg ref="windowGeometryStore" />
+        <constructor-arg ref="&amp;mainFrameFactory" />
+        <constructor-arg ref="menuWiring" />
+        <constructor-arg ref="mainPanel" />
+    </bean>
+
+    <bean id="mainPanel" class="org.devzendo.morsetrainer.gui.MorseMainPanel" />
+
+
+    <bean id="prefsLocation" class="org.devzendo.commonapp.prefs.DefaultPrefsLocation">
+        <constructor-arg name="prefsDir" value=".morsetrainer" />
+        <constructor-arg name="prefsFile" value="morsetrainer.prefs" />
+    </bean>
+
+    <bean id="prefs" class="org.devzendo.commonapp.prefs.PrefsFactory" />
+
+    <bean id="prefsInstantiator" class="org.devzendo.morsetrainer.prefs.DefaultPrefsInstantiator" />
+
+    <bean id="progressMonitor" class="org.devzendo.commonapp.progress.ProgressMonitor" />
+    <bean id="guiPrefsStartupHelper" class="org.devzendo.commonapp.prefs.GuiPrefsStartupHelper">
+        <constructor-arg ref="prefsLocation" />
+        <constructor-arg ref="&amp;prefs" />
+        <constructor-arg ref="prefsInstantiator" />
+    </bean>
+
+    <bean id="menu" class="org.devzendo.morsetrainer.gui.MenuImpl">
+        <constructor-arg ref="menuWiring" />
+        <constructor-arg ref="fileMenu" />
+    </bean>
+
+    <bean id="fileMenu" class="org.devzendo.morsetrainer.gui.FileMenu">
+        <constructor-arg ref="menuWiring" />
+    </bean>
+
+    <bean id="menuWiring" class="org.devzendo.commonapp.gui.menu.MenuWiring" />
+
+    <bean id="mainFrameCloseActionListener" class="org.devzendo.morsetrainer.gui.MainFrameCloseActionListener">
+        <constructor-arg ref="windowGeometryStore" />
+        <constructor-arg ref="mainFrameFactory" />
+        <constructor-arg ref="cursorManager" />
+        <constructor-arg ref="serviceManager" />
+    </bean>
+
+    <!-- service management -->
+    <bean id="serviceList" class="org.springframework.beans.factory.config.ListFactoryBean">
+        <property name="sourceList">
+            <list>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="serviceManager" class="org.devzendo.commonapp.service.DefaultServiceManager">
+        <constructor-arg ref="springLoader" />
+        <constructor-arg ref="serviceList" />
+    </bean>
+
+    <bean id="serviceStartupAWTEventListener" class="org.devzendo.morsetrainer.gui.ServiceStartupAWTEventListener">
+        <constructor-arg ref="mainFrameFactory" />
+        <constructor-arg ref="cursorManager" />
+        <constructor-arg ref="serviceManager" />
+    </bean>
+
+    <!-- service -->
+</beans>
