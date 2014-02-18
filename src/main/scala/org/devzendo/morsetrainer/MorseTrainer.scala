@@ -17,18 +17,114 @@
 package org.devzendo.morsetrainer
 
 import javax.sound.sampled._
+import java.io.File
+import org.devzendo.commonapp.gui.{Beautifier, GUIUtils, ThreadCheckingRepaintManager}
+import org.slf4j.LoggerFactory
+import org.slf4j.bridge.SLF4JBridgeHandler
+import org.devzendo.commoncode.logging.Logging
+import collection.JavaConverters._
+import collection.JavaConversions._
+import org.devzendo.commonapp.prefs.GuiPrefsStartupHelper
+import org.devzendo.commonapp.gui.menu.MenuWiring
+import java.awt.{AWTEvent, Toolkit}
+import javax.swing.JFrame
+import java.awt.event.{WindowEvent, WindowAdapter}
+import org.devzendo.morsetrainer.gui._
+import org.apache.log4j.BasicConfigurator
 
 object MorseTrainer {
+    private val LOGGER = LoggerFactory.getLogger(classOf[MorseTrainer])
 
     /**
      * @param args the command line arguments.
      */
     def main(args: Array[String]) {
-        new MorseTrainer()
+        SLF4JBridgeHandler.install()
+        BasicConfigurator.configure()
+
+        val logging = Logging.getInstance()
+        val finalArgList = logging.setupLoggingFromArgs(args.toList).asScala.toList
+
+        val javaLibraryPath = System.getProperty("java.library.path")
+        LOGGER.debug("java.library.path is '" + javaLibraryPath + "'")
+        val quaqua = new File(javaLibraryPath, "libquaqua.jnilib")
+        LOGGER.debug("Quaqua JNI library exists there (for Mac OS X)? " + quaqua.exists())
+
+        ThreadCheckingRepaintManager.initialise()
+
+        val applicationContexts = ApplicationContexts.getApplicationContexts
+
+        val springLoader = new SpringLoaderInitialiser(applicationContexts).getSpringLoader
+
+        val prefsStartupHelper: GuiPrefsStartupHelper = springLoader.getBean("guiPrefsStartupHelper", classOf[GuiPrefsStartupHelper])
+        prefsStartupHelper.initialisePrefs()
+
+        LOGGER.debug("Application contexts and prefs initialised")
+
+        // Sun changed their recommendations and now recommends the UI be built
+        // on the EDT, so I think flagging creation on non-EDT is OK.
+        // "We used to say that you could create the GUI on the main thread as
+        // long as you didn't modify components that had already been realized.
+        // While this worked for most applications, in certain situations it
+        // could cause problems."
+        // http://java.sun.com/docs/books/tutorial/uiswing/misc/threads.html
+        // So let's create it on the EDT anyway
+        //
+        GUIUtils.runOnEventThread(new Runnable() {
+            def run() {
+                try {
+                    // Process command line
+                    for (i <- 0 until finalArgList.size) {
+                        LOGGER.debug("arg " + i + " = " + finalArgList.get(i) + "'")
+                    }
+
+                    Beautifier.makeBeautiful()
+
+                    val frameFactory = springLoader.getBean(
+                        "morseMainFrameFactory",
+                        classOf[MorseMainFrameFactory])
+                    val mainFrame = frameFactory.createFrame
+                    exitOnClose(mainFrame)
+
+                    val menu = springLoader.getBean("menu", classOf[Menu])
+                    menu.initialise()
+                    mainFrame.setJMenuBar(menu.getMenuBar)
+
+                    val closeAL = springLoader.getBean(
+                        "mainFrameCloseActionListener",
+                        classOf[MainFrameCloseActionListener])
+                    val menuWiring = springLoader.getBean("menuWiring", classOf[MenuWiring])
+                    menuWiring.setActionListener(MorseMenuIdentifiers.FILE_EXIT, closeAL)
+
+                    val serviceStartup = springLoader.getBean(
+                        "serviceStartupAWTEventListener",
+                        classOf[ServiceStartupAWTEventListener])
+                    Toolkit.getDefaultToolkit.addAWTEventListener(serviceStartup, AWTEvent.WINDOW_EVENT_MASK)
+
+                    mainFrame.setVisible(true)
+                } catch {
+                    case e: Exception =>
+                        LOGGER.error(e.getMessage, e)
+                        System.exit(1)
+                }
+            }
+
+            def exitOnClose(mainFrame: JFrame) {
+                mainFrame.addWindowListener(new WindowAdapter() {
+                    override def windowClosed(e: WindowEvent ) {
+                        LOGGER.debug("Detected window closed")
+
+                        // System.exit(0)
+                    }})
+            }
+        })
+
+        //new MorseTrainer(finalArgList)
     }
 }
 
-class MorseTrainer() {
+class MorseTrainer(val argList: List[String]) {
+
 
     val clipGen = new ClipGenerator(18, 18, 600)
     play(clipGen.getElementSpace) // to get over initial click
