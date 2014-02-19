@@ -20,6 +20,7 @@
 
     <modules>
         <module>morsetrainercode</module>
+        <module>morsetrainermacosxcode</module>
         <module>morsetrainermacosx</module>
     </modules>
 
