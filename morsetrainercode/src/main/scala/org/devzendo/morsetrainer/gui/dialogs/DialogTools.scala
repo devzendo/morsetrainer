@@ -18,7 +18,19 @@ package org.devzendo.morsetrainer.gui.dialogs
 
 import javax.swing.{JTabbedPane, JComponent, BorderFactory, JPanel}
 import java.awt.Color
+import java.awt.event.{ActionListener, ActionEvent}
+import javax.swing.event.{ChangeListener, ChangeEvent}
 
+object DialogTools {
+    implicit def function2ActionListener(f: ActionEvent => Unit) =
+        new ActionListener {
+            def actionPerformed(event: ActionEvent) = f(event)
+        }
+    implicit def function2ChangeListener(f: ChangeEvent => Unit) =
+        new ChangeListener {
+            def stateChanged(event: ChangeEvent) { f(event) }
+        }
+}
 trait DialogTools {
     def padded(gap: Int, comp: JComponent): JPanel = {
         val panel = new JPanel()
