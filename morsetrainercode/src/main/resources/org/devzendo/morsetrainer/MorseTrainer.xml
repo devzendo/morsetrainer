@@ -65,6 +65,7 @@
     <bean id="serviceList" class="org.springframework.beans.factory.config.ListFactoryBean">
         <property name="sourceList">
             <list>
+                <value>menuInitialisingService</value>
             </list>
         </property>
     </bean>
@@ -81,4 +82,23 @@
     </bean>
 
     <!-- service -->
+    <bean id="menuInitialisingService" class="org.devzendo.morsetrainer.gui.MenuInitialisingService">
+        <constructor-arg ref="springLoader" />
+        <constructor-arg ref="menu" />
+        <constructor-arg ref="menuWiring" />
+    </bean>
+
+    <!-- menu action listeners -->
+    <bean id="menuALToolsOptions" class="org.devzendo.morsetrainer.gui.actionlisteners.ToolsOptionsActionListener">
+        <constructor-arg ref="mainFrameFactory" />
+        <constructor-arg ref="cursorManager" />
+        <constructor-arg ref="prefs" />
+    </bean>
+
+
+    <bean id="menuALHelpAbout" class="org.devzendo.morsetrainer.gui.actionlisteners.HelpAboutActionListener">
+        <constructor-arg ref="mainFrameFactory" />
+        <constructor-arg ref="cursorManager" />
+    </bean>
+
 </beans>

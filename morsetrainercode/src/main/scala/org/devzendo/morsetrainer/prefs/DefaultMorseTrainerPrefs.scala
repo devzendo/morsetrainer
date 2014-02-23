@@ -35,6 +35,7 @@ object DefaultMorseTrainerPrefs {
 
     private val SECTION_MORSE = "morse"
     private val WPM = "wpm"
+    private val USING_FARNSWORTH = "usingfarnsworth"
     private val FARNSWORTH_WPM = "farnsworthwpm"
     private val PULSE_FREQ = "pulsefreq"
     private val KOCH_LEVEL = "kochlevel"
@@ -76,6 +77,12 @@ class DefaultMorseTrainerPrefs(prefsFilePath: String) extends MorseTrainerPrefs 
      */
     def setWordsPerMinute(wpm: Int) {
         iniFile.setValue(DefaultMorseTrainerPrefs.SECTION_MORSE, DefaultMorseTrainerPrefs.WPM, "" + wpm)
+    }
+
+    def usingFarnsworth: Boolean = iniFile.getBooleanValue(DefaultMorseTrainerPrefs.SECTION_MORSE, DefaultMorseTrainerPrefs.USING_FARNSWORTH)
+
+    def setUsingFarnsworth(using: Boolean) {
+        iniFile.setBooleanValue(DefaultMorseTrainerPrefs.SECTION_MORSE, DefaultMorseTrainerPrefs.USING_FARNSWORTH, using)
     }
 
     /**

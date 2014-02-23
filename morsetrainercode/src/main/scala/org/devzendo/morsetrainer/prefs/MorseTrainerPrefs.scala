@@ -75,6 +75,10 @@ trait MorseTrainerPrefs extends Prefs {
      */
     def setWordsPerMinute(wpm: Int): Unit
 
+    def usingFarnsworth: Boolean
+
+    def setUsingFarnsworth(using: Boolean): Unit
+
     /**
      * Farnsworth words per minute, for character and word spacing.
      * @return the Farnsworth wpm rate
