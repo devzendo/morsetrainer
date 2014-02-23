@@ -25,6 +25,27 @@ import javax.swing._
 
 class ToolsOptionsDialog(mainFrame: Frame, cursorManager: CursorManager, prefs: MorseTrainerPrefs) extends AbstractSnailDialog(mainFrame: Frame, cursorManager: CursorManager, "Options") with DialogTools {
 
+    // speed and frequency
+    var speedEntry: JTextField = null
+    var speedSlider: JSlider = null
+    var useFarnsworth: JCheckBox = null
+    var farnSpeedLabel: JLabel = null
+    var farnSpeedEntry: JTextField = null
+    var farnSpeedSlider: JSlider = null
+    var freqEntry: JTextField = null
+    var freqSlider: JSlider = null
+    var testButton: JButton = null
+
+    // lesson
+    var newCharsCheckbox: JCheckBox = null
+    var missedCharsCheckbox: JCheckBox = null
+    var similarCharsCheckbox: JCheckBox = null
+    var randomLengthCheckbox: JCheckBox = null
+    var wordLengthLabel: JLabel = null
+    var wordLengthEntry: JTextField = null
+    var sessLengthEntry: JTextField = null
+    var sessLengthSlider: JSlider = null
+
     def createMainComponent() = {
         val tabbedPane = new JTabbedPane()
         tabbedPane.addTab("Speed & Tone", padded(createSpeedFreqPanel()))
@@ -52,14 +73,14 @@ class ToolsOptionsDialog(mainFrame: Frame, cursorManager: CursorManager, prefs: 
 
         val speedEntryPanel = new JPanel()
         speedEntryPanel.add(new JLabel("Speed:"))
-        val speedEntry = new JTextField("" + prefs.getWordsPerMinute, 3)
+        speedEntry = new JTextField("" + prefs.getWordsPerMinute, 3)
         speedEntryPanel.add(speedEntry)
         speedEntryPanel.add(new JLabel("WPM"))
         panel.add(speedEntryPanel)
 
         val speedSliderPanel = new JPanel()
         speedSliderPanel.add(new JLabel("5"))
-        val speedSlider = new JSlider(SwingConstants.HORIZONTAL, 5, 40, prefs.getWordsPerMinute)
+        speedSlider = new JSlider(SwingConstants.HORIZONTAL, 5, 40, prefs.getWordsPerMinute)
         speedSliderPanel.add(speedSlider)
         speedSliderPanel.add(new JLabel("40"))
         panel.add(speedSliderPanel)
@@ -69,21 +90,21 @@ class ToolsOptionsDialog(mainFrame: Frame, cursorManager: CursorManager, prefs: 
         panel.add(vGapPanel1)
 
         val useFTPanel = new JPanel()
-        val useFarnsworth = new JCheckBox("Use Farnsworth timing?", prefs.usingFarnsworth)
+        useFarnsworth = new JCheckBox("Use Farnsworth timing?", prefs.usingFarnsworth)
         useFTPanel.add(useFarnsworth)
         panel.add(useFTPanel)
         
         val farnEntryPanel = new JPanel()
-        val farnSpeedLabel: JLabel = new JLabel("Farnsworth speed:")
+        farnSpeedLabel = new JLabel("Farnsworth speed:")
         farnEntryPanel.add(farnSpeedLabel)
-        val farnSpeedEntry = new JTextField("" + prefs.getFarnsworthWordsPerMinute, 3)
+        farnSpeedEntry = new JTextField("" + prefs.getFarnsworthWordsPerMinute, 3)
         farnEntryPanel.add(farnSpeedEntry)
         farnEntryPanel.add(new JLabel("WPM"))
         panel.add(farnEntryPanel)
 
         val farnSpeedSliderPanel = new JPanel()
         farnSpeedSliderPanel.add(new JLabel("5"))
-        val farnSpeedSlider = new JSlider(SwingConstants.HORIZONTAL, 5, 40, prefs.getFarnsworthWordsPerMinute)
+        farnSpeedSlider = new JSlider(SwingConstants.HORIZONTAL, 5, 40, prefs.getFarnsworthWordsPerMinute)
         farnSpeedSliderPanel.add(farnSpeedSlider)
         farnSpeedSliderPanel.add(new JLabel("40"))
         panel.add(farnSpeedSliderPanel)
@@ -94,14 +115,14 @@ class ToolsOptionsDialog(mainFrame: Frame, cursorManager: CursorManager, prefs: 
 
         val freqEntryPanel = new JPanel()
         freqEntryPanel.add(new JLabel("Tone Frequency:"))
-        val freqEntry = new JTextField("" + prefs.getPulseFrequencyHz, 4)
+        freqEntry = new JTextField("" + prefs.getPulseFrequencyHz, 4)
         freqEntryPanel.add(freqEntry)
         freqEntryPanel.add(new JLabel("Hz"))
         panel.add(freqEntryPanel)
 
         val freqSliderPanel = new JPanel()
         freqSliderPanel.add(new JLabel("400"))
-        val freqSlider = new JSlider(SwingConstants.HORIZONTAL, 400, 600, prefs.getPulseFrequencyHz)
+        freqSlider = new JSlider(SwingConstants.HORIZONTAL, 400, 600, prefs.getPulseFrequencyHz)
         freqSliderPanel.add(freqSlider)
         freqSliderPanel.add(new JLabel("600"))
         panel.add(freqSliderPanel)
@@ -111,7 +132,7 @@ class ToolsOptionsDialog(mainFrame: Frame, cursorManager: CursorManager, prefs: 
         panel.add(vGapPanel3)
 
         val buttonPanel = new JPanel()
-        val testButton = new JButton("Test")
+        testButton = new JButton("Test")
         buttonPanel.add(testButton)
         panel.add(buttonPanel)
 
@@ -139,17 +160,17 @@ class ToolsOptionsDialog(mainFrame: Frame, cursorManager: CursorManager, prefs: 
         panel.add(pmfPanel)
 
         val newCharsPanel = new JPanel()
-        val newCharsCheckbox = new JCheckBox("New characters?", true) // TODO get from prefs
+        newCharsCheckbox = new JCheckBox("New characters?", true) // TODO get from prefs
         newCharsPanel.add(newCharsCheckbox)
         panel.add(newCharsPanel)
 
         val missedCharsPanel = new JPanel()
-        val missedCharsCheckbox = new JCheckBox("Missed characters?", true) // TODO get from prefs
+        missedCharsCheckbox = new JCheckBox("Missed characters?", true) // TODO get from prefs
         missedCharsPanel.add(missedCharsCheckbox)
         panel.add(missedCharsPanel)
 
         val similarCharsPanel = new JPanel()
-        val similarCharsCheckbox = new JCheckBox("Characters similar to missed ones?", true) // TODO get from prefs
+        similarCharsCheckbox = new JCheckBox("Characters similar to missed ones?", true) // TODO get from prefs
         similarCharsPanel.add(similarCharsCheckbox)
         panel.add(similarCharsPanel)
 
@@ -158,14 +179,14 @@ class ToolsOptionsDialog(mainFrame: Frame, cursorManager: CursorManager, prefs: 
         panel.add(vGapPanel1)
 
         val randomLengthPanel = new JPanel()
-        val randomLengthCheckbox = new JCheckBox("Words are of random length?", true) // TODO get from prefs
+        randomLengthCheckbox = new JCheckBox("Words are of random length?", true) // TODO get from prefs
         randomLengthPanel.add(randomLengthCheckbox)
         panel.add(randomLengthPanel)
 
         val wordLengthEntryPanel = new JPanel()
-        val wordLengthLabel: JLabel = new JLabel("Word length:")
+        wordLengthLabel = new JLabel("Word length:")
         wordLengthEntryPanel.add(wordLengthLabel)
-        val wordLengthEntry = new JTextField(""  , 2) // TODO get from prefs
+        wordLengthEntry = new JTextField(""  , 2) // TODO get from prefs
         wordLengthEntryPanel.add(wordLengthEntry)
         panel.add(wordLengthEntryPanel)
 
@@ -175,14 +196,14 @@ class ToolsOptionsDialog(mainFrame: Frame, cursorManager: CursorManager, prefs: 
 
         val sessLengthEntryPanel = new JPanel()
         sessLengthEntryPanel.add(new JLabel("Session length:"))
-        val sessLengthEntry = new JTextField("", 3) // TODO get from prefs
+        sessLengthEntry = new JTextField("", 3) // TODO get from prefs
         sessLengthEntryPanel.add(sessLengthEntry)
         sessLengthEntryPanel.add(new JLabel("mins"))
         panel.add(sessLengthEntryPanel)
 
         val sessLengthSliderPanel = new JPanel()
         sessLengthSliderPanel.add(new JLabel("1"))
-        val sessLengthSlider = new JSlider(SwingConstants.HORIZONTAL, 1, 10, 5) // TODO get from prefs
+        sessLengthSlider = new JSlider(SwingConstants.HORIZONTAL, 1, 10, 5) // TODO get from prefs
         sessLengthSliderPanel.add(sessLengthSlider)
         sessLengthSliderPanel.add(new JLabel("10"))
         panel.add(sessLengthSliderPanel)
