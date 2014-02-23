@@ -29,71 +29,75 @@ class LessonPanel(prefs: MorseTrainerPrefs) extends JPanel {
     var sessLengthEntry: JTextField = null
     var sessLengthSlider: JSlider = null
 
-    val bl = new BoxLayout(this, BoxLayout.Y_AXIS)
-    setLayout(bl)
+    setup()
 
-    // Played more frequently:
-    // [x] New characters?
-    // [x] Missed characters?
-    // [x] Characters similar to missed ones?
-    //
-    // [x] Words are of random length?
-    // Fixed word length:    [ 5]
-    //
-    // Session length: [  5] mins
-    // 1 ------o------- 10
+    def setup() {
+        val bl = new BoxLayout(this, BoxLayout.Y_AXIS)
+        setLayout(bl)
 
-    val pmfPanel = new JPanel()
-    pmfPanel.add(new JLabel("Played more frequently:"))
-    add(pmfPanel)
+        // Played more frequently:
+        // [x] New characters?
+        // [x] Missed characters?
+        // [x] Characters similar to missed ones?
+        //
+        // [x] Words are of random length?
+        // Fixed word length:    [ 5]
+        //
+        // Session length: [  5] mins
+        // 1 ------o------- 10
 
-    val newCharsPanel = new JPanel()
-    newCharsCheckbox = new JCheckBox("New characters?", true) // TODO get from prefs
-    newCharsPanel.add(newCharsCheckbox)
-    add(newCharsPanel)
+        val pmfPanel = new JPanel()
+        pmfPanel.add(new JLabel("Played more frequently:"))
+        add(pmfPanel)
 
-    val missedCharsPanel = new JPanel()
-    missedCharsCheckbox = new JCheckBox("Missed characters?", true) // TODO get from prefs
-    missedCharsPanel.add(missedCharsCheckbox)
-    add(missedCharsPanel)
+        val newCharsPanel = new JPanel()
+        newCharsCheckbox = new JCheckBox("New characters?", true) // TODO get from prefs
+        newCharsPanel.add(newCharsCheckbox)
+        add(newCharsPanel)
 
-    val similarCharsPanel = new JPanel()
-    similarCharsCheckbox = new JCheckBox("Characters similar to missed ones?", true) // TODO get from prefs
-    similarCharsPanel.add(similarCharsCheckbox)
-    add(similarCharsPanel)
+        val missedCharsPanel = new JPanel()
+        missedCharsCheckbox = new JCheckBox("Missed characters?", true) // TODO get from prefs
+        missedCharsPanel.add(missedCharsCheckbox)
+        add(missedCharsPanel)
 
-    val vGapPanel1 = new JPanel()
-    vGapPanel1.add(new JLabel(" "))
-    add(vGapPanel1)
+        val similarCharsPanel = new JPanel()
+        similarCharsCheckbox = new JCheckBox("Characters similar to missed ones?", true) // TODO get from prefs
+        similarCharsPanel.add(similarCharsCheckbox)
+        add(similarCharsPanel)
 
-    val randomLengthPanel = new JPanel()
-    randomLengthCheckbox = new JCheckBox("Words are of random length?", true) // TODO get from prefs
-    randomLengthPanel.add(randomLengthCheckbox)
-    add(randomLengthPanel)
+        val vGapPanel1 = new JPanel()
+        vGapPanel1.add(new JLabel(" "))
+        add(vGapPanel1)
 
-    val wordLengthEntryPanel = new JPanel()
-    wordLengthLabel = new JLabel("Word length:")
-    wordLengthEntryPanel.add(wordLengthLabel)
-    wordLengthEntry = new JTextField(""  , 2) // TODO get from prefs
-    wordLengthEntryPanel.add(wordLengthEntry)
-    add(wordLengthEntryPanel)
+        val randomLengthPanel = new JPanel()
+        randomLengthCheckbox = new JCheckBox("Words are of random length?", true) // TODO get from prefs
+        randomLengthPanel.add(randomLengthCheckbox)
+        add(randomLengthPanel)
 
-    val vGapPanel2 = new JPanel()
-    vGapPanel2.add(new JLabel(" "))
-    add(vGapPanel2)
+        val wordLengthEntryPanel = new JPanel()
+        wordLengthLabel = new JLabel("Word length:")
+        wordLengthEntryPanel.add(wordLengthLabel)
+        wordLengthEntry = new JTextField(""  , 2) // TODO get from prefs
+        wordLengthEntryPanel.add(wordLengthEntry)
+        add(wordLengthEntryPanel)
 
-    val sessLengthEntryPanel = new JPanel()
-    sessLengthEntryPanel.add(new JLabel("Session length:"))
-    sessLengthEntry = new JTextField("", 3) // TODO get from prefs
-    sessLengthEntryPanel.add(sessLengthEntry)
-    sessLengthEntryPanel.add(new JLabel("mins"))
-    add(sessLengthEntryPanel)
+        val vGapPanel2 = new JPanel()
+        vGapPanel2.add(new JLabel(" "))
+        add(vGapPanel2)
 
-    val sessLengthSliderPanel = new JPanel()
-    sessLengthSliderPanel.add(new JLabel("1"))
-    sessLengthSlider = new JSlider(SwingConstants.HORIZONTAL, 1, 10, 5) // TODO get from prefs
-    sessLengthSliderPanel.add(sessLengthSlider)
-    sessLengthSliderPanel.add(new JLabel("10"))
-    add(sessLengthSliderPanel)
+        val sessLengthEntryPanel = new JPanel()
+        sessLengthEntryPanel.add(new JLabel("Session length:"))
+        sessLengthEntry = new JTextField("", 3) // TODO get from prefs
+        sessLengthEntryPanel.add(sessLengthEntry)
+        sessLengthEntryPanel.add(new JLabel("mins"))
+        add(sessLengthEntryPanel)
+
+        val sessLengthSliderPanel = new JPanel()
+        sessLengthSliderPanel.add(new JLabel("1"))
+        sessLengthSlider = new JSlider(SwingConstants.HORIZONTAL, 1, 10, 5) // TODO get from prefs
+        sessLengthSliderPanel.add(sessLengthSlider)
+        sessLengthSliderPanel.add(new JLabel("10"))
+        add(sessLengthSliderPanel)
+    }
 
 }
