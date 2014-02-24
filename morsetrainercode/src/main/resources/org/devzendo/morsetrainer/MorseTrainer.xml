@@ -93,12 +93,20 @@
         <constructor-arg ref="mainFrameFactory" />
         <constructor-arg ref="cursorManager" />
         <constructor-arg ref="prefs" />
+        <constructor-arg ref="clipGeneratorHolder" />
     </bean>
 
 
     <bean id="menuALHelpAbout" class="org.devzendo.morsetrainer.gui.actionlisteners.HelpAboutActionListener">
         <constructor-arg ref="mainFrameFactory" />
         <constructor-arg ref="cursorManager" />
+    </bean>
+
+
+
+
+    <bean id="clipGeneratorHolder" class="org.devzendo.morsetrainer.ClipGeneratorHolderFactory">
+        <constructor-arg ref="prefs" />
     </bean>
 
 </beans>

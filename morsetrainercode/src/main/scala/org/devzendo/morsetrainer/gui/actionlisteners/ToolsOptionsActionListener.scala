@@ -22,12 +22,13 @@ import java.awt.event.ActionEvent
 import java.awt.Frame
 import org.devzendo.morsetrainer.prefs.MorseTrainerPrefs
 import org.devzendo.morsetrainer.gui.dialogs.ToolsOptionsDialog
+import org.devzendo.morsetrainer.ClipGeneratorHolder
 
-class ToolsOptionsActionListener(mainFrame: Frame, cursorManager: CursorManager, prefs: MorseTrainerPrefs) extends SnailActionListener(cursorManager) {
+class ToolsOptionsActionListener(mainFrame: Frame, cursorManager: CursorManager, prefs: MorseTrainerPrefs, clipGeneratorHolder: ClipGeneratorHolder) extends SnailActionListener(cursorManager) {
     def actionPerformedSlowly(e: ActionEvent) {
         GUIUtils.invokeLaterOnEventThread(new Runnable() {
             def run() {
-                val dialog = new ToolsOptionsDialog(mainFrame, cursorManager, prefs)
+                val dialog = new ToolsOptionsDialog(mainFrame, cursorManager, prefs, clipGeneratorHolder)
                 dialog.postConstruct()
                 dialog.pack()
                 dialog.setLocationRelativeTo(mainFrame)

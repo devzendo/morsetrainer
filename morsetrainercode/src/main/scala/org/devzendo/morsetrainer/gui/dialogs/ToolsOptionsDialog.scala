@@ -23,18 +23,23 @@ import org.devzendo.commonapp.gui.dialog.snaildialog.AbstractSnailDialog
 import org.devzendo.commonapp.prefs.Prefs
 import javax.swing._
 import org.slf4j.LoggerFactory
+import org.devzendo.morsetrainer.ClipGeneratorHolder
 
 object ToolsOptionsDialog {
     private val LOGGER = LoggerFactory.getLogger(classOf[ToolsOptionsDialog])
 }
 
-class ToolsOptionsDialog(mainFrame: Frame, cursorManager: CursorManager, prefs: MorseTrainerPrefs) extends AbstractSnailDialog(mainFrame: Frame, cursorManager: CursorManager, "Options") with DialogTools {
+class ToolsOptionsDialog(mainFrame: Frame, cursorManager: CursorManager, prefs: MorseTrainerPrefs, clipGeneratorHolder: ClipGeneratorHolder) extends AbstractSnailDialog(mainFrame: Frame, cursorManager: CursorManager, "Options") with DialogTools {
 
     import ToolsOptionsDialog._
 
     def prefsChanged: Unit = {
         LOGGER.debug("prefs have changed")
         assert(!SwingUtilities.isEventDispatchThread)
+        clipGeneratorHolder.setUsingFarnsworth(prefs.usingFarnsworth)
+        clipGeneratorHolder.setPulseFrequency(prefs.getPulseFrequencyHz)
+        clipGeneratorHolder.setWordsPerMinute(prefs.getWordsPerMinute)
+        clipGeneratorHolder.setFarnsworthWordsPerMinute(prefs.getFarnsworthWordsPerMinute)
     }
 
     def createMainComponent() = {
