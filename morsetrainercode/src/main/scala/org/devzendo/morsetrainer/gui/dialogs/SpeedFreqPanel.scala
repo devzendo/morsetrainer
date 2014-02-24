@@ -26,9 +26,9 @@ object SpeedFreqPanel {
     val MAX_SPEED = 40
     val MIN_FREQ = 400
     val MAX_FREQ = 600
-
 }
-class SpeedFreqPanel(prefs: MorseTrainerPrefs) extends JPanel {
+
+class SpeedFreqPanel(prefs: MorseTrainerPrefs) extends JPanel with PanelTools {
     import SpeedFreqPanel._
 
     var farnSpeedEntrySlider: EntrySlider = null
@@ -36,12 +36,6 @@ class SpeedFreqPanel(prefs: MorseTrainerPrefs) extends JPanel {
     var testButton: JButton = null
 
     setup()
-
-    def addVGap() {
-        val vGapPanel = new JPanel()
-        vGapPanel.add(new JLabel(" "))
-        add(vGapPanel)
-    }
 
     def setup() {
         val bl = new BoxLayout(this, BoxLayout.Y_AXIS)

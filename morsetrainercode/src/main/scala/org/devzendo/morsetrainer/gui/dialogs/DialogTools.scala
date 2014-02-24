@@ -16,9 +16,8 @@
 
 package org.devzendo.morsetrainer.gui.dialogs
 
-import javax.swing.{JTabbedPane, JComponent, BorderFactory, JPanel}
-import java.awt.Color
-import java.awt.event.{FocusListener, FocusEvent, ActionListener, ActionEvent}
+import javax.swing._
+import java.awt.event._
 import javax.swing.event.{ChangeListener, ChangeEvent}
 
 object DialogTools {
@@ -29,6 +28,10 @@ object DialogTools {
     implicit def function2ChangeListener(f: ChangeEvent => Unit) =
         new ChangeListener {
             def stateChanged(event: ChangeEvent) { f(event) }
+        }
+    implicit def function2ItemListener(f: ItemEvent => Unit) =
+        new ItemListener {
+            def itemStateChanged(event: ItemEvent) { f(event) }
         }
     implicit def function2FocusListener(f: FocusEvent => Unit) =
         new FocusListener {

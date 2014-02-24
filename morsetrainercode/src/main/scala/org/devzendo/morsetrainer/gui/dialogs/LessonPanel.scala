@@ -18,18 +18,32 @@ package org.devzendo.morsetrainer.gui.dialogs
 
 import org.devzendo.morsetrainer.prefs.MorseTrainerPrefs
 import javax.swing._
+import java.awt.event.{FocusEvent, ItemEvent, ActionEvent}
+import DialogTools._
+import org.devzendo.commonapp.gui.GUIUtils
 
-class LessonPanel(prefs: MorseTrainerPrefs) extends JPanel {
-    var newCharsCheckbox: JCheckBox = null
-    var missedCharsCheckbox: JCheckBox = null
-    var similarCharsCheckbox: JCheckBox = null
-    var randomLengthCheckbox: JCheckBox = null
+object LessonPanel {
+    val MIN_SESSION = 1
+    val MAX_SESSION = 10
+
+    val MIN_WORD_LENGTH = 2
+    val MAX_WORD_LENGTH = 10
+}
+
+class LessonPanel(prefs: MorseTrainerPrefs) extends JPanel with PanelTools {
+    import LessonPanel._
+
     var wordLengthLabel: JLabel = null
     var wordLengthEntry: JTextField = null
-    var sessLengthEntry: JTextField = null
-    var sessLengthSlider: JSlider = null
+    var sessEntrySlider: EntrySlider = null
+    var lastGoodWordLength = if (prefs.areWordsRandomLength) MIN_WORD_LENGTH else prefs.getNonRandomWordLength
 
     setup()
+
+    def enableDisableWordLength(checked: Boolean) {
+        wordLengthEntry.setEnabled(!checked)
+        wordLengthLabel.setEnabled(!checked)
+    }
 
     def setup() {
         val bl = new BoxLayout(this, BoxLayout.Y_AXIS)
@@ -50,54 +64,94 @@ class LessonPanel(prefs: MorseTrainerPrefs) extends JPanel {
         pmfPanel.add(new JLabel("Played more frequently:"))
         add(pmfPanel)
 
-        val newCharsPanel = new JPanel()
-        newCharsCheckbox = new JCheckBox("New characters?", true) // TODO get from prefs
-        newCharsPanel.add(newCharsCheckbox)
-        add(newCharsPanel)
+        addCheckbox("New characters?", prefs.newCharsMoreFrequently, (checked: Boolean) => {
+            prefs.setNewCharsMoreFrequently(checked)
+        })
 
-        val missedCharsPanel = new JPanel()
-        missedCharsCheckbox = new JCheckBox("Missed characters?", true) // TODO get from prefs
-        missedCharsPanel.add(missedCharsCheckbox)
-        add(missedCharsPanel)
+        addCheckbox("Missed characters?", prefs.missedCharsMoreFrequently, (checked: Boolean) => {
+            prefs.setMissedCharsMoreFrequently(checked)
+        })
 
-        val similarCharsPanel = new JPanel()
-        similarCharsCheckbox = new JCheckBox("Characters similar to missed ones?", true) // TODO get from prefs
-        similarCharsPanel.add(similarCharsCheckbox)
-        add(similarCharsPanel)
+        addCheckbox("Characters similar to missed ones?", prefs.similarCharsMoreFrequently, (checked: Boolean) => {
+            prefs.setSimilarCharsMoreFrequently(checked)
+        })
 
-        val vGapPanel1 = new JPanel()
-        vGapPanel1.add(new JLabel(" "))
-        add(vGapPanel1)
+        addVGap()
 
-        val randomLengthPanel = new JPanel()
-        randomLengthCheckbox = new JCheckBox("Words are of random length?", true) // TODO get from prefs
-        randomLengthPanel.add(randomLengthCheckbox)
-        add(randomLengthPanel)
+        addCheckbox("Words are of random length?", prefs.areWordsRandomLength, (random: Boolean) => {
+            prefs.setWordsRandomLength(random)
+            GUIUtils.invokeLaterOnEventThread(new Runnable() {
+                def run() {
+                    enableDisableWordLength(random)
+                }
+            })
+        })
 
         val wordLengthEntryPanel = new JPanel()
         wordLengthLabel = new JLabel("Word length:")
         wordLengthEntryPanel.add(wordLengthLabel)
-        wordLengthEntry = new JTextField(""  , 2) // TODO get from prefs
+        wordLengthEntry = new JTextField("" + lastGoodWordLength , 2)
         wordLengthEntryPanel.add(wordLengthEntry)
         add(wordLengthEntryPanel)
+        wordLengthEntry.addActionListener(
+            (_: ActionEvent) => {
+                fieldChanged()
+            }
+        )
+        wordLengthEntry.addFocusListener(
+            (event: FocusEvent) => {
+                if (event.getID == FocusEvent.FOCUS_LOST) {
+                    fieldChanged()
+                }
+            }
+        )
 
-        val vGapPanel2 = new JPanel()
-        vGapPanel2.add(new JLabel(" "))
-        add(vGapPanel2)
+        addVGap()
 
-        val sessLengthEntryPanel = new JPanel()
-        sessLengthEntryPanel.add(new JLabel("Session length:"))
-        sessLengthEntry = new JTextField("", 3) // TODO get from prefs
-        sessLengthEntryPanel.add(sessLengthEntry)
-        sessLengthEntryPanel.add(new JLabel("mins"))
-        add(sessLengthEntryPanel)
+        add(new EntrySlider(MIN_SESSION, MAX_SESSION, 3, prefs.getSessionLength, "Session length", "mins",
+            (len: Int) => {
+                prefs.setSessionLength(len)
+            }))
 
-        val sessLengthSliderPanel = new JPanel()
-        sessLengthSliderPanel.add(new JLabel("1"))
-        sessLengthSlider = new JSlider(SwingConstants.HORIZONTAL, 1, 10, 5) // TODO get from prefs
-        sessLengthSliderPanel.add(sessLengthSlider)
-        sessLengthSliderPanel.add(new JLabel("10"))
-        add(sessLengthSliderPanel)
+        enableDisableWordLength(prefs.areWordsRandomLength)
     }
 
+    private def resetEntryToLastGood() {
+        wordLengthEntry.setText("" + lastGoodWordLength)
+    }
+
+    private def fieldChanged() {
+        try {
+            val value = Integer.parseInt(wordLengthEntry.getText)
+            if (value >= MIN_WORD_LENGTH && value <= MAX_WORD_LENGTH) {
+                new SwingWorker[Unit, AnyRef]() {
+                    def doInBackground(): Unit = {
+                        lastGoodWordLength = value
+                        prefs.setNonRandomWordLength(value)
+                    }
+                }.execute()
+            } else {
+                resetEntryToLastGood()
+            }
+        } catch {
+            case (nfe: NumberFormatException) => resetEntryToLastGood()
+        }
+    }
+
+    private def addCheckbox(title: String, initial: Boolean, changeFn: (Boolean => Unit)) {
+        val panel = new JPanel()
+        val checkBox = new JCheckBox(title, initial)
+        checkBox.addItemListener(
+            (_: ItemEvent) => {
+                val value = checkBox.isSelected
+                new SwingWorker[Unit, AnyRef]() {
+                    def doInBackground(): Unit = {
+                        changeFn(value)
+                    }
+                }.execute()
+            }
+        )
+        panel.add(checkBox)
+        add(panel)
+    }
 }

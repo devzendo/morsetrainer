@@ -31,6 +31,8 @@ object MorseTrainerPrefs {
     val DefaultFarnsworthWordsPerMinute = 12
     val DefaultPulseFrequency = 600
     val DefaultKochLevel = 1
+    val DefaultNonRandomWordLength = 5
+    val DefaultSessionLength = 5
 }
 
 
@@ -75,8 +77,16 @@ trait MorseTrainerPrefs extends Prefs {
      */
     def setWordsPerMinute(wpm: Int): Unit
 
+    /**
+     * Whether or not we are using the Farnsworth timing.
+     * @return using Farnsworth timing?
+     */
     def usingFarnsworth: Boolean
 
+    /**
+     * Indicate whether we are using the Farnsworth timing.
+     * @param using true iff using it
+     */
     def setUsingFarnsworth(using: Boolean): Unit
 
     /**
@@ -115,4 +125,18 @@ trait MorseTrainerPrefs extends Prefs {
      */
     def setKochLevel(lvl: Int): Unit
 
+    def newCharsMoreFrequently: Boolean
+    def setNewCharsMoreFrequently(more: Boolean)
+    def missedCharsMoreFrequently: Boolean
+    def setMissedCharsMoreFrequently(more: Boolean)
+    def similarCharsMoreFrequently: Boolean
+    def setSimilarCharsMoreFrequently(more: Boolean)
+
+    def areWordsRandomLength: Boolean
+    def setWordsRandomLength(random: Boolean)
+    def getNonRandomWordLength: Int
+    def setNonRandomWordLength(len: Int)
+
+    def getSessionLength: Int
+    def setSessionLength(len: Int)
 }

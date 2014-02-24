@@ -35,12 +35,21 @@ object DefaultMorseTrainerPrefs {
 
     private val SECTION_MORSE = "morse"
     private val WPM = "wpm"
-    private val USING_FARNSWORTH = "usingfarnsworth"
-    private val FARNSWORTH_WPM = "farnsworthwpm"
-    private val PULSE_FREQ = "pulsefreq"
-    private val KOCH_LEVEL = "kochlevel"
+    private val USING_FARNSWORTH = "using_farnsworth"
+    private val FARNSWORTH_WPM = "farnsworth_wpm"
+    private val PULSE_FREQ = "pulse_freq"
+    private val KOCH_LEVEL = "koch_level"
+
+    private val SECTION_SESSION = "session"
+    private val NEW_FREQUENTLY = "new_frequently"
+    private val MISSED_FREQUENTLY = "missed_frequently"
+    private val SIMILAR_FREQUENTLY = "similar_frequently"
+    private val RANDOM_LENGTH_WORDS = "random_length_words"
+    private val NON_RANDOM_WORD_LENGTH = "non_random_word_length"
+    private val SESSION_LENGTH = "session_length"
 
 }
+
 /**
  * @param prefsFilePath the path at which the .ini file should be stored.
  *
@@ -131,5 +140,45 @@ class DefaultMorseTrainerPrefs(prefsFilePath: String) extends MorseTrainerPrefs 
      */
     def setKochLevel(lvl: Int) {
         iniFile.setValue(DefaultMorseTrainerPrefs.SECTION_MORSE, DefaultMorseTrainerPrefs.KOCH_LEVEL, "" + lvl)
+    }
+
+    def newCharsMoreFrequently: Boolean = iniFile.getBooleanValue(DefaultMorseTrainerPrefs.SECTION_SESSION, DefaultMorseTrainerPrefs.NEW_FREQUENTLY)
+
+    def setNewCharsMoreFrequently(more: Boolean) {
+        iniFile.setBooleanValue(DefaultMorseTrainerPrefs.SECTION_SESSION, DefaultMorseTrainerPrefs.NEW_FREQUENTLY, more)
+    }
+
+    def missedCharsMoreFrequently: Boolean = iniFile.getBooleanValue(DefaultMorseTrainerPrefs.SECTION_SESSION, DefaultMorseTrainerPrefs.MISSED_FREQUENTLY)
+
+    def setMissedCharsMoreFrequently(more: Boolean) {
+        iniFile.setBooleanValue(DefaultMorseTrainerPrefs.SECTION_SESSION, DefaultMorseTrainerPrefs.MISSED_FREQUENTLY, more)
+    }
+
+    def similarCharsMoreFrequently: Boolean = iniFile.getBooleanValue(DefaultMorseTrainerPrefs.SECTION_SESSION, DefaultMorseTrainerPrefs.SIMILAR_FREQUENTLY)
+
+    def setSimilarCharsMoreFrequently(more: Boolean) {
+        iniFile.setBooleanValue(DefaultMorseTrainerPrefs.SECTION_SESSION, DefaultMorseTrainerPrefs.SIMILAR_FREQUENTLY, more)
+    }
+
+    def areWordsRandomLength: Boolean = iniFile.getBooleanValue(DefaultMorseTrainerPrefs.SECTION_SESSION, DefaultMorseTrainerPrefs.RANDOM_LENGTH_WORDS)
+
+    def setWordsRandomLength(random: Boolean) {
+        iniFile.setBooleanValue(DefaultMorseTrainerPrefs.SECTION_SESSION, DefaultMorseTrainerPrefs.RANDOM_LENGTH_WORDS, random)
+    }
+
+    def getNonRandomWordLength: Int = {
+        Integer.parseInt(iniFile.getValue(DefaultMorseTrainerPrefs.SECTION_SESSION, DefaultMorseTrainerPrefs.NON_RANDOM_WORD_LENGTH, "" + MorseTrainerPrefs.DefaultNonRandomWordLength))
+    }
+
+    def setNonRandomWordLength(len: Int) {
+        iniFile.setValue(DefaultMorseTrainerPrefs.SECTION_SESSION, DefaultMorseTrainerPrefs.NON_RANDOM_WORD_LENGTH, "" + len)
+    }
+
+    def getSessionLength: Int = {
+        Integer.parseInt(iniFile.getValue(DefaultMorseTrainerPrefs.SECTION_SESSION, DefaultMorseTrainerPrefs.SESSION_LENGTH, "" + MorseTrainerPrefs.DefaultSessionLength))
+    }
+
+    def setSessionLength(len: Int) {
+        iniFile.setValue(DefaultMorseTrainerPrefs.SECTION_SESSION, DefaultMorseTrainerPrefs.SESSION_LENGTH, "" + len)
     }
 }
