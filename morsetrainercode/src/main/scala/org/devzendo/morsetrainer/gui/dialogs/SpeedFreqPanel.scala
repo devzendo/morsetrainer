@@ -20,15 +20,18 @@ import org.devzendo.morsetrainer.prefs.MorseTrainerPrefs
 import javax.swing._
 import java.awt.event.ActionEvent
 import DialogTools._
+import org.slf4j.LoggerFactory
 
 object SpeedFreqPanel {
+    private val LOGGER = LoggerFactory.getLogger(classOf[SpeedFreqPanel])
+
     val MIN_SPEED = 5
     val MAX_SPEED = 40
     val MIN_FREQ = 400
     val MAX_FREQ = 600
 }
 
-class SpeedFreqPanel(prefs: MorseTrainerPrefs) extends JPanel with PanelTools {
+class SpeedFreqPanel(prefs: MorseTrainerPrefs, prefsChangedNotifier: => Unit) extends JPanel with PanelTools {
     import SpeedFreqPanel._
 
     var farnSpeedEntrySlider: EntrySlider = null
@@ -55,7 +58,9 @@ class SpeedFreqPanel(prefs: MorseTrainerPrefs) extends JPanel with PanelTools {
 
         add(new EntrySlider(MIN_SPEED, MAX_SPEED, 3, prefs.getWordsPerMinute, "Speed", "WPM",
             (speed: Int) => {
+                LOGGER.debug("speed entry slider updated")
                 prefs.setWordsPerMinute(speed)
+                prefsChangedNotifier
             }))
 
         addVGap()
@@ -66,13 +71,21 @@ class SpeedFreqPanel(prefs: MorseTrainerPrefs) extends JPanel with PanelTools {
         add(useFTPanel)
         useFarnsworth.addActionListener(
             (_: ActionEvent) => {
-                farnSpeedEntrySlider.enableAllComponents(useFarnsworth.isSelected)
+              val value = useFarnsworth.isSelected
+                farnSpeedEntrySlider.enableAllComponents(value)
+                new SwingWorker[Unit, AnyRef]() {
+                    def doInBackground(): Unit = {
+                        prefs.setUsingFarnsworth(value)
+                        prefsChangedNotifier
+                    }
+                }.execute()
             }
         )
 
         farnSpeedEntrySlider = new EntrySlider(MIN_SPEED, MAX_SPEED, 3, prefs.getFarnsworthWordsPerMinute, "Farnsworth speed", "WPM",
             (speed: Int) => {
                 prefs.setFarnsworthWordsPerMinute(speed)
+                prefsChangedNotifier
             })
         add(farnSpeedEntrySlider)
 
@@ -83,6 +96,7 @@ class SpeedFreqPanel(prefs: MorseTrainerPrefs) extends JPanel with PanelTools {
         add(new EntrySlider(MIN_FREQ, MAX_FREQ, 4, prefs.getPulseFrequencyHz, "Tone frequency", "Hz",
             (freq: Int) => {
                 prefs.setPulseFrequency(freq)
+                prefsChangedNotifier
             }))
 
         addVGap()

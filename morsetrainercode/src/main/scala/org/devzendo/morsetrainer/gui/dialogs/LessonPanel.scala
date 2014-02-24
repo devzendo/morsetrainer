@@ -30,7 +30,7 @@ object LessonPanel {
     val MAX_WORD_LENGTH = 10
 }
 
-class LessonPanel(prefs: MorseTrainerPrefs) extends JPanel with PanelTools {
+class LessonPanel(prefs: MorseTrainerPrefs, prefsChangedNotifier: => Unit) extends JPanel with PanelTools {
     import LessonPanel._
 
     var wordLengthLabel: JLabel = null
@@ -111,6 +111,7 @@ class LessonPanel(prefs: MorseTrainerPrefs) extends JPanel with PanelTools {
         add(new EntrySlider(MIN_SESSION, MAX_SESSION, 3, prefs.getSessionLength, "Session length", "mins",
             (len: Int) => {
                 prefs.setSessionLength(len)
+                prefsChangedNotifier
             }))
 
         enableDisableWordLength(prefs.areWordsRandomLength)
@@ -128,6 +129,7 @@ class LessonPanel(prefs: MorseTrainerPrefs) extends JPanel with PanelTools {
                     def doInBackground(): Unit = {
                         lastGoodWordLength = value
                         prefs.setNonRandomWordLength(value)
+                        prefsChangedNotifier
                     }
                 }.execute()
             } else {
@@ -147,6 +149,7 @@ class LessonPanel(prefs: MorseTrainerPrefs) extends JPanel with PanelTools {
                 new SwingWorker[Unit, AnyRef]() {
                     def doInBackground(): Unit = {
                         changeFn(value)
+                        prefsChangedNotifier
                     }
                 }.execute()
             }

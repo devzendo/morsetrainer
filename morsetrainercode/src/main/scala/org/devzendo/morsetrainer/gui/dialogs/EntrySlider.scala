@@ -21,8 +21,15 @@ import java.awt.event.{FocusEvent, ActionEvent}
 import javax.swing.event.ChangeEvent
 
 import DialogTools._
+import org.slf4j.LoggerFactory
+
+object EntrySlider {
+    private val LOGGER = LoggerFactory.getLogger(classOf[EntrySlider])
+}
 
 class EntrySlider(min: Int, max: Int, width: Int, curr: Int, intro: String, units: String, changeFn: (Int => Unit)) extends JPanel {
+    import EntrySlider._
+
     var valueLabel: JLabel = null
     var valueEntry: JTextField = null
     var valueSlider: JSlider = null
@@ -44,12 +51,14 @@ class EntrySlider(min: Int, max: Int, width: Int, curr: Int, intro: String, unit
     add(valueEntryPanel)
     valueEntry.addActionListener(
         (_: ActionEvent) => {
+            LOGGER.debug("value entry action event")
             fieldChanged()
         }
     )
     valueEntry.addFocusListener(
         (event: FocusEvent) => {
             if (event.getID == FocusEvent.FOCUS_LOST) {
+                LOGGER.debug("value field lost focus")
                 fieldChanged()
             }
         }
@@ -69,6 +78,7 @@ class EntrySlider(min: Int, max: Int, width: Int, curr: Int, intro: String, unit
             valueEntry.setText("" + value)
             new SwingWorker[Unit, AnyRef]() {
                 def doInBackground(): Unit = {
+                    LOGGER.debug("value slider changing")
                     changeFn(value)
                 }
             }.execute()
@@ -76,6 +86,7 @@ class EntrySlider(min: Int, max: Int, width: Int, curr: Int, intro: String, unit
     )
 
     private def resetEntryToSlider() {
+        LOGGER.debug("reset entry to slider")
         valueEntry.setText("" + valueSlider.getValue)
     }
 

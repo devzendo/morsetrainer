@@ -17,19 +17,30 @@
 package org.devzendo.morsetrainer.gui.dialogs
 
 import java.awt._
-import org.devzendo.commonapp.gui.CursorManager
+import org.devzendo.commonapp.gui.{GUIUtils, CursorManager}
 import org.devzendo.morsetrainer.prefs.MorseTrainerPrefs
 import org.devzendo.commonapp.gui.dialog.snaildialog.AbstractSnailDialog
 import org.devzendo.commonapp.prefs.Prefs
 import javax.swing._
+import org.slf4j.LoggerFactory
+
+object ToolsOptionsDialog {
+    private val LOGGER = LoggerFactory.getLogger(classOf[ToolsOptionsDialog])
+}
 
 class ToolsOptionsDialog(mainFrame: Frame, cursorManager: CursorManager, prefs: MorseTrainerPrefs) extends AbstractSnailDialog(mainFrame: Frame, cursorManager: CursorManager, "Options") with DialogTools {
 
+    import ToolsOptionsDialog._
+
+    def prefsChanged: Unit = {
+        LOGGER.debug("prefs have changed")
+        assert(!SwingUtilities.isEventDispatchThread)
+    }
 
     def createMainComponent() = {
         val tabbedPane = new JTabbedPane()
-        tabbedPane.addTab("Speed & Tone", padded(new SpeedFreqPanel(prefs)))
-        tabbedPane.addTab("Lesson", padded(new LessonPanel(prefs)))
+        tabbedPane.addTab("Speed & Tone", padded(new SpeedFreqPanel(prefs, prefsChanged)))
+        tabbedPane.addTab("Lesson", padded(new LessonPanel(prefs, prefsChanged)))
 
         padded(tabbedPane)
     }
