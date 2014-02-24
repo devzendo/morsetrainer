@@ -16,10 +16,10 @@
 
 package org.devzendo.morsetrainer.gui.dialogs
 
-import java.awt._
 import org.devzendo.commonapp.gui.CursorManager
 import org.devzendo.commonapp.gui.dialog.snaildialog.AbstractSnailDialog
 import javax.swing._
+import java.awt.Frame
 
 class HelpAboutDialog(mainFrame: Frame, cursorManager: CursorManager) extends AbstractSnailDialog(mainFrame: Frame, cursorManager: CursorManager, "About") with DialogTools {
 
@@ -28,10 +28,12 @@ class HelpAboutDialog(mainFrame: Frame, cursorManager: CursorManager) extends Ab
         val bl = new BoxLayout(panel, BoxLayout.Y_AXIS)
         panel.setLayout(bl)
 
-        panel.add(new JLabel("Morse Trainer " + "v.1.0.0")) // TODO take from pom
-        panel.add(new JLabel("Koch method & freestyle Morse Code trainer"))
-        panel.add(new JLabel("http://devzendo.org/content/morsetrainer"))
-        panel.add(new JLabel("(C) 2014 Matt Gumbley M0CUV"))
+        List[String](
+            "Morse Trainer " + "v.1.0.0", // TODO take from pom
+            "Koch method & freestyle Morse Code trainer",
+            "http://devzendo.org/content/morsetrainer",
+            "(C) 2014 Matt Gumbley M0CUV"
+        ).foreach( (str: String) => { panel.add(new JLabel(str)) })
         padded(panel)
     }
 
