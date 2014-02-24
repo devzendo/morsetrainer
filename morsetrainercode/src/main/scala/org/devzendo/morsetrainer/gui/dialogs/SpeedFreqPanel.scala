@@ -18,9 +18,8 @@ package org.devzendo.morsetrainer.gui.dialogs
 
 import org.devzendo.morsetrainer.prefs.MorseTrainerPrefs
 import javax.swing._
-import java.awt.event.{ActionEvent, ActionListener}
+import java.awt.event.ActionEvent
 import DialogTools._
-import javax.swing.event.ChangeEvent
 
 object SpeedFreqPanel {
     val MIN_SPEED = 5
@@ -32,32 +31,16 @@ object SpeedFreqPanel {
 class SpeedFreqPanel(prefs: MorseTrainerPrefs) extends JPanel {
     import SpeedFreqPanel._
 
-    var speedEntry: JTextField = null
-    var speedSlider: JSlider = null
+    var farnSpeedEntrySlider: EntrySlider = null
     var useFarnsworth: JCheckBox = null
-    var farnSpeedLabel: JLabel = null
-    var farnSpeedEntry: JTextField = null
-    var farnSpeedSlider: JSlider = null
-    var freqEntry: JTextField = null
-    var freqSlider: JSlider = null
     var testButton: JButton = null
 
     setup()
 
-    def resetSpeedEntryToSlider() {
-        speedEntry.setText("" + speedSlider.getValue)
-    }
-    def resetFarnSpeedEntryToSlider() {
-        farnSpeedEntry.setText("" + farnSpeedSlider.getValue)
-    }
-    def resetFreqEntryToSlider() {
-        freqEntry.setText("" + freqSlider.getValue)
-    }
-
-    def enableDisableFarnsworth(enable: Boolean) {
-        farnSpeedLabel.setEnabled(enable)
-        farnSpeedEntry.setEnabled(enable)
-        farnSpeedSlider.setEnabled(enable)
+    def addVGap() {
+        val vGapPanel = new JPanel()
+        vGapPanel.add(new JLabel(" "))
+        add(vGapPanel)
     }
 
     def setup() {
@@ -76,54 +59,12 @@ class SpeedFreqPanel(prefs: MorseTrainerPrefs) extends JPanel {
         //
         //        (Test)
 
-        val speedEntryPanel = new JPanel()
-        speedEntryPanel.add(new JLabel("Speed:"))
-        speedEntry = new JTextField("" + prefs.getWordsPerMinute, 3)
-        speedEntryPanel.add(speedEntry)
-        speedEntryPanel.add(new JLabel("WPM"))
-        add(speedEntryPanel)
-        speedEntry.addActionListener(
-            (_: ActionEvent) => {
-                try {
-                    val speed = Integer.parseInt(speedEntry.getText)
-                    if (speed <= MIN_SPEED && speed >= MAX_SPEED) {
-                        speedSlider.setValue(speed)
-                        new SwingWorker[Unit, AnyRef]() {
-                            def doInBackground(): Unit = {
-                                prefs.setWordsPerMinute(speed)
+        add(new EntrySlider(MIN_SPEED, MAX_SPEED, 3, prefs.getWordsPerMinute, "Speed", "WPM",
+            (speed: Int) => {
+                prefs.setWordsPerMinute(speed)
+            }))
 
-                            }
-                        }.execute()
-                    } else {
-                        resetSpeedEntryToSlider()
-                    }
-                } catch {
-                    case (nfe: NumberFormatException) => resetSpeedEntryToSlider()
-                }
-            }
-        )
-
-        val speedSliderPanel = new JPanel()
-        speedSliderPanel.add(new JLabel("" + MIN_SPEED))
-        speedSlider = new JSlider(SwingConstants.HORIZONTAL, MIN_SPEED, MAX_SPEED, prefs.getWordsPerMinute)
-        speedSliderPanel.add(speedSlider)
-        speedSliderPanel.add(new JLabel("" + MAX_SPEED))
-        add(speedSliderPanel)
-        speedSlider.addChangeListener(
-            (_: ChangeEvent) => {
-                val speed: Int = speedSlider.getValue
-                speedEntry.setText("" + speed)
-                new SwingWorker[Unit, AnyRef]() {
-                    def doInBackground(): Unit = {
-                        prefs.setWordsPerMinute(speed)
-                    }
-                }.execute()
-            }
-        )
-
-        val vGapPanel1 = new JPanel()
-        vGapPanel1.add(new JLabel(" "))
-        add(vGapPanel1)
+        addVGap()
 
         val useFTPanel = new JPanel()
         useFarnsworth = new JCheckBox("Use Farnsworth timing?", prefs.usingFarnsworth)
@@ -131,113 +72,30 @@ class SpeedFreqPanel(prefs: MorseTrainerPrefs) extends JPanel {
         add(useFTPanel)
         useFarnsworth.addActionListener(
             (_: ActionEvent) => {
-                enableDisableFarnsworth(useFarnsworth.isSelected)
+                farnSpeedEntrySlider.enableAllComponents(useFarnsworth.isSelected)
             }
         )
 
-        val farnEntryPanel = new JPanel()
-        farnSpeedLabel = new JLabel("Farnsworth speed:")
-        farnEntryPanel.add(farnSpeedLabel)
-        farnSpeedEntry = new JTextField("" + prefs.getFarnsworthWordsPerMinute, 3)
-        farnEntryPanel.add(farnSpeedEntry)
-        farnEntryPanel.add(new JLabel("WPM"))
-        add(farnEntryPanel)
-        farnSpeedEntry.addActionListener(
-            (_: ActionEvent) => {
-                try {
-                    val speed = Integer.parseInt(farnSpeedEntry.getText)
-                    if (speed <= MIN_SPEED && speed >= MAX_SPEED) {
-                        farnSpeedSlider.setValue(speed)
-                        new SwingWorker[Unit, AnyRef]() {
-                            def doInBackground(): Unit = {
-                                prefs.setFarnsworthWordsPerMinute(speed)
-                            }
-                        }.execute()
-                    } else {
-                        resetFarnSpeedEntryToSlider()
-                    }
-                } catch {
-                    case (nfe: NumberFormatException) => resetFarnSpeedEntryToSlider()
-                }
-            }
-        )
+        farnSpeedEntrySlider = new EntrySlider(MIN_SPEED, MAX_SPEED, 3, prefs.getFarnsworthWordsPerMinute, "Farnsworth speed", "WPM",
+            (speed: Int) => {
+                prefs.setFarnsworthWordsPerMinute(speed)
+            })
+        add(farnSpeedEntrySlider)
 
-        val farnSpeedSliderPanel = new JPanel()
-        farnSpeedSliderPanel.add(new JLabel("5"))
-        farnSpeedSlider = new JSlider(SwingConstants.HORIZONTAL, MIN_SPEED, MAX_SPEED, prefs.getFarnsworthWordsPerMinute)
-        farnSpeedSliderPanel.add(farnSpeedSlider)
-        farnSpeedSliderPanel.add(new JLabel("40"))
-        add(farnSpeedSliderPanel)
-        farnSpeedSlider.addChangeListener(
-            (_: ChangeEvent) => {
-                val speed: Int = farnSpeedSlider.getValue
-                farnSpeedEntry.setText("" + speed)
-                new SwingWorker[Unit, AnyRef]() {
-                    def doInBackground(): Unit = {
-                        prefs.setFarnsworthWordsPerMinute(speed)
-                    }
-                }.execute()
-            }
-        )
+        farnSpeedEntrySlider.enableAllComponents(prefs.usingFarnsworth)
 
-        enableDisableFarnsworth(prefs.usingFarnsworth)
+        addVGap()
 
-        val vGapPanel2 = new JPanel()
-        vGapPanel2.add(new JLabel(" "))
-        add(vGapPanel2)
+        add(new EntrySlider(MIN_FREQ, MAX_FREQ, 4, prefs.getPulseFrequencyHz, "Tone frequency", "Hz",
+            (freq: Int) => {
+                prefs.setPulseFrequency(freq)
+            }))
 
-        val freqEntryPanel = new JPanel()
-        freqEntryPanel.add(new JLabel("Tone Frequency:"))
-        freqEntry = new JTextField("" + prefs.getPulseFrequencyHz, 4)
-        freqEntryPanel.add(freqEntry)
-        freqEntryPanel.add(new JLabel("Hz"))
-        add(freqEntryPanel)
-        freqEntry.addActionListener(
-            (_: ActionEvent) => {
-                try {
-                    val freq = Integer.parseInt(freqEntry.getText)
-                    if (freq <= MIN_FREQ && freq >= MAX_FREQ) {
-                        freqSlider.setValue(freq)
-                        new SwingWorker[Unit, AnyRef]() {
-                            def doInBackground(): Unit = {
-                                prefs.setPulseFrequency(freq)
-                            }
-                        }.execute()
-                    } else {
-                        resetFreqEntryToSlider()
-                    }
-                } catch {
-                    case (nfe: NumberFormatException) => resetFreqEntryToSlider()
-                }
-            }
-        )
-
-        val freqSliderPanel = new JPanel()
-        freqSliderPanel.add(new JLabel("" + MIN_FREQ))
-        freqSlider = new JSlider(SwingConstants.HORIZONTAL, MIN_FREQ, MAX_FREQ, prefs.getPulseFrequencyHz)
-        freqSliderPanel.add(freqSlider)
-        freqSliderPanel.add(new JLabel("" + MAX_FREQ))
-        add(freqSliderPanel)
-        freqSlider.addChangeListener(
-            (_: ChangeEvent) => {
-                val freq: Int = freqSlider.getValue
-                freqEntry.setText("" + freq)
-                new SwingWorker[Unit, AnyRef]() {
-                    def doInBackground(): Unit = {
-                        prefs.setPulseFrequency(freq)
-                    }
-                }.execute()
-            }
-        )
-
-        val vGapPanel3 = new JPanel()
-        vGapPanel3.add(new JLabel(" "))
-        add(vGapPanel3)
+        addVGap()
 
         val buttonPanel = new JPanel()
         testButton = new JButton("Test")
         buttonPanel.add(testButton)
         add(buttonPanel)
     }
-
 }

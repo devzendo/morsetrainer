@@ -18,7 +18,7 @@ package org.devzendo.morsetrainer.gui.dialogs
 
 import javax.swing.{JTabbedPane, JComponent, BorderFactory, JPanel}
 import java.awt.Color
-import java.awt.event.{ActionListener, ActionEvent}
+import java.awt.event.{FocusListener, FocusEvent, ActionListener, ActionEvent}
 import javax.swing.event.{ChangeListener, ChangeEvent}
 
 object DialogTools {
@@ -30,7 +30,13 @@ object DialogTools {
         new ChangeListener {
             def stateChanged(event: ChangeEvent) { f(event) }
         }
+    implicit def function2FocusListener(f: FocusEvent => Unit) =
+        new FocusListener {
+            def focusGained(event: FocusEvent) { f(event) }
+            def focusLost(event: FocusEvent) { f(event) }
+        }
 }
+
 trait DialogTools {
     def padded(gap: Int, comp: JComponent): JPanel = {
         val panel = new JPanel()
