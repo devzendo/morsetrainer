@@ -17,24 +17,29 @@
 package org.devzendo.morsetrainer.gui.dialogs
 
 import java.awt._
-import org.devzendo.commonapp.gui.{GUIUtils, CursorManager}
+import org.devzendo.commonapp.gui.CursorManager
 import org.devzendo.morsetrainer.prefs.MorseTrainerPrefs
 import org.devzendo.commonapp.gui.dialog.snaildialog.AbstractSnailDialog
-import org.devzendo.commonapp.prefs.Prefs
 import javax.swing._
-import org.slf4j.LoggerFactory
-import org.devzendo.morsetrainer.ClipGeneratorHolder
+import org.devzendo.morsetrainer.{TextAsMorseReader, ClipGeneratorHolder}
+import java.awt.event.{WindowAdapter, WindowEvent}
 
-object ToolsOptionsDialog {
-    private val LOGGER = LoggerFactory.getLogger(classOf[ToolsOptionsDialog])
-}
+class ToolsOptionsDialog(mainFrame: Frame, cursorManager: CursorManager,
+                         prefs: MorseTrainerPrefs, clipGeneratorHolder: ClipGeneratorHolder,
+                         textAsMorseReader: TextAsMorseReader) extends AbstractSnailDialog(mainFrame: Frame, cursorManager: CursorManager, "Options") with DialogTools {
 
-class ToolsOptionsDialog(mainFrame: Frame, cursorManager: CursorManager, prefs: MorseTrainerPrefs, clipGeneratorHolder: ClipGeneratorHolder) extends AbstractSnailDialog(mainFrame: Frame, cursorManager: CursorManager, "Options") with DialogTools {
+    this.addWindowListener(new WindowAdapter(){
+        override def windowClosing(e: WindowEvent) {
+            new SwingWorker[Unit, AnyRef]() {
+                def doInBackground(): Unit = {
+                    stopSampleMorse()
+                }
+            }.execute()
+        }
+    })
 
-    import ToolsOptionsDialog._
 
-    def prefsChanged: Unit = {
-        LOGGER.debug("prefs have changed")
+    def prefsChanged() = {
         assert(!SwingUtilities.isEventDispatchThread)
         clipGeneratorHolder.setUsingFarnsworth(prefs.usingFarnsworth)
         clipGeneratorHolder.setPulseFrequency(prefs.getPulseFrequencyHz)
@@ -42,15 +47,24 @@ class ToolsOptionsDialog(mainFrame: Frame, cursorManager: CursorManager, prefs: 
         clipGeneratorHolder.setFarnsworthWordsPerMinute(prefs.getFarnsworthWordsPerMinute)
     }
 
+    def playSampleMorse() = {
+        assert(!SwingUtilities.isEventDispatchThread)
+        textAsMorseReader.silence()
+        textAsMorseReader.play("Test = M0CUV Morse Trainer = This is a test. CQ CQ DE M0CUV K")
+    }
+
+    def stopSampleMorse() = {
+        assert(!SwingUtilities.isEventDispatchThread)
+        textAsMorseReader.silence()
+    }
+
     def createMainComponent() = {
         val tabbedPane = new JTabbedPane()
-        tabbedPane.addTab("Speed & Tone", padded(new SpeedFreqPanel(prefs, prefsChanged)))
-        tabbedPane.addTab("Lesson", padded(new LessonPanel(prefs, prefsChanged)))
+        tabbedPane.addTab("Speed & Tone", padded(new SpeedFreqPanel(prefs, prefsChanged(), playSampleMorse())))
+        tabbedPane.addTab("Lesson", padded(new LessonPanel(prefs, prefsChanged())))
 
         padded(tabbedPane)
     }
-
-
 
     def initialise() {}
 }

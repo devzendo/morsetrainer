@@ -94,6 +94,8 @@
         <constructor-arg ref="cursorManager" />
         <constructor-arg ref="prefs" />
         <constructor-arg ref="clipGeneratorHolder" />
+        <constructor-arg ref="textAsMorseReader" />
+
     </bean>
 
 
@@ -104,9 +106,17 @@
 
 
 
-
+    <!-- Morse generation -->
     <bean id="clipGeneratorHolder" class="org.devzendo.morsetrainer.ClipGeneratorHolderFactory">
         <constructor-arg ref="prefs" />
+    </bean>
+
+    <bean id="textAsMorseReader" class="org.devzendo.morsetrainer.TextAsMorseReader">
+        <constructor-arg ref="textToMorse" />
+        <constructor-arg ref="clipGeneratorHolder" />
+    </bean>
+
+    <bean id="textToMorse" class="org.devzendo.morsetrainer.TextToMorse">
     </bean>
 
 </beans>

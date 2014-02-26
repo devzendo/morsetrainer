@@ -31,7 +31,7 @@ object SpeedFreqPanel {
     val MAX_FREQ = 600
 }
 
-class SpeedFreqPanel(prefs: MorseTrainerPrefs, prefsChangedNotifier: => Unit) extends JPanel with PanelTools {
+class SpeedFreqPanel(prefs: MorseTrainerPrefs, prefsChangedNotifier: => Unit, morsePlayer: => Unit) extends JPanel with PanelTools {
     import SpeedFreqPanel._
 
     var farnSpeedEntrySlider: EntrySlider = null
@@ -105,5 +105,14 @@ class SpeedFreqPanel(prefs: MorseTrainerPrefs, prefsChangedNotifier: => Unit) ex
         testButton = new JButton("Test")
         buttonPanel.add(testButton)
         add(buttonPanel)
+        testButton.addActionListener(
+            (_: ActionEvent) => {
+                new SwingWorker[Unit, AnyRef]() {
+                    def doInBackground(): Unit = {
+                        morsePlayer
+                    }
+                }.execute()
+            }
+        )
     }
 }
