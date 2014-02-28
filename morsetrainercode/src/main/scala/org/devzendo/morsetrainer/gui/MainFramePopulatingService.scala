@@ -26,7 +26,7 @@ object MainFramePopulatingService {
     private val LOGGER = LoggerFactory.getLogger(classOf[MainFramePopulatingService])
 
 }
-class MainFramePopulatingService(springLoader: SpringLoader, mainPanel: MorseMainPanel) extends Service {
+class MainFramePopulatingService(springLoader: SpringLoader, mainPanel: CardLayoutMainPanel) extends Service {
     import MainFramePopulatingService._
 
     def addToMainPanel(panelBeanName: String) {

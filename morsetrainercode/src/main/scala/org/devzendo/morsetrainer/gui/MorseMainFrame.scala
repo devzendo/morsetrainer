@@ -42,7 +42,7 @@ object MorseMainFrame {
 class MorseMainFrame(
                          val windowGeometryStore: WindowGeometryStore,
                          val menuWiring: MenuWiring,
-                         val mainPanel: MorseMainPanel) extends JFrame {
+                         val mainPanel: CardLayoutMainPanel) extends JFrame {
     // TODO
     //setIconImage(ResourceLoader.createResourceImageIcon("org/devzendo/morsetrainer/icons/application16x16.gif").getImage())
     setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE)

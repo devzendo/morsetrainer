@@ -31,7 +31,7 @@ class MorseMainFrameFactory(
                                 val windowGeometryStore: WindowGeometryStore,
                                 val mainFrameFactory: MainFrameFactory,
                                 val menuWiring: MenuWiring,
-                                val mainPanel: MorseMainPanel)
+                                val mainPanel: CardLayoutMainPanel)
 {
     def createFrame: MorseMainFrame = {
         val mainFrame = new MorseMainFrame(windowGeometryStore, menuWiring, mainPanel)

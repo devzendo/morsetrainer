@@ -24,7 +24,7 @@
         <constructor-arg ref="mainPanel" />
     </bean>
 
-    <bean id="mainPanel" class="org.devzendo.morsetrainer.gui.MorseMainPanel">
+    <bean id="mainPanel" class="org.devzendo.morsetrainer.gui.CardLayoutMainPanel">
     </bean>
 
     <bean id="trainingModesPanel" class="org.devzendo.morsetrainer.gui.TrainingModesPanel">

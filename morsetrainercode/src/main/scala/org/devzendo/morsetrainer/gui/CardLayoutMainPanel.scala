@@ -16,7 +16,6 @@
 
 package org.devzendo.morsetrainer.gui
 
-
 import scala.collection.mutable.ListBuffer
 
 import java.awt.{Dimension, CardLayout}
@@ -24,20 +23,20 @@ import javax.swing.{SwingUtilities, JPanel}
 
 import org.devzendo.commonapp.gui.GUIUtils
 
-object MorseMainPanel {
+object CardLayoutMainPanel {
     val BlankPanelName = "*blank*panel*"
 }
-class MorseMainPanel {
+class CardLayoutMainPanel {
     private val cardLayout = new CardLayout()
     val panel = new JPanel(cardLayout)
     val lookup = scala.collection.mutable.Map.empty[String, JPanel]
     val panelNames = ListBuffer.empty[String]
     panel.setPreferredSize(new Dimension(870, 550))
-    panel.add(new JPanel(), MorseMainPanel.BlankPanelName)
+    panel.add(new JPanel(), CardLayoutMainPanel.BlankPanelName)
     switchToBlank()
 
     def mainPanel = panel
-    private var currentPanelName = MorseMainPanel.BlankPanelName
+    private var currentPanelName = CardLayoutMainPanel.BlankPanelName
 
     def currPanelName = {
         assert(SwingUtilities.isEventDispatchThread, "currPanelName not invoked on EDT")
@@ -68,8 +67,8 @@ class MorseMainPanel {
     }
 
     private def switchToBlank() = {
-        currentPanelName = MorseMainPanel.BlankPanelName
-        cardLayout.show(panel, MorseMainPanel.BlankPanelName)
+        currentPanelName = CardLayoutMainPanel.BlankPanelName
+        cardLayout.show(panel, CardLayoutMainPanel.BlankPanelName)
     }
 
     private def switchToIndex(index: Int) = {
