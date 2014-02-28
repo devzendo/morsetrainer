@@ -30,7 +30,7 @@ object MorseTrainerPrefs {
     val DefaultWordsPerMinute = 18
     val DefaultFarnsworthWordsPerMinute = 12
     val DefaultPulseFrequency = 600
-    val DefaultKochLevel = 1
+    val DefaultKochLevel = 2
     val DefaultNonRandomWordLength = 5
     val DefaultSessionLength = 5
 }

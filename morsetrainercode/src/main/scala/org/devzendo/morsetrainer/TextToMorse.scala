@@ -19,17 +19,6 @@ package org.devzendo.morsetrainer
 object TextToMorse {
     type WordString = String
     type MorseString = String
-}
-
-sealed abstract class ClipRequest
-case object Dit extends ClipRequest
-case object Dah extends ClipRequest
-case object ElementSp extends ClipRequest
-case object CharSp extends ClipRequest
-case object WordSp extends ClipRequest
-
-class TextToMorse {
-    import TextToMorse._
 
     val charMap = Map[Char, MorseString](
         'a' -> ".-",
@@ -67,12 +56,26 @@ class TextToMorse {
         '8' -> "---..",
         '9' -> "----.",
         '0' -> "-----",
-        '.' -> ".-.-.-",
-        ',' -> "--..--",
         '?' -> "..--..",
         '/' -> "-..-.",
+        '.' -> ".-.-.-",
+        ',' -> "--..--",
+        '=' -> "-...-",
         '+' -> "-...-"
     )
+
+    def chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890?/.,=+"
+}
+
+sealed abstract class ClipRequest
+case object Dit extends ClipRequest
+case object Dah extends ClipRequest
+case object ElementSp extends ClipRequest
+case object CharSp extends ClipRequest
+case object WordSp extends ClipRequest
+
+class TextToMorse {
+    import TextToMorse._
 
     private def charToClipRequest(ch: Char): ClipRequest = if (ch == '-') Dah else Dit
 

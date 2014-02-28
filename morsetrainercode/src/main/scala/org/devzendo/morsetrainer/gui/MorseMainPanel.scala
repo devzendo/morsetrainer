@@ -32,7 +32,7 @@ class MorseMainPanel {
     val panel = new JPanel(cardLayout)
     val lookup = scala.collection.mutable.Map.empty[String, JPanel]
     val panelNames = ListBuffer.empty[String]
-    panel.setPreferredSize(new Dimension(640, 480))
+    panel.setPreferredSize(new Dimension(870, 550))
     panel.add(new JPanel(), MorseMainPanel.BlankPanelName)
     switchToBlank()
 
