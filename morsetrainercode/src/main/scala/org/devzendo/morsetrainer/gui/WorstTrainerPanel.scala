@@ -23,11 +23,9 @@ import java.awt.{BorderLayout, FlowLayout}
 class WorstTrainerPanel extends JPanel with PanelTools {
     setLayout(new BorderLayout())
 
-    val westPanel = new JPanel(new FlowLayout())
     val charactersPanel = new CharactersPanel(false)
-    westPanel.add(charactersPanel)
 
-    add(westPanel, BorderLayout.WEST)
+    add(charactersPanel, BorderLayout.WEST)
     add(new JLabel("These are the characters you are worst at recognising."), BorderLayout.NORTH)
 
 }

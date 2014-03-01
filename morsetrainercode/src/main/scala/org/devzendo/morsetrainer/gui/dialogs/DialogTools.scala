@@ -21,6 +21,10 @@ import java.awt.event._
 import javax.swing.event.{ChangeListener, ChangeEvent}
 
 object DialogTools {
+    implicit def unitFunction2ActionListener(f: => Unit) =
+        new ActionListener {
+            def actionPerformed(event: ActionEvent) = f
+        }
     implicit def function2ActionListener(f: ActionEvent => Unit) =
         new ActionListener {
             def actionPerformed(event: ActionEvent) = f(event)

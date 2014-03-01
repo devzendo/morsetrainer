@@ -16,13 +16,13 @@
 
 package org.devzendo.morsetrainer.gui
 
-import javax.swing.{BoxLayout, JComboBox, JLabel, JPanel}
+import javax.swing._
 import org.devzendo.morsetrainer.gui.dialogs.PanelTools
-import java.awt.{FlowLayout, BorderLayout, Dimension}
+import java.awt.{FlowLayout, BorderLayout}
 import org.devzendo.morsetrainer.prefs.MorseTrainerPrefs
-import org.devzendo.morsetrainer.TextToMorse
-import java.awt.event.{ItemEvent, ItemListener}
+import java.awt.event.{ActionListener, ItemEvent, ItemListener}
 import org.slf4j.LoggerFactory
+
 
 object KochLevels {
     val levels = Array(
@@ -75,23 +75,20 @@ object KochTrainerPanel {
 
 }
 
-class KochTrainerPanel(prefs: MorseTrainerPrefs) extends JPanel with PanelTools {
+class KochTrainerPanel(prefs: MorseTrainerPrefs, startTraining: ActionListener) extends JPanel with PanelTools {
     import KochTrainerPanel._
 
     setLayout(new BorderLayout())
 
-    val westPanel = new JPanel(new FlowLayout())
     val charactersPanel = new CharactersPanel(false)
-    westPanel.add(charactersPanel)
 
-    add(westPanel, BorderLayout.WEST)
+    add(charactersPanel, BorderLayout.WEST)
     add(new JLabel("Choose one of the levels to change which characters to test with."), BorderLayout.NORTH)
 
 
 
-    val eastPanel = new JPanel()
-    val boxLayout = new BoxLayout(eastPanel, BoxLayout.Y_AXIS)
-    eastPanel.setLayout(boxLayout)
+    val eastPanel = new RightHandControlsPanel()
+    val eastContentsPanel = eastPanel.getContentsPanel
 
     val comboItems: Array[AnyRef] = {
         val zip: List[(String, Int)] = KochLevels.levels.toList.zip(2 to KochLevels.levels.length + 1)
@@ -109,7 +106,13 @@ class KochTrainerPanel(prefs: MorseTrainerPrefs) extends JPanel with PanelTools 
             setCharPanelSelections()
         }
     })
-    eastPanel.add(rflowPanel)
+    eastContentsPanel.add(rflowPanel)
+
+
+    val startButton = new JButton("Start training")
+    startButton.addActionListener(startTraining)
+
+    eastPanel.setButton(startButton)
     add(eastPanel, BorderLayout.EAST)
 
     val level = prefs.getKochLevel // 2..42
@@ -119,7 +122,7 @@ class KochTrainerPanel(prefs: MorseTrainerPrefs) extends JPanel with PanelTools 
 
     def setCharPanelSelections() {
         val level = prefs.getKochLevel // 2..42
-        charactersPanel.deselectAll
+        charactersPanel.deselectAll()
         for (i <- 0 until level - 1) {
             val charsAtThisLevel = KochLevels.levels(i)
             for (ch <- charsAtThisLevel) {

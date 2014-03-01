@@ -16,17 +16,11 @@
 
 package org.devzendo.morsetrainer.gui
 
-import javax.swing.{JLabel, JPanel}
-import org.devzendo.morsetrainer.gui.dialogs.PanelTools
-import org.devzendo.morsetrainer.prefs.MorseTrainerPrefs
-import java.awt.{FlowLayout, BorderLayout}
 
-class FreestyleTrainerPanel(prefs: MorseTrainerPrefs) extends JPanel with PanelTools {
-    setLayout(new BorderLayout())
+import java.awt.event.{ActionEvent, ActionListener}
 
-    val charactersPanel = new CharactersPanel(true)
-
-    add(charactersPanel, BorderLayout.WEST)
-    add(new JLabel("Select the individual characters with which to test."), BorderLayout.NORTH)
-
+class AbandonTraining(mainPanel: CardLayoutMainPanel) extends ActionListener {
+    def actionPerformed(e: ActionEvent) {
+        mainPanel.switchToPanel("trainingModesPanel")
+    }
 }

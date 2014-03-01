@@ -29,8 +29,23 @@
 
     <bean id="trainingModesPanel" class="org.devzendo.morsetrainer.gui.TrainingModesPanel">
         <constructor-arg ref="prefs" />
+        <constructor-arg ref="startTraining" />
     </bean>
 
+    <bean id="sessionPanel" class="org.devzendo.morsetrainer.gui.SessionPanel">
+        <constructor-arg ref="prefs" />
+        <constructor-arg ref="abandonTraining" />
+        <constructor-arg ref="sessionMarker" />
+    </bean>
+
+    <bean id="startTraining" class="org.devzendo.morsetrainer.gui.StartTraining">
+        <constructor-arg ref="mainPanel" />
+        <constructor-arg ref="sessionPanel" />
+    </bean>
+
+    <bean id="abandonTraining" class="org.devzendo.morsetrainer.gui.AbandonTraining">
+        <constructor-arg ref="mainPanel" />
+    </bean>
 
 
     <bean id="prefsLocation" class="org.devzendo.commonapp.prefs.DefaultPrefsLocation">
@@ -129,6 +144,9 @@
     </bean>
 
     <bean id="textToMorse" class="org.devzendo.morsetrainer.TextToMorse">
+    </bean>
+
+    <bean id="sessionMarker" class="org.devzendo.morsetrainer.SessionMarker">
     </bean>
 
 </beans>

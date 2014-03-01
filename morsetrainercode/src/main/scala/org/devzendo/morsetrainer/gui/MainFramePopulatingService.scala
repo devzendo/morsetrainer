@@ -45,6 +45,7 @@ class MainFramePopulatingService(springLoader: SpringLoader, mainPanel: CardLayo
 
     def startup(proxy: ServiceManagerProxy) {
         addToMainPanel("trainingModesPanel")
+        addToMainPanel("sessionPanel")
 
         GUIUtils.runOnEventThread(new Runnable() {
             def run() {

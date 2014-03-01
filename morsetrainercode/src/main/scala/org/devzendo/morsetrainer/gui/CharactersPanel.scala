@@ -18,12 +18,16 @@ package org.devzendo.morsetrainer.gui
 
 import javax.swing.JPanel
 import org.devzendo.morsetrainer.gui.dialogs.PanelTools
-import java.awt.{Dimension, GridLayout}
+import java.awt.{Color, Dimension, GridLayout}
 import org.devzendo.morsetrainer.TextToMorse
 import org.slf4j.LoggerFactory
 
 object CharactersPanel {
     private val LOGGER = LoggerFactory.getLogger(classOf[CharactersPanel])
+    val rows = 7
+    val cols = 7
+    val square = 60
+    val gap = 10
 }
 
 class CharactersPanel(enableable: Boolean) extends JPanel with PanelTools {
@@ -32,12 +36,9 @@ class CharactersPanel(enableable: Boolean) extends JPanel with PanelTools {
     val chars = TextToMorse.chars
     val charButtonMap = scala.collection.mutable.Map[Char, CharBox]()
 
-    private val rows = 7
-    private val cols = 7
-    private val square = 60
-    private val gap = 10
     private val gridLayout: GridLayout = new GridLayout(rows, cols, gap, gap)
     setLayout(gridLayout)
+
     for (ch <- chars) {
         val upper: Char = ch.toUpper
         val box: CharBox = new CharBox("" + upper)

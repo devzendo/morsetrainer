@@ -23,11 +23,11 @@ import javax.swing.{JTabbedPane, JPanel}
 import org.devzendo.morsetrainer.gui.dialogs.DialogTools
 import org.devzendo.morsetrainer.prefs.MorseTrainerPrefs
 
-class TrainingModesPanel(prefs: MorseTrainerPrefs) extends JPanel with DialogTools {
+class TrainingModesPanel(prefs: MorseTrainerPrefs, startTraining: StartTraining) extends JPanel with DialogTools {
 
     setLayout(new BorderLayout())
     val tabbedPane = new JTabbedPane()
-    tabbedPane.addTab("Koch Trainer", padded(new KochTrainerPanel(prefs)))
+    tabbedPane.addTab("Koch Trainer", padded(new KochTrainerPanel(prefs, startTraining)))
     tabbedPane.addTab("Freestyle", padded(new FreestyleTrainerPanel(prefs)))
     tabbedPane.addTab("Worst Recognitions", padded(new WorstTrainerPanel()))
 
