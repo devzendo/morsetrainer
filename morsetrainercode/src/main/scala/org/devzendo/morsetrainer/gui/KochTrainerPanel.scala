@@ -20,7 +20,7 @@ import javax.swing._
 import org.devzendo.morsetrainer.gui.dialogs.PanelTools
 import java.awt.{FlowLayout, BorderLayout}
 import org.devzendo.morsetrainer.prefs.MorseTrainerPrefs
-import java.awt.event.{ActionListener, ItemEvent, ItemListener}
+import java.awt.event.{ActionEvent, ActionListener, ItemEvent, ItemListener}
 import org.slf4j.LoggerFactory
 
 
@@ -75,7 +75,7 @@ object KochTrainerPanel {
 
 }
 
-class KochTrainerPanel(prefs: MorseTrainerPrefs, startTraining: ActionListener) extends JPanel with PanelTools {
+class KochTrainerPanel(prefs: MorseTrainerPrefs, startTraining: StartTraining) extends JPanel with PanelTools {
     import KochTrainerPanel._
 
     setLayout(new BorderLayout())
@@ -110,7 +110,11 @@ class KochTrainerPanel(prefs: MorseTrainerPrefs, startTraining: ActionListener) 
 
 
     val startButton = new JButton("Start training")
-    startButton.addActionListener(startTraining)
+    startButton.addActionListener(new ActionListener() {
+        def actionPerformed(e: ActionEvent) {
+            startTraining.start(Koch)
+        }
+    })
 
     eastPanel.setButton(startButton)
     add(eastPanel, BorderLayout.EAST)

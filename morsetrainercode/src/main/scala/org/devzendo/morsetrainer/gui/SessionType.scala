@@ -16,11 +16,7 @@
 
 package org.devzendo.morsetrainer.gui
 
-
-class StartTraining(mainPanel: CardLayoutMainPanel, sessionPanel: SessionPanel) {
-
-    def start(sessionType: SessionType) {
-        sessionPanel.setSessionType(sessionType)
-        mainPanel.switchToPanel("sessionPanel")
-    }
-}
+sealed abstract class SessionType
+case object Koch extends SessionType
+case object Freestyle extends SessionType
+case object Worst extends SessionType

@@ -16,17 +16,31 @@
 
 package org.devzendo.morsetrainer.gui
 
-import javax.swing.{JLabel, JPanel}
+import javax.swing.{JButton, JLabel, JPanel}
 import org.devzendo.morsetrainer.gui.dialogs.PanelTools
 import org.devzendo.morsetrainer.prefs.MorseTrainerPrefs
 import java.awt.{FlowLayout, BorderLayout}
+import java.awt.event.{ActionEvent, ActionListener}
 
-class FreestyleTrainerPanel(prefs: MorseTrainerPrefs) extends JPanel with PanelTools {
+class FreestyleTrainerPanel(prefs: MorseTrainerPrefs, startTraining: StartTraining) extends JPanel with PanelTools {
     setLayout(new BorderLayout())
 
     val charactersPanel = new CharactersPanel(true)
 
     add(charactersPanel, BorderLayout.WEST)
+
+
+    val eastPanel = new RightHandControlsPanel()
+    val startButton = new JButton("Start training")
+    startButton.addActionListener(new ActionListener() {
+        def actionPerformed(e: ActionEvent) {
+            startTraining.start(Freestyle)
+        }
+    })
+
+    eastPanel.setButton(startButton)
+    add(eastPanel, BorderLayout.EAST)
+
     add(new JLabel("Select the individual characters with which to test."), BorderLayout.NORTH)
 
 }

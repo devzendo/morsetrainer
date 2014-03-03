@@ -28,8 +28,8 @@ class TrainingModesPanel(prefs: MorseTrainerPrefs, startTraining: StartTraining)
     setLayout(new BorderLayout())
     val tabbedPane = new JTabbedPane()
     tabbedPane.addTab("Koch Trainer", padded(new KochTrainerPanel(prefs, startTraining)))
-    tabbedPane.addTab("Freestyle", padded(new FreestyleTrainerPanel(prefs)))
-    tabbedPane.addTab("Worst Recognitions", padded(new WorstTrainerPanel()))
+    tabbedPane.addTab("Freestyle", padded(new FreestyleTrainerPanel(prefs, startTraining)))
+    tabbedPane.addTab("Worst Recognitions", padded(new WorstTrainerPanel(prefs, startTraining)))
 
     add(padded(tabbedPane), BorderLayout.CENTER)
 }

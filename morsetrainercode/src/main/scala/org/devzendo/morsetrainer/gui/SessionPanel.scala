@@ -66,6 +66,8 @@ class SessionPanel(prefs: MorseTrainerPrefs, abandonTraining: AbandonTraining, s
     addCentredJLabel(labelPanel, new JLabel("Type the characters you hear. Use backspace to correct mistakes."))
     addCentredJLabel(labelPanel, new JLabel("Don't forget to type space between words!"))
     addCentredJLabel(labelPanel, new JLabel("Session length: " + prefs.getSessionLength + " mins"))
+    val typeLabel = new JLabel(" ")
+    addCentredJLabel(labelPanel, typeLabel)
     infoPanel.add(labelPanel)
 
     // 5
@@ -78,8 +80,12 @@ class SessionPanel(prefs: MorseTrainerPrefs, abandonTraining: AbandonTraining, s
 
     add(infoPanel, BorderLayout.CENTER)
 
-    def addCentredJLabel(panel: JPanel, label: JLabel) {
+    private def addCentredJLabel(panel: JPanel, label: JLabel) {
         label.setAlignmentX(Component.CENTER_ALIGNMENT)
         panel.add(label, BorderLayout.CENTER)
+    }
+
+    def setSessionType(sessionType: SessionType) {
+        typeLabel.setText("Training type: " + sessionType)
     }
 }

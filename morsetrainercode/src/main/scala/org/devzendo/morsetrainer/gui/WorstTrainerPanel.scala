@@ -16,14 +16,28 @@
 
 package org.devzendo.morsetrainer.gui
 
-import javax.swing.{JLabel, JPanel}
+import javax.swing.{JButton, JLabel, JPanel}
 import org.devzendo.morsetrainer.gui.dialogs.PanelTools
 import java.awt.{BorderLayout, FlowLayout}
+import org.devzendo.morsetrainer.prefs.MorseTrainerPrefs
+import java.awt.event.{ActionEvent, ActionListener}
 
-class WorstTrainerPanel extends JPanel with PanelTools {
+class WorstTrainerPanel(prefs: MorseTrainerPrefs, startTraining: StartTraining) extends JPanel with PanelTools {
     setLayout(new BorderLayout())
 
     val charactersPanel = new CharactersPanel(false)
+
+
+    val eastPanel = new RightHandControlsPanel()
+    val startButton = new JButton("Start training")
+    startButton.addActionListener(new ActionListener() {
+        def actionPerformed(e: ActionEvent) {
+            startTraining.start(Worst)
+        }
+    })
+
+    eastPanel.setButton(startButton)
+    add(eastPanel, BorderLayout.EAST)
 
     add(charactersPanel, BorderLayout.WEST)
     add(new JLabel("These are the characters you are worst at recognising."), BorderLayout.NORTH)
