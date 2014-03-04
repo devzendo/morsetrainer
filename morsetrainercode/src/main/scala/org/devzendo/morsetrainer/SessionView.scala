@@ -14,9 +14,12 @@
  * limitations under the License.
  */
 
-package org.devzendo.morsetrainer.gui
+package org.devzendo.morsetrainer
 
-sealed abstract class SessionType
-case object Koch extends SessionType
-case object Freestyle extends SessionType
-case object Worst extends SessionType
+trait SessionView {
+    def clearCountdown()
+    def setCountdownSeconds(secs: Int)
+    def setSessionDurationSeconds(secs: Int)
+    def setCurrentSessionProgressSeconds(secs: Int)
+    def endOfSession()
+}

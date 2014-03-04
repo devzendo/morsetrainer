@@ -21,6 +21,7 @@ import org.devzendo.morsetrainer.gui.dialogs.PanelTools
 import org.devzendo.morsetrainer.prefs.MorseTrainerPrefs
 import java.awt.{FlowLayout, BorderLayout}
 import java.awt.event.{ActionEvent, ActionListener}
+import org.devzendo.morsetrainer.Freestyle
 
 class FreestyleTrainerPanel(prefs: MorseTrainerPrefs, startTraining: StartTraining) extends JPanel with PanelTools {
     setLayout(new BorderLayout())

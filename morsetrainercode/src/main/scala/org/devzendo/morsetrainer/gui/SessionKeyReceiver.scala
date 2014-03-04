@@ -16,15 +16,6 @@
 
 package org.devzendo.morsetrainer.gui
 
-import org.devzendo.morsetrainer.{SessionType, SessionController}
-
-
-class StartTraining(mainPanel: CardLayoutMainPanel, sessionPanel: SessionPanel, sessionCtrl: SessionController) {
-
-    def start(sessionType: SessionType) {
-        sessionPanel.setSessionType(sessionType)
-        mainPanel.switchToPanel("sessionPanel")
-        // TODO pass in starting set of characters to session controller
-        sessionCtrl.start(sessionType)
-    }
+trait SessionKeyReceiver {
+    def keyPressed()
 }

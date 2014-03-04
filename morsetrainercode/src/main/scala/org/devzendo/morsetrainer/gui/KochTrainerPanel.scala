@@ -22,6 +22,7 @@ import java.awt.{FlowLayout, BorderLayout}
 import org.devzendo.morsetrainer.prefs.MorseTrainerPrefs
 import java.awt.event.{ActionEvent, ActionListener, ItemEvent, ItemListener}
 import org.slf4j.LoggerFactory
+import org.devzendo.morsetrainer.Koch
 
 
 object KochLevels {

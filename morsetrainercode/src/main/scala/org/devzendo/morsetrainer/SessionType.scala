@@ -14,17 +14,9 @@
  * limitations under the License.
  */
 
-package org.devzendo.morsetrainer.gui
+package org.devzendo.morsetrainer
 
-import org.devzendo.morsetrainer.{SessionType, SessionController}
-
-
-class StartTraining(mainPanel: CardLayoutMainPanel, sessionPanel: SessionPanel, sessionCtrl: SessionController) {
-
-    def start(sessionType: SessionType) {
-        sessionPanel.setSessionType(sessionType)
-        mainPanel.switchToPanel("sessionPanel")
-        // TODO pass in starting set of characters to session controller
-        sessionCtrl.start(sessionType)
-    }
-}
+sealed abstract class SessionType
+case object Koch extends SessionType
+case object Freestyle extends SessionType
+case object Worst extends SessionType

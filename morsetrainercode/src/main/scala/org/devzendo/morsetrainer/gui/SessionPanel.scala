@@ -20,9 +20,10 @@ import javax.swing._
 import org.devzendo.morsetrainer.gui.dialogs.PanelTools
 import java.awt._
 import org.devzendo.morsetrainer.prefs.MorseTrainerPrefs
-import org.devzendo.morsetrainer.SessionMarker
+import org.devzendo.morsetrainer._
+import org.devzendo.commonapp.gui.GUIUtils
 
-class SessionPanel(prefs: MorseTrainerPrefs, abandonTraining: AbandonTraining, sessionMarker: SessionMarker) extends JPanel with PanelTools {
+class SessionPanel(prefs: MorseTrainerPrefs, abandonTraining: AbandonTraining) extends JPanel with PanelTools with SessionView {
 
     setLayout(new BorderLayout())
 
@@ -87,5 +88,50 @@ class SessionPanel(prefs: MorseTrainerPrefs, abandonTraining: AbandonTraining, s
 
     def setSessionType(sessionType: SessionType) {
         typeLabel.setText("Training type: " + sessionType)
+    }
+
+
+    def clearCountdown() {
+        GUIUtils.invokeLaterOnEventThread(new Runnable() {
+            def run() {
+                timerLabel.setText("")
+            }
+        })
+    }
+
+    def setCountdownSeconds(secs: Int) {
+        GUIUtils.invokeLaterOnEventThread(new Runnable() {
+            def run() {
+                timerLabel.setText("Training starts in " + secs + " second" + (if (secs != 1) "s" else "") + "!")
+            }
+        })
+    }
+
+    def endOfSession() {
+        GUIUtils.invokeLaterOnEventThread(new Runnable() {
+            def run() {
+                timerLabel.setText("Session complete!")
+                cancelButton.setText("View report")
+                cancelButton.removeActionListener(abandonTraining)
+                // TODO add viewReport action listener
+            }
+        })
+    }
+
+    def setSessionDurationSeconds(secs: Int) {
+        GUIUtils.invokeLaterOnEventThread(new Runnable() {
+            def run() {
+                progress.setMinimum(0)
+                progress.setMaximum(secs)
+            }
+        })
+    }
+
+    def setCurrentSessionProgressSeconds(secs: Int) {
+        GUIUtils.invokeLaterOnEventThread(new Runnable() {
+            def run() {
+                progress.setValue(secs)
+            }
+        })
     }
 }

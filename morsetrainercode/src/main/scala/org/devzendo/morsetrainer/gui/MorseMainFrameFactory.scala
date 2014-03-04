@@ -18,6 +18,7 @@ package org.devzendo.morsetrainer.gui
 
 import org.devzendo.commonapp.gui.{MainFrameFactory, WindowGeometryStore, CursorManager}
 import org.devzendo.commonapp.gui.menu.MenuWiring
+import org.devzendo.morsetrainer.DefaultKeyboardEventGenerator
 
 /**
  * Constructs the MorseMainFrame and connects it with the rest of the app
@@ -31,12 +32,14 @@ class MorseMainFrameFactory(
                                 val windowGeometryStore: WindowGeometryStore,
                                 val mainFrameFactory: MainFrameFactory,
                                 val menuWiring: MenuWiring,
-                                val mainPanel: CardLayoutMainPanel)
+                                val mainPanel: CardLayoutMainPanel,
+                                val keyboardGenerator: DefaultKeyboardEventGenerator)
 {
     def createFrame: MorseMainFrame = {
         val mainFrame = new MorseMainFrame(windowGeometryStore, menuWiring, mainPanel)
         cursorManager.setMainFrame(mainFrame)
         mainFrameFactory.setMainFrame(mainFrame)
+        keyboardGenerator.setMainFrame(mainFrame)
         mainFrame
     }
 }

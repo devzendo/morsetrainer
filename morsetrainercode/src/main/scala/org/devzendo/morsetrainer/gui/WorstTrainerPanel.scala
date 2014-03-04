@@ -21,6 +21,7 @@ import org.devzendo.morsetrainer.gui.dialogs.PanelTools
 import java.awt.{BorderLayout, FlowLayout}
 import org.devzendo.morsetrainer.prefs.MorseTrainerPrefs
 import java.awt.event.{ActionEvent, ActionListener}
+import org.devzendo.morsetrainer.Worst
 
 class WorstTrainerPanel(prefs: MorseTrainerPrefs, startTraining: StartTraining) extends JPanel with PanelTools {
     setLayout(new BorderLayout())
