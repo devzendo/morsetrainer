@@ -17,6 +17,6 @@
 package org.devzendo.morsetrainer.prefs
 
 class RecognitionRatePersister(prefs: MorseTrainerPrefs) {
-
+    def
 
 }

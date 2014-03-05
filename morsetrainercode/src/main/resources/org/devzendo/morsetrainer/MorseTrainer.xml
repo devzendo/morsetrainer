@@ -45,6 +45,7 @@
         <constructor-arg ref="mainPanel" />
         <constructor-arg ref="sessionPanel" />
         <constructor-arg ref="sessionController" />
+        <constructor-arg ref="textGenerator" />
     </bean>
 
     <bean id="abandonTraining" class="org.devzendo.morsetrainer.gui.AbandonTraining">
