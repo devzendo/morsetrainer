@@ -49,7 +49,7 @@ class SessionController(textToMorse: TextToMorse, marker: SessionMarker,
         sessionThread.start()
     }
 
-    def terminate {
+    def terminate() {
         if (sessionThread != null) {
             abandon.set(true)
             sessionThread.interrupt()

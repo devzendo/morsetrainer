@@ -29,7 +29,7 @@ class SessionTerminatingService(springLoader: SpringLoader) extends Service {
         // the ctor, its dependencies start all sorts of graphical stuff up on
         // the wrong thread
         val sessionController = springLoader.getBean("sessionController", classOf[SessionController])
-        sessionController.terminate
+        sessionController.terminate()
     }
 
     def shutdown() {
