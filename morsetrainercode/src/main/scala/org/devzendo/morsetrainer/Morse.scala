@@ -19,8 +19,9 @@ package org.devzendo.morsetrainer
 object Morse {
     type WordString = String
     type MorseString = String
+    type MorseChar = Char
 
-    val charMap = Map[Char, MorseString](
+    val charMap = Map[MorseChar, MorseString](
         'a' -> ".-",
         'b' -> "-...",
         'c' -> "-.-.",

@@ -17,6 +17,7 @@
 package org.devzendo.morsetrainer.prefs
 
 import org.devzendo.commonapp.prefs.Prefs
+import org.devzendo.morsetrainer.Morse.MorseChar
 
 
 /**
@@ -35,6 +36,9 @@ object MorseTrainerPrefs {
     val DefaultSessionLength = 5
 }
 
+case class RecognitionRate(correct: Int, sentInTotal: Int) {
+    override def toString: String = correct + "/" + sentInTotal
+}
 
 trait MorseTrainerPrefs extends Prefs {
 
@@ -139,4 +143,7 @@ trait MorseTrainerPrefs extends Prefs {
 
     def getSessionLength: Int
     def setSessionLength(len: Int)
+
+    def getCharacterRecognitionRates: Map[MorseChar, RecognitionRate]
+    def setCharacterRecognitionRates(map: Map[MorseChar, RecognitionRate])
 }
