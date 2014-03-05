@@ -35,6 +35,7 @@ class SessionController(textToMorse: TextToMorse, marker: SessionMarker,
     val abandon = new AtomicBoolean(false)
     val finished = new AtomicBoolean(false)
     var sessionType: SessionType = Koch
+    var sessionThread: Thread = null
 
     keyGenerator.addKeyboardObserver(this)
 
@@ -42,10 +43,17 @@ class SessionController(textToMorse: TextToMorse, marker: SessionMarker,
         this.sessionType = sessionType
         abandon.set(false)
         finished.set(false)
-        val sessionThread = new Thread(this)
+        sessionThread = new Thread(this)
         sessionThread.setDaemon(true)
         sessionThread.setName(this.getClass.getSimpleName)
         sessionThread.start()
+    }
+
+    def terminate {
+        if (sessionThread != null) {
+            abandon.set(true)
+            sessionThread.interrupt()
+        }
     }
 
     def eventOccurred(key: KeyboardEvent) {
@@ -100,14 +108,19 @@ class SessionController(textToMorse: TextToMorse, marker: SessionMarker,
     def run() {
         LOGGER.info("Starting a " + sessionType + " session")
 
-        var handler: Handler = new Countdown()
-        while(!abandon.get() && !finished.get()) {
-            handler = handler.handle
+        try {
+            var handler: Handler = new Countdown()
+            while(!abandon.get() && !finished.get()) {
+                handler = handler.handle
+            }
+
+            if (finished.get()) {
+                sessionView.endOfSession()
+            }
+        } catch {
+            case ie: InterruptedException => LOGGER.info("Session terminated")
         }
 
-        if (finished.get()) {
-            sessionView.endOfSession()
-        }
         LOGGER.info("Ending " + sessionType + " session")
     }
 }

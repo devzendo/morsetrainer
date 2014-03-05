@@ -96,6 +96,7 @@
             <list>
                 <value>menuInitialisingService</value>
                 <value>mainFramePopulatingService</value>
+                <value>sessionTerminatingService</value>
             </list>
         </property>
     </bean>
@@ -121,6 +122,10 @@
     <bean id="mainFramePopulatingService" class="org.devzendo.morsetrainer.gui.MainFramePopulatingService">
         <constructor-arg ref="springLoader" />
         <constructor-arg ref="mainPanel" />
+    </bean>
+
+    <bean id="sessionTerminatingService" class="org.devzendo.morsetrainer.SessionTerminatingService">
+        <constructor-arg ref="springLoader" />
     </bean>
 
     <!-- menu action listeners -->
