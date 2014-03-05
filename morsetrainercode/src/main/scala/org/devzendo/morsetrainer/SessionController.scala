@@ -27,7 +27,8 @@ object SessionController {
 class SessionController(textToMorse: TextToMorse, marker: SessionMarker,
                         keyGenerator: DefaultKeyboardEventGenerator,
                         sessionView: SessionView,
-                        prefs: MorseTrainerPrefs) extends KeyboardObserver with Runnable {
+                        prefs: MorseTrainerPrefs,
+                        textGenerator: TextGenerator) extends KeyboardObserver with Runnable {
 
     import SessionController._
 

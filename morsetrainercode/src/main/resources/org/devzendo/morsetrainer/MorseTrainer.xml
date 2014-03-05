@@ -61,6 +61,10 @@
 
     <bean id="prefsInstantiator" class="org.devzendo.morsetrainer.prefs.DefaultPrefsInstantiator" />
 
+    <bean id="recognitionRatePersister" class="org.devzendo.morsetrainer.prefs.RecognitionRatePersister">
+        <constructor-arg ref="prefs" />
+    </bean>
+
     <bean id="progressMonitor" class="org.devzendo.commonapp.progress.ProgressMonitor" />
     <bean id="guiPrefsStartupHelper" class="org.devzendo.commonapp.prefs.GuiPrefsStartupHelper">
         <constructor-arg ref="prefsLocation" />
@@ -153,12 +157,18 @@
     <bean id="sessionMarker" class="org.devzendo.morsetrainer.SessionMarker">
     </bean>
 
+    <bean id="textGenerator" class="org.devzendo.morsetrainer.TextGenerator">
+        <constructor-arg ref="prefs" />
+        <constructor-arg ref="recognitionRatePersister" />
+    </bean>
+
     <bean id="sessionController" class="org.devzendo.morsetrainer.SessionController">
         <constructor-arg ref="textToMorse" />
         <constructor-arg ref="sessionMarker" />
         <constructor-arg ref="keyboardEventGenerator" />
         <constructor-arg ref="sessionPanel" /> <!-- as a SessionView -->
         <constructor-arg ref="prefs" />
+        <constructor-arg ref="textGenerator" />
     </bean>
 
 </beans>
