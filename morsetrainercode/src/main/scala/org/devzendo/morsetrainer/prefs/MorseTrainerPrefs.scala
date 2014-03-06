@@ -118,14 +118,14 @@ trait MorseTrainerPrefs extends Prefs {
     def setPulseFrequency(hz: Int): Unit
 
     /**
-     * Koch level.
-     * @return the current level
+     * Get the current Koch level. Koch levels as persisted here start at 2 for "KM".
+     * @return the current level, starting at 2 for the first level
      */
     def getKochLevel: Int
 
     /**
-     * Store the Koch level.
-     * @return the level
+     * Store the Koch level. Koch levels as persisted here start at 2 for "KM".
+     * @return the level starting at 2 for the first level.
      */
     def setKochLevel(lvl: Int): Unit
 
