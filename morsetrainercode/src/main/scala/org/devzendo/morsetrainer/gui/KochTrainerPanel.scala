@@ -22,58 +22,10 @@ import java.awt.{FlowLayout, BorderLayout}
 import org.devzendo.morsetrainer.prefs.MorseTrainerPrefs
 import java.awt.event.{ActionEvent, ActionListener, ItemEvent, ItemListener}
 import org.slf4j.LoggerFactory
-import org.devzendo.morsetrainer.Koch
-
-
-object KochLevels {
-    val levels = Array(
-        "KM",
-        "R",
-        "S",
-        "U",
-        "A",
-        "P",
-        "T",
-        "L",
-        "O",
-        "W",
-        "I",
-        ".",
-        "N",
-        "J",
-        "E",
-        "F",
-        "0",
-        "Y",
-        ",",
-        "V",
-        "G",
-        "5",
-        "/",
-        "Q",
-        "9",
-        "Z",
-        "H",
-        "3",
-        "8",
-        "B",
-        "?",
-        "4",
-        "2",
-        "7",
-        "C",
-        "1",
-        "D",
-        "6",
-        "X",
-        "=",
-        "+"
-    )
-}
+import org.devzendo.morsetrainer.{KochLevels, Koch}
 
 object KochTrainerPanel {
     private val LOGGER = LoggerFactory.getLogger(classOf[KochTrainerPanel])
-
 }
 
 class KochTrainerPanel(prefs: MorseTrainerPrefs, startTraining: StartTraining) extends JPanel with PanelTools {

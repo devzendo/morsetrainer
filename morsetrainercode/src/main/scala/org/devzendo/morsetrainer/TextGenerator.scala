@@ -17,9 +17,43 @@
 package org.devzendo.morsetrainer
 
 import org.devzendo.morsetrainer.prefs.{MorseTrainerPrefs, RecognitionRatePersister}
+import org.devzendo.morsetrainer.Morse.MorseChar
 
-class TextGenerator(prefs: MorseTrainerPrefs, recognitionRatePersister: RecognitionRatePersister) {
+class TextGenerator(prefs: MorseTrainerPrefs, recognitionRatePersister: RecognitionRatePersister) extends Iterator[MorseChar] {
+    var iterator: Iterator[MorseChar] = new Iterator[MorseChar] {
+        def hasNext: Boolean = false
+        def next(): MorseChar = 'a'
+    }
+
     def start(sessionType: SessionType) {
+        iterator = sessionType match {
+            case Koch => new KochIterator()
+            case Freestyle => new FreestyleIterator()
+            case Worst => new WorstIterator()
+        }
+    }
 
+    def hasNext: Boolean = iterator.hasNext
+
+    def next(): MorseChar = iterator.next()
+
+    private trait EndlessMorseCharIterator extends Iterator[MorseChar] {
+        final def hasNext: Boolean = true
+    }
+
+    private class KochIterator extends EndlessMorseCharIterator {
+        def next(): MorseChar = {
+            'a'
+        }
+    }
+    private class FreestyleIterator extends EndlessMorseCharIterator {
+        def next(): MorseChar = {
+            'a'
+        }
+    }
+    private class WorstIterator extends EndlessMorseCharIterator {
+        def next(): MorseChar = {
+            'a'
+        }
     }
 }
