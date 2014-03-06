@@ -96,7 +96,7 @@ class SessionController(textToMorse: TextToMorse, marker: SessionMarker,
             if (System.currentTimeMillis() >= endTime) {
                 finished.set(true)
             } else {
-
+                val morseChar = textGenerator
                 Thread.sleep(1000) // BODGE
                 // TODO get character from stream generator
                 // TODO send character to TextToMorse, synchronously
