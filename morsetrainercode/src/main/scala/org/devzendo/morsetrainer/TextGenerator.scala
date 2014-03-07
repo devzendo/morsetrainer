@@ -16,7 +16,7 @@
 
 package org.devzendo.morsetrainer
 
-import org.devzendo.morsetrainer.prefs.{MorseTrainerPrefs, RecognitionRatePersister}
+import org.devzendo.morsetrainer.prefs.{RecognitionRate, MorseTrainerPrefs, RecognitionRatePersister}
 import org.devzendo.morsetrainer.Morse.MorseChar
 import scala.collection.mutable.ArrayBuffer
 
@@ -52,46 +52,29 @@ class TextGenerator(prefs: MorseTrainerPrefs, recognitionRatePersister: Recognit
         final def hasNext: Boolean = true
     }
 
-    private trait ProbabilityMap {
-        def get(ch: MorseChar): Double
-        def getMap: Map[MorseChar, Double]
-        def *(other: ProbabilityMap): ProbabilityMap = {
-            val allKeys = getMap.keySet.union(other.getMap.keySet)
-            val out = allKeys.map ( {ch: MorseChar => (ch, get(ch) * other.get(ch)) } ).toMap
-            new MapBasedProbabilityMap(out)
-        }
+    def genNewCharsProbMap(startSet: Set[MorseChar]): ProbabilityMap[MorseChar] = {
+        null
     }
 
-    private class SetFnProbabilityMap(charSet: Set[MorseChar], probFn: MorseChar => Double) extends ProbabilityMap {
-        val probMap = charSet.map( { ch: MorseChar => (ch, probFn(ch)) } ).toMap
-
-        def get(ch: MorseChar) = probMap.getOrElse(ch, 0.0)
-        def getMap = probMap
+    def genMissedCharsProbMap(ratesForStartSet: Map[MorseChar, RecognitionRate]): ProbabilityMap[MorseChar] = {
+        null
     }
 
-    private class MapBasedProbabilityMap(inMap: Map[MorseChar, Double]) extends ProbabilityMap {
-
-        def get(ch: MorseChar) = inMap.getOrElse(ch, 0.0)
-        def getMap = inMap
-    }
-
-    private class DefiniteProbabilityMap(inSet: Set[MorseChar]) extends ProbabilityMap {
-        val probMap = inSet.map( { ch: MorseChar => (ch, 1.0) } ).toMap
-
-        def get(ch: MorseChar) = probMap.getOrElse(ch, 0.0)
-        def getMap = probMap
+    def genSimilarCharsProbMap(startSet: Set[MorseChar], ratesForStartSet: Map[MorseChar, RecognitionRate]): ProbabilityMap[MorseChar] = {
+        null
     }
 
     private class KochIterator extends EndlessMorseCharIterator {
         val startSet = KochLevels.morseCharsForLevel(prefs.getKochLevel) + ' '
-        val definite = new DefiniteProbabilityMap(startSet)
-//        val newCharsProbMap = if (prefs.newCharsMoreFrequently) genNewCharsProbMap(startSet) else definite
+        val definite = new DefiniteProbabilityMap[MorseChar](startSet)
+        val newCharsProbMap = if (prefs.newCharsMoreFrequently) genNewCharsProbMap(startSet) else definite
 
         def next(): MorseChar = {
-//            val ratesForStartSet = recognitionRatePersister.getRecognitionRates(startSet)
-//            val missedCharsProbMap = if (prefs.missedCharsMoreFrequently) genMissedCharsProbMap(ratesForStartSet) else definite
-//            val similarCharsProbMap = if (prefs.similarCharsMoreFrequently) genSimilarCharsProbMap(startSet, ratesForStartSet) else definite
-//            val finalProbMap = newCharsProbMap * missedCharsProbMap * similarCharsProbMap
+            // TODO decide if these are too expensive to recompute for every MorseChar
+            val ratesForStartSet = recognitionRatePersister.getRecognitionRates(startSet)
+            val missedCharsProbMap = if (prefs.missedCharsMoreFrequently) genMissedCharsProbMap(ratesForStartSet) else definite
+            val similarCharsProbMap = if (prefs.similarCharsMoreFrequently) genSimilarCharsProbMap(startSet, ratesForStartSet) else definite
+            val finalProbMap = newCharsProbMap * missedCharsProbMap * similarCharsProbMap
 //            val probabilities: Map[MorseChar, Double] = new
             // new chars more frequently
             // missed chars more frequently
@@ -99,6 +82,7 @@ class TextGenerator(prefs: MorseTrainerPrefs, recognitionRatePersister: Recognit
             // sort this by
             'a'
         }
+
     }
     private class FreestyleIterator extends EndlessMorseCharIterator {
         def next(): MorseChar = {
