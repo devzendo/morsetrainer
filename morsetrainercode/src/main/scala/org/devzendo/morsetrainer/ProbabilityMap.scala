@@ -79,6 +79,10 @@ abstract class ProbabilityMap[T: ClassTag] {
         val probabilisticValue = rangeArray(randPercentage)
         (probabilisticValue, get(probabilisticValue))
     }
+
+    override def toString(): String = {
+        getMap.toString
+    }
 }
 
 class SetFnProbabilityMap[T: ClassTag](tSet: Set[T], probFn: T => Probability) extends ProbabilityMap[T] {

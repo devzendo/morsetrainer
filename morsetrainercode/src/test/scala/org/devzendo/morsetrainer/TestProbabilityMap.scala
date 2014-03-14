@@ -151,15 +151,27 @@ class TestProbabilityMap extends AssertionsForJUnit with MustMatchersForJUnit {
     }
 
     @Test
-    def getProbabilistically() {
+    def probabilisticallyGetChars() {
         val rangeMap = new MapBasedProbabilityMap[Char](
             Map('a' -> 0.25, 'b' -> 0.15, 'c' -> 0.35, 'd' -> 0.05, 'e' -> 0.20))
         val probChars = (1 to 100).map { i: Int => { rangeMap.getProbabilistically._1 } }
+        println("probabilisticallyGetChars")
         println("a (25) " + probChars.count( _ == 'a'))
         println("b (15) " + probChars.count( _ == 'b'))
         println("c (35) " + probChars.count( _ == 'c'))
         println("d (5)  " + probChars.count( _ == 'd'))
         println("e (20) " + probChars.count( _ == 'e'))
 
+    }
+
+    @Test
+    def probabilisticallyGetDefiniteChars() {
+        val probChars = (1 to 100).map { i: Int => { definitePM.getProbabilistically._1 } }
+        println("probabilisticallyGetDefiniteChars")
+        println("a (33) " + probChars.count( _ == 'a'))
+        println("b (33) " + probChars.count( _ == 'b'))
+        println("c (33) " + probChars.count( _ == 'c'))
+        println("d (0)  " + probChars.count( _ == 'd'))
+        println("e (0)  " + probChars.count( _ == 'e'))
     }
 }

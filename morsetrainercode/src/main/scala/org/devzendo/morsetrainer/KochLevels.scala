@@ -63,6 +63,15 @@ object KochLevels {
         "+"
     )
 
+    def morseCharsSubArrayForLevel(level: Int): Array[String] = {
+        if (level < 2) {
+            throw new IllegalArgumentException("Koch level must be >= 2")
+        }
+
+        // Level starts at 2 - for the two chars KM.
+        levels.take(Math.min(level - 1, levels.length))
+    }
+
     def morseCharsForLevel(level: Int): Set[MorseChar] = {
         if (level < 2) {
             throw new IllegalArgumentException("Koch level must be >= 2")

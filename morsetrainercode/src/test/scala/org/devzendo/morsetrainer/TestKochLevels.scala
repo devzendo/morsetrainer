@@ -74,4 +74,73 @@ class TestKochLevels extends AssertionsForJUnit with MustMatchersForJUnit {
     def afterLastLevel() {
         KochLevels.morseCharsForLevel(43) must equal(fullSet)
     }
+
+
+    @Test
+    def morseCharsSubArrayForLevel2() {
+        KochLevels.morseCharsSubArrayForLevel(2) must equal(Array("KM"))
+    }
+
+    @Test
+    def morseCharsSubArrayForLevel3() {
+        KochLevels.morseCharsSubArrayForLevel(3) must equal(Array("KM", "R"))
+    }
+
+    @Test
+    def morseCharsSubArrayForLevel41() {
+        val penultimateLevels = Array(
+            "KM",
+            "R",
+            "S",
+            "U",
+            "A",
+            "P",
+            "T",
+            "L",
+            "O",
+            "W",
+            "I",
+            ".",
+            "N",
+            "J",
+            "E",
+            "F",
+            "0",
+            "Y",
+            ",",
+            "V",
+            "G",
+            "5",
+            "/",
+            "Q",
+            "9",
+            "Z",
+            "H",
+            "3",
+            "8",
+            "B",
+            "?",
+            "4",
+            "2",
+            "7",
+            "C",
+            "1",
+            "D",
+            "6",
+            "X",
+            "="
+        )
+        KochLevels.morseCharsSubArrayForLevel(41) must equal(penultimateLevels)
+    }
+
+    @Test
+    def morseCharsSubArrayForLevel42() {
+        KochLevels.morseCharsSubArrayForLevel(42) must equal(KochLevels.levels)
+    }
+
+    @Test
+    def morseCharsSubArrayForLevel43() {
+        KochLevels.morseCharsSubArrayForLevel(43) must equal(KochLevels.levels)
+    }
+
 }
