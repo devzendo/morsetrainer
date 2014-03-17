@@ -99,6 +99,7 @@
                 <value>menuInitialisingService</value>
                 <value>mainFramePopulatingService</value>
                 <value>sessionTerminatingService</value>
+                <value>playSilenceOnStartupService</value>
             </list>
         </property>
     </bean>
@@ -128,6 +129,10 @@
 
     <bean id="sessionTerminatingService" class="org.devzendo.morsetrainer.SessionTerminatingService">
         <constructor-arg ref="springLoader" />
+    </bean>
+
+    <bean id="playSilenceOnStartupService" class="org.devzendo.morsetrainer.PlaySilenceOnStartupService">
+        <constructor-arg ref="textAsMorseReader" />
     </bean>
 
     <!-- menu action listeners -->
