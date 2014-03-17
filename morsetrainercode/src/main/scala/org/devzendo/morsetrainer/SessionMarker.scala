@@ -16,6 +16,25 @@
 
 package org.devzendo.morsetrainer
 
-class SessionMarker {
+import org.devzendo.morsetrainer.Morse.MorseChar
+import org.slf4j.LoggerFactory
 
+object SessionMarker {
+    private val LOGGER = LoggerFactory.getLogger(classOf[SessionMarker])
+}
+
+class SessionMarker {
+    import SessionMarker._
+
+    def reset() {
+
+    }
+
+    def keyReceived(key: KeyboardEvent) {
+        LOGGER.info("Received key: " + key)
+    }
+
+    def charPlayed(ch: MorseChar) {
+        LOGGER.info("Played: '" + ch + "'")
+    }
 }

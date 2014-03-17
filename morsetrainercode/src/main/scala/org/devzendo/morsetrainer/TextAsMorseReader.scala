@@ -17,6 +17,7 @@
 package org.devzendo.morsetrainer
 
 import org.slf4j.LoggerFactory
+import java.util.concurrent.CountDownLatch
 
 object TextAsMorseReader {
     private val LOGGER = LoggerFactory.getLogger(classOf[TextAsMorseReader])
@@ -34,6 +35,10 @@ class TextAsMorseReader(textToMorse: TextToMorse, clipGeneratorHolder: ClipGener
 
                 case Dah => clipGeneratorHolder.clipGenerator.getDah
                 case Dit => clipGeneratorHolder.clipGenerator.getDit
+                case Sync(latch) => {
+                    latch.countDown()
+                    return
+                }
             }
             clip.start()
             clip.drain()
@@ -66,5 +71,12 @@ class TextAsMorseReader(textToMorse: TextToMorse, clipGeneratorHolder: ClipGener
     def play(str: String) {
         val clips = textToMorse.translateString(str)
         clips.foreach( (cr: ClipRequest) => q.put(cr) )
+    }
+
+    def playSynchronously(str: String) {
+        play(str)
+        val latch = new CountDownLatch(1)
+        q.put(new Sync(latch))
+        latch.await()
     }
 }

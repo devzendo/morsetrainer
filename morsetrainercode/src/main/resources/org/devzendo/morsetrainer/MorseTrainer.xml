@@ -46,6 +46,7 @@
         <constructor-arg ref="sessionPanel" />
         <constructor-arg ref="sessionController" />
         <constructor-arg ref="textGenerator" />
+        <constructor-arg ref="sessionMarker" />
     </bean>
 
     <bean id="abandonTraining" class="org.devzendo.morsetrainer.gui.AbandonTraining">
@@ -169,12 +170,13 @@
     </bean>
 
     <bean id="sessionController" class="org.devzendo.morsetrainer.SessionController">
-        <constructor-arg ref="textToMorse" />
+        <constructor-arg ref="textAsMorseReader" />
         <constructor-arg ref="sessionMarker" />
         <constructor-arg ref="keyboardEventGenerator" />
         <constructor-arg ref="sessionPanel" /> <!-- as a SessionView -->
         <constructor-arg ref="prefs" />
         <constructor-arg ref="textGenerator" />
+        <constructor-arg ref="sessionMarker" />
     </bean>
 
 </beans>

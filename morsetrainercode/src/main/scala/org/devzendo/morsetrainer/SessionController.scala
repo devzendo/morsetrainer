@@ -24,11 +24,12 @@ object SessionController {
     private val LOGGER = LoggerFactory.getLogger(classOf[SessionController])
 }
 
-class SessionController(textToMorse: TextToMorse, marker: SessionMarker,
+class SessionController(textAsMorseReader: TextAsMorseReader, marker: SessionMarker,
                         keyGenerator: DefaultKeyboardEventGenerator,
                         sessionView: SessionView,
                         prefs: MorseTrainerPrefs,
-                        textGenerator: TextGenerator) extends KeyboardObserver with Runnable {
+                        textGenerator: TextGenerator,
+                        sessionMarker: SessionMarker) extends KeyboardObserver with Runnable {
 
     import SessionController._
 
@@ -57,8 +58,7 @@ class SessionController(textToMorse: TextToMorse, marker: SessionMarker,
     }
 
     def eventOccurred(key: KeyboardEvent) {
-        LOGGER.info("got key " + key)
-        // TODO send key to marker and stream generator
+        sessionMarker.keyReceived(key)
     }
 
     // TODO need to get abandon events
@@ -96,10 +96,9 @@ class SessionController(textToMorse: TextToMorse, marker: SessionMarker,
             if (System.currentTimeMillis() >= endTime) {
                 finished.set(true)
             } else {
-                val morseChar = textGenerator
-                Thread.sleep(1000) // BODGE
-                // TODO get character from stream generator
-                // TODO send character to TextToMorse, synchronously
+                val morseChar = textGenerator.next()
+                sessionMarker.charPlayed(morseChar)
+                textAsMorseReader.playSynchronously(morseChar.toString)
             }
             this
         }

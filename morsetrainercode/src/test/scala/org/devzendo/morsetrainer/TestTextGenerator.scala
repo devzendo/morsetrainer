@@ -35,7 +35,7 @@ class TestTextGenerator extends AssertionsForJUnit with MustMatchersForJUnit wit
         val mockPrefs = EasyMock.createMock(classOf[MorseTrainerPrefs])
 
         mockPrefs.getKochLevel
-        EasyMock.expectLastCall().andReturn(4)
+        EasyMock.expectLastCall().andReturn(12)
 
         mockPrefs.getCharacterRecognitionRates
         val rates: Map[MorseChar, RecognitionRate] = Map(
@@ -43,7 +43,14 @@ class TestTextGenerator extends AssertionsForJUnit with MustMatchersForJUnit wit
             'M' -> RecognitionRate(2, 10),
             'R' -> RecognitionRate(10, 10),
             'S' -> RecognitionRate(10, 10),
-            'U' -> RecognitionRate(0, 10)
+            'U' -> RecognitionRate(0, 10),
+            'A' -> RecognitionRate(3, 10),
+            'P' -> RecognitionRate(4, 10),
+            'T' -> RecognitionRate(1, 10),
+            'L' -> RecognitionRate(2, 10),
+            'O' -> RecognitionRate(8, 10),
+            'W' -> RecognitionRate(3, 10),
+            'I' -> RecognitionRate(2, 10)
         )
         EasyMock.expectLastCall().andReturn(rates).anyTimes()
 
@@ -60,9 +67,9 @@ class TestTextGenerator extends AssertionsForJUnit with MustMatchersForJUnit wit
 
         val recognitionRatePersister = new RecognitionRatePersister(mockPrefs)
         val kg = new KochIterator(mockPrefs, recognitionRatePersister)
-//        for (i <- 0 to 40) {
+        for (i <- 0 to 40) {
             LOGGER.info("next char is " + kg.next())
-//        }
+        }
 
         EasyMock.verify(mockPrefs)
     }

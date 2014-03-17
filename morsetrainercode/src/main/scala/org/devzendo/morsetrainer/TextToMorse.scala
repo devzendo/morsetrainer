@@ -16,12 +16,15 @@
 
 package org.devzendo.morsetrainer
 
+import java.util.concurrent.CountDownLatch
+
 sealed abstract class ClipRequest
 case object Dit extends ClipRequest
 case object Dah extends ClipRequest
 case object ElementSp extends ClipRequest
 case object CharSp extends ClipRequest
 case object WordSp extends ClipRequest
+case class Sync(latch: CountDownLatch) extends ClipRequest
 
 class TextToMorse {
     import Morse._
