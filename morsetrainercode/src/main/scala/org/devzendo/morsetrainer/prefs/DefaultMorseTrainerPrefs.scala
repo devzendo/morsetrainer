@@ -52,7 +52,7 @@ object DefaultMorseTrainerPrefs {
 
     private val SECTION_RECOGNITION_RATES = "recognition"
 
-    private val RATE_SPLIT_REGEX = """^(\\d+)/(\\d+)$""".r
+    private val RATE_SPLIT_REGEX = """^(\d+)/(\d+)$""".r
 }
 
 /**
