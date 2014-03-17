@@ -97,6 +97,7 @@ class SessionController(textAsMorseReader: TextAsMorseReader, marker: SessionMar
                 finished.set(true)
             } else {
                 val morseChar = textGenerator.next()
+                LOGGER.info("Sending '" + morseChar + "'")
                 sessionMarker.charPlayed(morseChar)
                 textAsMorseReader.playSynchronously(morseChar.toString)
             }

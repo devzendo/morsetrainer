@@ -72,24 +72,31 @@ class KochIterator(prefs: MorseTrainerPrefs, recognitionRatePersister: Recogniti
     val definite = new DefiniteProbabilityMap[MorseChar](startSet)
     val newCharsProbMap = if (prefs.newCharsMoreFrequently) genNewCharsProbMap(kochLevel) else definite
 //    LOGGER.debug("newCharsProbMap: " + newCharsProbMap)
+//    val probMap = generateProbabilityMap
+
+    def generateProbabilityMap: ProbabilityMap[MorseChar] = {
+        val ratesForStartSet = recognitionRatePersister.getRecognitionRates(startSet)
+        //        LOGGER.debug("ratesForStartSet: " + ratesForStartSet)
+
+        val missedCharsProbMap = if (prefs.missedCharsMoreFrequently) genMissedCharsProbMap(ratesForStartSet) else definite
+        //        LOGGER.debug("missedCharsProbMap: " + missedCharsProbMap)
+
+        val similarCharsProbMap = if (prefs.similarCharsMoreFrequently) genSimilarCharsProbMap(startSet, ratesForStartSet) else definite
+        //        LOGGER.debug("similarCharsProbMap: " + similarCharsProbMap)
+
+        val finalProbMap = newCharsProbMap * missedCharsProbMap * similarCharsProbMap
+        //        LOGGER.debug("finalProbMap: " + finalProbMap)
+        finalProbMap
+    }
 
     def next(): MorseChar = {
         // TODO need to decide how to intersperse spaces to end words
         // TODO decide if these are too expensive to recompute for every MorseChar
         val startTime = System.currentTimeMillis()
-        val ratesForStartSet = recognitionRatePersister.getRecognitionRates(startSet)
-//        LOGGER.debug("ratesForStartSet: " + ratesForStartSet)
 
-        val missedCharsProbMap = if (prefs.missedCharsMoreFrequently) genMissedCharsProbMap(ratesForStartSet) else definite
-//        LOGGER.debug("missedCharsProbMap: " + missedCharsProbMap)
+        val probMap = generateProbabilityMap
 
-        val similarCharsProbMap = if (prefs.similarCharsMoreFrequently) genSimilarCharsProbMap(startSet, ratesForStartSet) else definite
-//        LOGGER.debug("similarCharsProbMap: " + similarCharsProbMap)
-
-        val finalProbMap = newCharsProbMap * missedCharsProbMap * similarCharsProbMap
-//        LOGGER.debug("finalProbMap: " + finalProbMap)
-
-        val chosen = finalProbMap.getProbabilistically
+        val chosen = probMap.getProbabilistically
         val endTime = System.currentTimeMillis()
         LOGGER.debug("KochIterator chooses " + chosen._1 + " with probability " + chosen._2 + " in " + (endTime - startTime) + " ms")
         chosen._1
