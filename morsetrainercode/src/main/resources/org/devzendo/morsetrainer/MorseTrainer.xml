@@ -159,11 +159,11 @@
     </bean>
 
     <bean id="textAsMorseReader" class="org.devzendo.morsetrainer.TextAsMorseReader">
-        <constructor-arg ref="textToMorse" />
+        <constructor-arg ref="textToMorseClipRequests" />
         <constructor-arg ref="clipGeneratorHolder" />
     </bean>
 
-    <bean id="textToMorse" class="org.devzendo.morsetrainer.TextToMorse">
+    <bean id="textToMorseClipRequests" class="org.devzendo.morsetrainer.TextToMorseClipRequests">
     </bean>
 
     <bean id="sessionMarker" class="org.devzendo.morsetrainer.SessionMarker">

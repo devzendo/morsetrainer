@@ -19,37 +19,37 @@ package org.devzendo.morsetrainer
 import org.scalatest.junit.{MustMatchersForJUnit, AssertionsForJUnit}
 import org.junit.Test
 
-class TestTextToMorse extends AssertionsForJUnit with MustMatchersForJUnit {
+class TestTextToMorseClipRequests extends AssertionsForJUnit with MustMatchersForJUnit {
 
-    val ttm = new TextToMorse
+    val ttmcr = new TextToMorseClipRequests
 
     @Test
     def empty() {
-        ttm.translateString("") must be(List())
+        ttmcr.translateString("") must be(List())
     }
 
     @Test
     def xlat_e() {
-        ttm.translateString("e") must be(List(Dit))
+        ttmcr.translateString("e") must be(List(Dit))
     }
 
     @Test
     def xlat_a() {
-        ttm.translateString("a") must be(List(Dit, ElementSp, Dah))
+        ttmcr.translateString("a") must be(List(Dit, ElementSp, Dah))
     }
 
     @Test
     def xlat_r() {
-        ttm.translateString("r") must be(List(Dit, ElementSp, Dah, ElementSp, Dit))
+        ttmcr.translateString("r") must be(List(Dit, ElementSp, Dah, ElementSp, Dit))
     }
 
     @Test
     def xlat_ab() {
-        ttm.translateString("ab") must be(List(Dit, ElementSp, Dah, CharSp, Dah, ElementSp, Dit, ElementSp, Dit, ElementSp, Dit))
+        ttmcr.translateString("ab") must be(List(Dit, ElementSp, Dah, CharSp, Dah, ElementSp, Dit, ElementSp, Dit, ElementSp, Dit))
     }
 
     @Test
     def xlat_aSpaceB() {
-        ttm.translateString("a b") must be(List(Dit, ElementSp, Dah, WordSp, Dah, ElementSp, Dit, ElementSp, Dit, ElementSp, Dit))
+        ttmcr.translateString("a b") must be(List(Dit, ElementSp, Dah, WordSp, Dah, ElementSp, Dit, ElementSp, Dit, ElementSp, Dit))
     }
 }

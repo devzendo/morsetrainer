@@ -23,7 +23,7 @@ object TextAsMorseReader {
     private val LOGGER = LoggerFactory.getLogger(classOf[TextAsMorseReader])
 }
 
-class TextAsMorseReader(textToMorse: TextToMorse, clipGeneratorHolder: ClipGeneratorHolder) {
+class TextAsMorseReader(textToMorse: TextToMorseClipRequests, clipGeneratorHolder: ClipGeneratorHolder) {
     import TextAsMorseReader._
 
     class ClipRequestPlayer(clipGeneratorHolder: ClipGeneratorHolder) {

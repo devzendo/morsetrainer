@@ -26,20 +26,20 @@ case object CharSp extends ClipRequest
 case object WordSp extends ClipRequest
 case class Sync(latch: CountDownLatch) extends ClipRequest
 
-class TextToMorse {
+class TextToMorseClipRequests {
     import Morse._
 
     private def charToClipRequest(ch: Char): ClipRequest = if (ch == '-') Dah else Dit
 
     // There's got to be a standard function for this...
-    private def intersperse[X](xs: List[X], xsep: X): List[X] = {
-        var ooo = scala.collection.mutable.ListBuffer[X]()
+    private def placeSeparatorBetweenElementsOfList[X](xs: List[X], xsep: X): List[X] = {
+        var mutableList = scala.collection.mutable.ListBuffer[X]()
         for (i <- 0 until xs.size - 1) {
-            ooo += xs(i)
-            ooo += xsep
+            mutableList += xs(i)
+            mutableList += xsep
         }
-        ooo += xs.last
-        ooo.toList
+        mutableList += xs.last
+        mutableList.toList
 //      tried this, but failed
 //        def addSepAfterEach(x: X): (X, X) = (x, xsep)
 //        val added = xs map { addSepAfterEach }
@@ -68,7 +68,7 @@ class TextToMorse {
             case Some(ms) => {
                 val clipRequests = ms.map(charToClipRequest)
                 val clipRequestsList = clipRequests.toList
-                intersperse[ClipRequest](clipRequestsList, ElementSp)
+                placeSeparatorBetweenElementsOfList[ClipRequest](clipRequestsList, ElementSp)
             }
         }
     }
@@ -86,7 +86,7 @@ class TextToMorse {
     type WordClipRequests = List[LetterClipRequests]
     private def wordToListListClipRequest(word: String): WordClipRequests = {
         val wordLLCR: WordClipRequests = (word map charToElementSpacedListOfClipRequest).toList
-        intersperse[LetterClipRequests](wordLLCR, List(CharSp))
+        placeSeparatorBetweenElementsOfList[LetterClipRequests](wordLLCR, List(CharSp))
     }
 
     /**
@@ -100,7 +100,7 @@ class TextToMorse {
             List[ClipRequest]()
         } else {
             val wordClipRequests: List[WordClipRequests] = (words map wordToListListClipRequest).toList
-            val wordsClipRequestsInterspersed = intersperse[WordClipRequests](wordClipRequests, List(List(WordSp)))
+            val wordsClipRequestsInterspersed = placeSeparatorBetweenElementsOfList[WordClipRequests](wordClipRequests, List(List(WordSp)))
 
             wordsClipRequestsInterspersed.flatten.flatten
         }
