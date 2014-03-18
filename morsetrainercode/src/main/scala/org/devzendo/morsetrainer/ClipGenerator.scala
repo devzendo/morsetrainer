@@ -32,20 +32,33 @@ class ClipGenerator(var wpm: Int, var fwpm: Int, var freqHz: Int) {
     private var characterSpace: Array[Byte] = null
     private var wordSpace: Array[Byte] = null
 
+    var ditMs = 0L
+    var dahMs = 0L
+    var elementSpaceMs = 0L
+    var characterSpaceMs = 0L
+    var wordSpaceMs = 0L
+
     initialise()
     initialiseSpacing()
 
     private def initialise() {
         // http://sv8gxc.blogspot.co.uk/2010/09/morse-code-101-in-wpm-bw-snr.html
         ditDurationSeconds = wpmToSeconds(wpm)
+        ditMs = (ditDurationSeconds * 1000).toLong
         dit = createPulse(ditDurationSeconds)
         dah = createPulse(ditDurationSeconds * 3.0)
+        dahMs = ditMs * 3
         elementSpace = createSilence(ditDurationSeconds)
+        elementSpaceMs = ditMs
     }
 
     private def initialiseSpacing() {
-        characterSpace = createSilence(wpmToSeconds(fwpm) * 3.0)
-        wordSpace = createSilence(wpmToSeconds(fwpm) * 7.0)
+        val farnsworthDitDurationSeconds: Double = wpmToSeconds(fwpm)
+        val farnsworthDitDurationMs: Long = (farnsworthDitDurationSeconds * 1000).toLong
+        characterSpace = createSilence(farnsworthDitDurationSeconds * 3.0)
+        characterSpaceMs = farnsworthDitDurationMs * 3
+        wordSpace = createSilence(farnsworthDitDurationSeconds * 7.0)
+        wordSpaceMs = farnsworthDitDurationMs * 7
     }
 
     def getDit = bytesToClip(dit)
