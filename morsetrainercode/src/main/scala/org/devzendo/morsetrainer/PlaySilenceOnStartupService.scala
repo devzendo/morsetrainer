@@ -28,6 +28,6 @@ class PlaySilenceOnStartupService(textAsMorseReader: TextAsMorseReader) extends 
     }
 
     def startup(proxy: ServiceManagerProxy) {
-        textAsMorseReader.play("  ")
+        textAsMorseReader.play(WordSp)
     }
 }

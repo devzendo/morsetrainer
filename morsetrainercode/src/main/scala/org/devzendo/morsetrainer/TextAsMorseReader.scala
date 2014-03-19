@@ -17,7 +17,6 @@
 package org.devzendo.morsetrainer
 
 import org.slf4j.LoggerFactory
-import java.util.concurrent.CountDownLatch
 
 object TextAsMorseReader {
     private val LOGGER = LoggerFactory.getLogger(classOf[TextAsMorseReader])
@@ -26,37 +25,29 @@ object TextAsMorseReader {
 class TextAsMorseReader(textToMorse: TextToMorseClipRequests, clipGeneratorHolder: ClipGeneratorHolder) {
     import TextAsMorseReader._
 
-    class ClipRequestPlayer(clipGeneratorHolder: ClipGeneratorHolder) {
-        def play(clipRequest: ClipRequest) {
-            val clip = clipRequest match {
-                case ElementSp => clipGeneratorHolder.clipGenerator.getElementSpace
-                case CharSp => clipGeneratorHolder.clipGenerator.getCharacterSpace
-                case WordSp => clipGeneratorHolder.clipGenerator.getWordSpace
-
-                case Dah => clipGeneratorHolder.clipGenerator.getDah
-                case Dit => clipGeneratorHolder.clipGenerator.getDit
-                case Sync(latch) => {
-                    latch.countDown()
-                    return
-                }
-            }
-            clip.start()
-            clip.drain()
-        }
-    }
-
-    val player = new ClipRequestPlayer(clipGeneratorHolder)
     val q = new java.util.concurrent.LinkedBlockingQueue[ClipRequest]()
 
     val thread = new Thread(new Runnable() {
         def run() {
             val me: Thread = Thread.currentThread()
-            val name: String = me.getName
-            LOGGER.info(name + " starting...")
+            LOGGER.info("Starting clip playing thread...")
             while (!me.isInterrupted) {
-                player.play(q.take())
+                val clipRequest = q.take()
+                val generator = clipGeneratorHolder.clipGenerator
+
+                val clip = clipRequest match {
+                    case ElementSp => generator.getElementSpace
+                    case CharSp => generator.getCharacterSpace
+                    case WordSp => generator.getWordSpace
+
+                    case Dah => generator.getDah
+                    case Dit => generator.getDit
+                }
+
+                clip.start()
+                clip.drain()
             }
-            LOGGER.info(name + " stopping...")
+            LOGGER.info("Clip playing thread stopping...")
         }
     })
     thread.setName(getClass.getName)
@@ -67,16 +58,51 @@ class TextAsMorseReader(textToMorse: TextToMorseClipRequests, clipGeneratorHolde
     def silence() {
         q.clear()
     }
+    
+    type TimedClipRequest = (Long, ClipRequest)
+    
+    def clipRequestToDuration(clipRequest: ClipRequest): Long = {
+        val generator = clipGeneratorHolder.clipGenerator
 
-    def play(str: String) {
-        val clips = textToMorse.translateString(str)
-        clips.foreach( (cr: ClipRequest) => q.put(cr) )
+        val durationMs = clipRequest match {
+            case ElementSp => generator.elementSpaceMs
+            case CharSp => generator.characterSpaceMs
+            case WordSp => generator.wordSpaceMs
+
+            case Dah => generator.dahMs
+            case Dit => generator.ditMs
+        }
+        durationMs
+    }
+    
+    def textToClipRequestsWithTotalDuration(str: String): (List[ClipRequest], Long) = {
+        LOGGER.debug("translating '" + str + "' to clips and duration")
+        val clipRequests = textToMorse.translateString(str)
+        LOGGER.debug("clip requests are " + clipRequests)
+        val durationMss = clipRequests.map(clipRequestToDuration)
+        LOGGER.debug("clip request durations are " + durationMss)
+        val totalDuration = (0L /: durationMss) (_ + _)
+        LOGGER.debug("total duration is " + totalDuration)
+        val ret = (clipRequests, totalDuration)
+        LOGGER.debug("returning " + ret)
+        ret
     }
 
-    def playSynchronously(str: String) {
-        play(str)
-        val latch = new CountDownLatch(1)
-        q.put(new Sync(latch))
-        latch.await()
+    def play(str: String) {
+        LOGGER.debug("Playing string '" + str + "'")
+        val clips = textToClipRequestsWithTotalDuration(str)._1
+        play(clips)
+    }
+
+    def play(req: ClipRequest) {
+        LOGGER.debug("Playing clip request '" + req + "'")
+        play(List(req))
+    }
+
+    def play(clipRequests: List[ClipRequest]) {
+        LOGGER.debug("Playing clip requests '" + clipRequests + "'")
+        clipRequests.foreach( (cr: ClipRequest) => {
+            q.put(cr)
+        })
     }
 }

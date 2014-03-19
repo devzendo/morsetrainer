@@ -87,19 +87,44 @@ class SessionController(textAsMorseReader: TextAsMorseReader, marker: SessionMar
     class RunSession extends Handler {
         val lengthSecs = prefs.getSessionLength * 60
         val startTime = System.currentTimeMillis()
-        val endTime = System.currentTimeMillis() + (lengthSecs * 1000)
+        val lengthMs = lengthSecs * 1000L
+        val endTime = System.currentTimeMillis() + lengthMs
+        var durationPlayed = 0L
 
         def handle: SessionController.this.type#Handler = {
             val secsGone = ((System.currentTimeMillis() - startTime) / 1000).toInt
             sessionView.setCurrentSessionProgressSeconds(secsGone)
 
             if (System.currentTimeMillis() >= endTime) {
+                LOGGER.info("Session end time reached")
                 finished.set(true)
             } else {
                 val morseChar = textGenerator.next()
-                LOGGER.info("Sending '" + morseChar + "'")
-                sessionMarker.charPlayed(morseChar)
-                textAsMorseReader.playSynchronously(morseChar.toString)
+
+                val (clipRequests, duration) = textAsMorseReader.textToClipRequestsWithTotalDuration(morseChar.toString)
+                if (durationPlayed + duration >= lengthMs) {
+                    LOGGER.info("Not enough time to send final '" + morseChar + "'")
+                    finished.set(true)
+                    // TODO need to sleep? or play synchronously?
+                } else {
+                    LOGGER.info("Sending '" + morseChar + "'")
+                    sessionMarker.charPlayed(morseChar)
+                    textAsMorseReader.play(clipRequests)
+
+                    // TODO need to send WordSp or CharSp here, depending on
+                    // whether next char is a space or not. This should be
+                    // changed so that characters have their CharSp added at
+                    // the end of their Dit / Dah / ElementSp, and that
+                    // WordSp duration is decreased by a CharSp.
+                    textAsMorseReader.play(CharSp)
+
+                    durationPlayed += duration
+
+                    // TODO if space played, recalculate the TextGenerator's
+                    // assessment of what needs sending (based on how wrong
+                    // the SessionMarker thinks you've been). Don't want to
+                    // do that on every char - too expensive?
+                }
             }
             this
         }
