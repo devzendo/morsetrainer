@@ -28,6 +28,10 @@ class TextSpacingIterator(textGenerator: Iterator[MorseChar], textAsMorseReader:
     def hasNext: Boolean = textGenerator.hasNext
 
     def next(): OptionMorseCharClipRequestsWithTotalDuration = {
+        if (!hasNext) {
+            throw new IllegalStateException("Cannot get next from a spent Iterator")
+        }
+
         val morseChar = textGenerator.next()
         val (clipRequests, duration) = textAsMorseReader.textToClipRequestsWithTotalDuration(morseChar.toString)
         (Some(morseChar), clipRequests, duration)
