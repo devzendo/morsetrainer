@@ -35,16 +35,31 @@ object TestTextSpacingIterator {
 class TestTextSpacingIterator extends AssertionsForJUnit with MustMatchersForJUnit with LoggingUnittest {
     import TestTextSpacingIterator._
 
+    def finished(tsi: TextSpacingIterator) {
+        tsi.hasNext must equal(false)
+        val thrown = evaluating {
+            tsi.next()
+        } must produce[IllegalStateException]
+        thrown.getMessage must equal("Cannot get next from a spent Iterator")
+    }
 
     @Test
     def emptyIterator() {
         LOGGER.info("emptyIterator")
         val tsi = getIterator("")
 
-        tsi.hasNext must equal(false)
-        val thrown = evaluating {
-            tsi.next()
-        } must produce[IllegalStateException]
-        thrown.getMessage must equal("Cannot get next from a spent Iterator")
+        finished(tsi)
+    }
+
+    @Test
+    def singleCharacter() {
+        LOGGER.info("singleCharacter")
+        val tsi = getIterator("A")
+
+        tsi.hasNext must equal(true)
+        val a = tsi.next()
+        a must be((Some('A'), List(Dit, ElementSp, Dah), 330))
+
+        finished(tsi)
     }
 }
