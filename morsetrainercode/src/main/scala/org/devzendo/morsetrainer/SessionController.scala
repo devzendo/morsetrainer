@@ -105,11 +105,11 @@ class SessionController(textAsMorseReader: TextAsMorseReader, marker: SessionMar
                 if (durationPlayed + duration >= lengthMs) {
                     LOGGER.info("Not enough time to send final '" + morseChar + "'")
                     finished.set(true)
-                    // TODO need to sleep? or play synchronously?
                 } else {
                     LOGGER.info("Sending '" + morseChar + "'")
                     sessionMarker.charPlayed(morseChar)
-                    textAsMorseReader.play(clipRequests)
+                    textAsMorseReader.playSynchronously(clipRequests)
+                    durationPlayed += duration
 
                     // TODO need to send WordSp or CharSp here, depending on
                     // whether next char is a space or not. This should be
@@ -117,8 +117,8 @@ class SessionController(textAsMorseReader: TextAsMorseReader, marker: SessionMar
                     // the end of their Dit / Dah / ElementSp, and that
                     // WordSp duration is decreased by a CharSp.
                     textAsMorseReader.play(CharSp)
+                    durationPlayed += 66 // BODGEROOOO!
 
-                    durationPlayed += duration
 
                     // TODO if space played, recalculate the TextGenerator's
                     // assessment of what needs sending (based on how wrong
