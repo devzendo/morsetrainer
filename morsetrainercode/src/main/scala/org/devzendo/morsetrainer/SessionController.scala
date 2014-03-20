@@ -28,7 +28,7 @@ class SessionController(textAsMorseReader: TextAsMorseReader, marker: SessionMar
                         keyGenerator: DefaultKeyboardEventGenerator,
                         sessionView: SessionView,
                         prefs: MorseTrainerPrefs,
-                        textGenerator: TextGenerator,
+                        textSpacingIterator: TextSpacingIterator,
                         sessionMarker: SessionMarker) extends KeyboardObserver with Runnable {
 
     import SessionController._
@@ -99,31 +99,25 @@ class SessionController(textAsMorseReader: TextAsMorseReader, marker: SessionMar
                 LOGGER.info("Session end time reached")
                 finished.set(true)
             } else {
-                val morseChar = textGenerator.next()
-
-                val (clipRequests, duration) = textAsMorseReader.textToClipRequestsWithTotalDuration(morseChar.toString)
+                val (optionMorseChar, clipRequests, duration) = textSpacingIterator.next()
                 if (durationPlayed + duration >= lengthMs) {
-                    LOGGER.info("Not enough time to send final '" + morseChar + "'")
+                    LOGGER.info("Not enough time to send final sequence")
                     finished.set(true)
                 } else {
-                    LOGGER.info("Sending '" + morseChar + "'")
-                    sessionMarker.charPlayed(morseChar)
-                    textAsMorseReader.playSynchronously(clipRequests)
+                    textAsMorseReader.play(clipRequests)
                     durationPlayed += duration
 
-                    // TODO need to send WordSp or CharSp here, depending on
-                    // whether next char is a space or not. This should be
-                    // changed so that characters have their CharSp added at
-                    // the end of their Dit / Dah / ElementSp, and that
-                    // WordSp duration is decreased by a CharSp.
-                    textAsMorseReader.play(CharSp)
-                    durationPlayed += 66 // BODGEROOOO!
+                    for (morseChar <- optionMorseChar) {
+                        LOGGER.info("Sending '" + morseChar + "'")
+                        sessionMarker.charPlayed(morseChar)
 
+                        // TODO if space played, recalculate the TextGenerator's
+                        // assessment of what needs sending (based on how wrong
+                        // the SessionMarker thinks you've been). Don't want to
+                        // do that on every char - too expensive?
+                    }
 
-                    // TODO if space played, recalculate the TextGenerator's
-                    // assessment of what needs sending (based on how wrong
-                    // the SessionMarker thinks you've been). Don't want to
-                    // do that on every char - too expensive?
+                    textAsMorseReader.sync()
                 }
             }
             this

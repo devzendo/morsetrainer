@@ -21,6 +21,8 @@ import java.util.concurrent.CountDownLatch
 
 object TextAsMorseReader {
     private val LOGGER = LoggerFactory.getLogger(classOf[TextAsMorseReader])
+    type TimedClipRequest = (Long, ClipRequest)
+    type ClipRequestsWithTotalDuration = (List[ClipRequest], Long)
 }
 
 class TextAsMorseReader(textToMorse: TextToMorseClipRequests, clipGeneratorHolder: ClipGeneratorHolder) {
@@ -67,9 +69,7 @@ class TextAsMorseReader(textToMorse: TextToMorseClipRequests, clipGeneratorHolde
     def silence() {
         q.clear()
     }
-    
-    type TimedClipRequest = (Long, ClipRequest)
-    
+
     def clipRequestToDuration(clipRequest: ClipRequest): Long = {
         val generator = clipGeneratorHolder.clipGenerator
 
@@ -85,8 +85,8 @@ class TextAsMorseReader(textToMorse: TextToMorseClipRequests, clipGeneratorHolde
         }
         durationMs
     }
-    
-    def textToClipRequestsWithTotalDuration(str: String): (List[ClipRequest], Long) = {
+
+    def textToClipRequestsWithTotalDuration(str: String): ClipRequestsWithTotalDuration = {
 //        LOGGER.debug("translating '" + str + "' to clips and duration")
         val clipRequests = textToMorse.translateString(str)
 //        LOGGER.debug("clip requests are " + clipRequests)
@@ -120,6 +120,12 @@ class TextAsMorseReader(textToMorse: TextToMorseClipRequests, clipGeneratorHolde
     def playSynchronously(clipRequests: List[ClipRequest]) {
         val latch = new CountDownLatch(1)
         play(clipRequests)
+        play(new Sync(latch))
+        latch.await()
+    }
+
+    def sync() {
+        val latch = new CountDownLatch(1)
         play(new Sync(latch))
         latch.await()
     }

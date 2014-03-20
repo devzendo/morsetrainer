@@ -169,6 +169,11 @@
     <bean id="sessionMarker" class="org.devzendo.morsetrainer.SessionMarker">
     </bean>
 
+    <bean id="textSpacingIterator" class="org.devzendo.morsetrainer.TextSpacingIterator">
+        <constructor-arg ref="textGenerator" />
+        <constructor-arg ref="textAsMorseReader" />
+    </bean>
+
     <bean id="textGenerator" class="org.devzendo.morsetrainer.TextGenerator">
         <constructor-arg ref="prefs" />
         <constructor-arg ref="recognitionRatePersister" />
@@ -180,7 +185,7 @@
         <constructor-arg ref="keyboardEventGenerator" />
         <constructor-arg ref="sessionPanel" /> <!-- as a SessionView -->
         <constructor-arg ref="prefs" />
-        <constructor-arg ref="textGenerator" />
+        <constructor-arg ref="textSpacingIterator" />
         <constructor-arg ref="sessionMarker" />
     </bean>
 
