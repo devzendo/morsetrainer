@@ -21,8 +21,8 @@ import org.slf4j.LoggerFactory
 import org.junit.Test
 import org.devzendo.morsetrainer.Morse.MorseChar
 
-object TestSpacingIterator {
-    private val LOGGER = LoggerFactory.getLogger(classOf[TestSpacingIterator])
+object TestTextSpacingIterator {
+    private val LOGGER = LoggerFactory.getLogger(classOf[TestTextSpacingIterator])
 
     val textToMorse = new TextToMorseClipRequests()
     val clipGeneratorHolder = new ClipGeneratorHolder(18, true, 12, 600)
@@ -32,8 +32,8 @@ object TestSpacingIterator {
     def getIterator(str: String) = new TextSpacingIterator(str, reader)
 }
 
-class TestSpacingIterator extends AssertionsForJUnit with MustMatchersForJUnit with LoggingUnittest {
-    import TestSpacingIterator._
+class TestTextSpacingIterator extends AssertionsForJUnit with MustMatchersForJUnit with LoggingUnittest {
+    import TestTextSpacingIterator._
 
 
     @Test
