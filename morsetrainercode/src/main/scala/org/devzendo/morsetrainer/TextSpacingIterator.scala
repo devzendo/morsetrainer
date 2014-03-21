@@ -18,22 +18,87 @@ package org.devzendo.morsetrainer
 
 import org.devzendo.morsetrainer.Morse.MorseChar
 import org.devzendo.morsetrainer.TextSpacingIterator.OptionMorseCharClipRequestsWithTotalDuration
+import org.slf4j.LoggerFactory
 
 object TextSpacingIterator {
     type OptionMorseCharClipRequestsWithTotalDuration = (Option[MorseChar], List[ClipRequest], Long)
+    private val LOGGER = LoggerFactory.getLogger(classOf[TextSpacingIterator])
 }
 
+/*
+ * A     -   A
+ * A_    -   A wordsp
+ * AB    -   A charsp B 
+ * A_B   -   A wordsp B
+ */
 class TextSpacingIterator(textGenerator: Iterator[MorseChar], textAsMorseReader: TextAsMorseReader) extends Iterator[OptionMorseCharClipRequestsWithTotalDuration] {
-    // TODO introduce state machine....
-    def hasNext: Boolean = textGenerator.hasNext
+    import TextSpacingIterator._
+
+    var lookAhead: Option[MorseChar] = None
+    var spaceRequired = false
+    
+    def hasNext: Boolean = {
+        if (lookAhead.isDefined) true else textGenerator.hasNext
+    }
+
+    def fetchLookAhead() {
+        if (textGenerator.hasNext) {
+            lookAhead = Some(textGenerator.next())
+        } else {
+            lookAhead = None
+        }
+    }
+
+    def gen(morseChar: MorseChar): OptionMorseCharClipRequestsWithTotalDuration = {
+        val (clipRequests, duration) = textAsMorseReader.textToClipRequestsWithTotalDuration(morseChar.toString)
+
+        (Some(morseChar), clipRequests, duration)
+    }
+
+    def genCharSpace(): OptionMorseCharClipRequestsWithTotalDuration = {
+        val (clipRequests, duration) = textAsMorseReader.charSpaceClipRequestsWithTotalDuration
+
+        (None, clipRequests, duration)
+    }
+
+    def genWordSpace(): OptionMorseCharClipRequestsWithTotalDuration = {
+        gen(' ')
+    }
 
     def next(): OptionMorseCharClipRequestsWithTotalDuration = {
         if (!hasNext) {
             throw new IllegalStateException("Cannot get next from a spent Iterator")
         }
+        LOGGER.debug("before, lookAhead is " + lookAhead + " spaceRequired is " + spaceRequired)
 
-        val morseChar = textGenerator.next()
-        val (clipRequests, duration) = textAsMorseReader.textToClipRequestsWithTotalDuration(morseChar.toString)
-        (Some(morseChar), clipRequests, duration)
+        val out = lookAhead match {
+            case Some(' ') => {
+                spaceRequired = false
+                val ret = genWordSpace()
+                fetchLookAhead()
+                ret
+            }
+            case Some(morseChar: MorseChar) =>
+                if (spaceRequired) {
+                    val ret = genCharSpace()
+                    spaceRequired = false
+                    ret
+                } else {
+                    val ret = gen(morseChar)
+                    spaceRequired = morseChar != ' '
+                    fetchLookAhead()
+                    ret
+                }
+            case None => {
+                val morseChar = textGenerator.next()
+                LOGGER.debug("the next char from the text generator was " + morseChar)
+                val ret = gen(morseChar)
+                fetchLookAhead()
+                spaceRequired = morseChar != ' '
+                ret
+            }
+        }
+        LOGGER.debug("after, lookAhead is " + lookAhead + " spaceRequired is " + spaceRequired)
+        out
     }
 }

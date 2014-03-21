@@ -96,14 +96,18 @@ class TextToMorseClipRequests {
      * @return a list of ClipRequests
      */
     def translateString(sentence: String): List[ClipRequest] = {
-        val words: List[String] = sentence.toLowerCase.split("\\s").toList.filterNot( _.length == 0)
-        if (words.isEmpty) {
-            List[ClipRequest]()
+        if (sentence == " ") {
+            List[ClipRequest](WordSp)
         } else {
-            val wordClipRequests: List[WordClipRequests] = (words map wordToListListClipRequest).toList
-            val wordsClipRequestsInterspersed = placeSeparatorBetweenElementsOfList[WordClipRequests](wordClipRequests, List(List(WordSp)))
+            val words: List[String] = sentence.toLowerCase.split("\\s").toList.filterNot( _.length == 0)
+            if (words.isEmpty) {
+                List[ClipRequest]()
+            } else {
+                val wordClipRequests: List[WordClipRequests] = (words map wordToListListClipRequest).toList
+                val wordsClipRequestsInterspersed = placeSeparatorBetweenElementsOfList[WordClipRequests](wordClipRequests, List(List(WordSp)))
 
-            wordsClipRequestsInterspersed.flatten.flatten
+                wordsClipRequestsInterspersed.flatten.flatten
+            }
         }
     }
 }

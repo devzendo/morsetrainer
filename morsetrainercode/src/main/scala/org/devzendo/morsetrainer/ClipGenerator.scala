@@ -17,13 +17,17 @@
 package org.devzendo.morsetrainer
 
 import javax.sound.sampled.{AudioSystem, DataLine, AudioFormat, Clip}
+import org.slf4j.LoggerFactory
 
 object ClipGenerator {
+    private val LOGGER = LoggerFactory.getLogger(classOf[ClipGenerator])
+
     val SAMPLE_RATE: Int = 48000
     val TWO_PI: Double = Math.PI * 2.0
 }
 
 class ClipGenerator(var wpm: Int, var fwpm: Int, var freqHz: Int) {
+    import ClipGenerator._
 
     private var ditDurationSeconds = 0.0
     private var dit: Array[Byte] = null
@@ -40,6 +44,8 @@ class ClipGenerator(var wpm: Int, var fwpm: Int, var freqHz: Int) {
 
     initialise()
     initialiseSpacing()
+    LOGGER.debug("ditMs: " + ditMs + " dahMs: " + dahMs + " elSp: " +
+        elementSpaceMs + " charSp: " + characterSpaceMs + " wdSp: " + wordSpaceMs)
 
     private def initialise() {
         // http://sv8gxc.blogspot.co.uk/2010/09/morse-code-101-in-wpm-bw-snr.html

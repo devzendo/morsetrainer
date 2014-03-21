@@ -29,6 +29,11 @@ class TestTextToMorseClipRequests extends AssertionsForJUnit with MustMatchersFo
     }
 
     @Test
+    def space() {
+        ttmcr.translateString(" ") must be(List(WordSp))
+    }
+
+    @Test
     def xlat_e() {
         ttmcr.translateString("e") must be(List(Dit))
     }

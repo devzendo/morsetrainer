@@ -86,6 +86,10 @@ class TextAsMorseReader(textToMorse: TextToMorseClipRequests, clipGeneratorHolde
         durationMs
     }
 
+    def charSpaceClipRequestsWithTotalDuration: ClipRequestsWithTotalDuration = {
+        (List[ClipRequest](CharSp), clipGeneratorHolder.clipGenerator.characterSpaceMs)
+    }
+
     def textToClipRequestsWithTotalDuration(str: String): ClipRequestsWithTotalDuration = {
 //        LOGGER.debug("translating '" + str + "' to clips and duration")
         val clipRequests = textToMorse.translateString(str)
