@@ -74,7 +74,7 @@ class SessionPanel(prefs: MorseTrainerPrefs, abandonTraining: AbandonTraining) e
     // 5
     val countdownPanel = new JPanel()
     countdownPanel.setLayout(new BoxLayout(countdownPanel, BoxLayout.Y_AXIS))
-    val timerLabel = new JLabel("Training starts in 5 seconds!")
+    val timerLabel = new JLabel("Get Ready!")
     timerLabel.setFont(timerLabel.getFont.deriveFont(20f))
     addCentredJLabel(countdownPanel, timerLabel)
     infoPanel.add(countdownPanel)

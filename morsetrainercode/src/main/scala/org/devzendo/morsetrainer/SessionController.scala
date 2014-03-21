@@ -68,7 +68,7 @@ class SessionController(textAsMorseReader: TextAsMorseReader, marker: SessionMar
     }
 
     class Countdown extends Handler {
-        var time = 5
+        var time = 3
         def handle: SessionController.this.type#Handler = {
             Thread.sleep(1000)
             time -= 1
