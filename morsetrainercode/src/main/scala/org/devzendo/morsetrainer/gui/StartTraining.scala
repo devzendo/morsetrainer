@@ -16,19 +16,19 @@
 
 package org.devzendo.morsetrainer.gui
 
-import org.devzendo.morsetrainer.{SessionMarker, TextGenerator, SessionType, SessionController}
+import org.devzendo.morsetrainer.{SessionType, SessionController}
+import org.devzendo.commonapp.spring.springloader.SpringLoader
 
 
-class StartTraining(mainPanel: CardLayoutMainPanel, sessionPanel: SessionPanel,
-                    sessionCtrl: SessionController, textGenerator: TextGenerator,
-                    sessionMarker: SessionMarker) {
+class StartTraining(mainPanel: CardLayoutMainPanel,
+                    springLoader: SpringLoader) {
 
     def start(sessionType: SessionType) {
-        sessionPanel.setSessionType(sessionType)
         mainPanel.switchToPanel("sessionPanel")
         // TODO pass in starting set of characters to session controller
-        sessionMarker.reset
+
+        // Getting this is dynamic to resolve construct-time circular dependencies.
+        val sessionCtrl = springLoader.getBean("sessionController", classOf[SessionController])
         sessionCtrl.start(sessionType)
-        textGenerator.start(sessionType)
     }
 }

@@ -18,9 +18,17 @@ package org.devzendo.morsetrainer.gui
 
 
 import java.awt.event.{ActionEvent, ActionListener}
+import org.devzendo.morsetrainer.SessionController
+import org.devzendo.commonapp.spring.springloader.SpringLoader
 
-class AbandonTraining(mainPanel: CardLayoutMainPanel) extends ActionListener {
+class AbandonTraining(mainPanel: CardLayoutMainPanel,
+                      springLoader: SpringLoader) extends ActionListener {
+
     def actionPerformed(e: ActionEvent) {
+        // Getting this is dynamic to resolve construct-time circular dependencies.
+        val sessionCtrl = springLoader.getBean("sessionController", classOf[SessionController])
+        sessionCtrl.terminate()
+
         mainPanel.switchToPanel("trainingModesPanel")
     }
 }

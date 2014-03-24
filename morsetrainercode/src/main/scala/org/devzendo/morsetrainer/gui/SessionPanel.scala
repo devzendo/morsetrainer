@@ -87,7 +87,12 @@ class SessionPanel(prefs: MorseTrainerPrefs, abandonTraining: AbandonTraining) e
     }
 
     def setSessionType(sessionType: SessionType) {
-        typeLabel.setText("Training type: " + sessionType)
+        GUIUtils.invokeLaterOnEventThread(new Runnable() {
+            def run() {
+                typeLabel.setText("Training type: " + sessionType)
+            }
+        })
+
     }
 
 

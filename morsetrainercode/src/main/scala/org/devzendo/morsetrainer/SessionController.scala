@@ -28,6 +28,7 @@ class SessionController(textAsMorseReader: TextAsMorseReader, marker: SessionMar
                         keyGenerator: DefaultKeyboardEventGenerator,
                         sessionView: SessionView,
                         prefs: MorseTrainerPrefs,
+                        textGenerator: TextGenerator,
                         textSpacingIterator: TextSpacingIterator,
                         sessionMarker: SessionMarker) extends KeyboardObserver with Runnable {
 
@@ -42,6 +43,10 @@ class SessionController(textAsMorseReader: TextAsMorseReader, marker: SessionMar
 
     def start(sessionType: SessionType) {
         this.sessionType = sessionType
+        textGenerator.start(sessionType)
+        textSpacingIterator.reset()
+        sessionMarker.reset()
+        sessionView.setSessionType(sessionType)
         abandon.set(false)
         finished.set(false)
         sessionThread = new Thread(this)
@@ -51,17 +56,25 @@ class SessionController(textAsMorseReader: TextAsMorseReader, marker: SessionMar
     }
 
     def terminate() {
+        LOGGER.info("Terminating " + sessionType + " session")
         if (sessionThread != null) {
             abandon.set(true)
             sessionThread.interrupt()
         }
+        sessionMarker.reset()
+        textSpacingIterator.reset()
+        LOGGER.info("Session terminated")
+    }
+
+    def endOfSession() {
+        LOGGER.info("Reached end of " + sessionType + " session")
+        sessionView.endOfSession()
+        LOGGER.info("Session ended")
     }
 
     def eventOccurred(key: KeyboardEvent) {
         sessionMarker.keyReceived(key)
     }
-
-    // TODO need to get abandon events
 
     trait Handler {
         def handle: Handler
@@ -133,8 +146,8 @@ class SessionController(textAsMorseReader: TextAsMorseReader, marker: SessionMar
                 handler = handler.handle
             }
 
-            if (finished.get()) {
-                sessionView.endOfSession()
+            if (finished.get() && !abandon.get()) {
+                endOfSession()
             }
         } catch {
             case ie: InterruptedException => LOGGER.info("Session terminated")

@@ -43,14 +43,12 @@
 
     <bean id="startTraining" class="org.devzendo.morsetrainer.gui.StartTraining">
         <constructor-arg ref="mainPanel" />
-        <constructor-arg ref="sessionPanel" />
-        <constructor-arg ref="sessionController" />
-        <constructor-arg ref="textGenerator" />
-        <constructor-arg ref="sessionMarker" />
+        <constructor-arg ref="springLoader" />
     </bean>
 
     <bean id="abandonTraining" class="org.devzendo.morsetrainer.gui.AbandonTraining">
         <constructor-arg ref="mainPanel" />
+        <constructor-arg ref="springLoader" />
     </bean>
 
 
@@ -185,6 +183,7 @@
         <constructor-arg ref="keyboardEventGenerator" />
         <constructor-arg ref="sessionPanel" /> <!-- as a SessionView -->
         <constructor-arg ref="prefs" />
+        <constructor-arg ref="textGenerator" />
         <constructor-arg ref="textSpacingIterator" />
         <constructor-arg ref="sessionMarker" />
     </bean>

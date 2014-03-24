@@ -36,6 +36,11 @@ class TextSpacingIterator(textGenerator: Iterator[MorseChar], textAsMorseReader:
 
     var lookAhead: Option[MorseChar] = None
     var spaceRequired = false
+
+    def reset() {
+        lookAhead = None
+        spaceRequired = false
+    }
     
     def hasNext: Boolean = {
         if (lookAhead.isDefined) true else textGenerator.hasNext
