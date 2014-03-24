@@ -17,8 +17,21 @@
 package org.devzendo.morsetrainer.prefs
 
 import org.devzendo.morsetrainer.Morse.MorseChar
+import org.devzendo.morsetrainer.Morse
 
 class RecognitionRatePersister(prefs: MorseTrainerPrefs) {
+    initialise()
+
+    def initialise() {
+        val startMap = prefs.getCharacterRecognitionRates
+        def charToCharPlusRecognitionRate(ch: MorseChar): (MorseChar, RecognitionRate) = {
+            val rr = startMap.getOrElse(ch, RecognitionRate(0, 0))
+            (ch, rr)
+        }
+        val initMap = Morse.chars.map(charToCharPlusRecognitionRate).toMap
+        prefs.setCharacterRecognitionRates(initMap)
+    }
+
     def getRecognitionRates(forChars: Set[MorseChar]): Map[MorseChar, RecognitionRate] = {
         val fullMap = prefs.getCharacterRecognitionRates
         forChars.map( { ch: MorseChar => (ch, fullMap(ch)) } ).toMap
