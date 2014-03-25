@@ -17,10 +17,48 @@
 package org.devzendo.morsetrainer.prefs
 
 import org.devzendo.morsetrainer.Morse.MorseChar
-import org.devzendo.morsetrainer.Morse
+import org.devzendo.morsetrainer.{Key, Backspace, KeyboardEvent, Morse}
+import scala.collection.mutable.ArrayBuffer
+import org.slf4j.LoggerFactory
+
+object RecognitionRatePersister {
+    private val LOGGER = LoggerFactory.getLogger(classOf[RecognitionRatePersister])
+}
 
 class RecognitionRatePersister(prefs: MorseTrainerPrefs) {
+    import RecognitionRatePersister._
+
     initialise()
+
+    var receivedKeys = ArrayBuffer[MorseChar]()
+    val playedChars = ArrayBuffer[MorseChar]()
+
+    def reset() {
+        receivedKeys.clear()
+        playedChars.clear()
+    }
+
+    def persist() {
+
+    }
+
+    def keyReceived(key: KeyboardEvent) {
+        LOGGER.info("Received key: " + key)
+        key match {
+            case Backspace => {
+                if (!receivedKeys.isEmpty) {
+                    receivedKeys = receivedKeys.init
+                }
+            }
+            case Key(ch: Char) =>
+                receivedKeys += ch
+        }
+    }
+
+    def charPlayed(ch: MorseChar) {
+        LOGGER.info("Played: '" + ch + "'")
+        playedChars += ch
+    }
 
     def initialise() {
         val startMap = prefs.getCharacterRecognitionRates

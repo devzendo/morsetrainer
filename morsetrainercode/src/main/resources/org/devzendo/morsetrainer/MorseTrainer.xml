@@ -140,7 +140,6 @@
         <constructor-arg ref="prefs" />
         <constructor-arg ref="clipGeneratorHolder" />
         <constructor-arg ref="textAsMorseReader" />
-
     </bean>
 
 
@@ -164,9 +163,6 @@
     <bean id="textToMorseClipRequests" class="org.devzendo.morsetrainer.TextToMorseClipRequests">
     </bean>
 
-    <bean id="sessionMarker" class="org.devzendo.morsetrainer.SessionMarker">
-    </bean>
-
     <bean id="textSpacingIterator" class="org.devzendo.morsetrainer.TextSpacingIterator">
         <constructor-arg ref="textGenerator" />
         <constructor-arg ref="textAsMorseReader" />
@@ -179,13 +175,12 @@
 
     <bean id="sessionController" class="org.devzendo.morsetrainer.SessionController">
         <constructor-arg ref="textAsMorseReader" />
-        <constructor-arg ref="sessionMarker" />
         <constructor-arg ref="keyboardEventGenerator" />
         <constructor-arg ref="sessionPanel" /> <!-- as a SessionView -->
         <constructor-arg ref="prefs" />
         <constructor-arg ref="textGenerator" />
         <constructor-arg ref="textSpacingIterator" />
-        <constructor-arg ref="sessionMarker" />
+        <constructor-arg ref="recognitionRatePersister" />
     </bean>
 
 </beans>

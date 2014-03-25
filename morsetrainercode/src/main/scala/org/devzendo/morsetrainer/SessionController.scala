@@ -18,19 +18,19 @@ package org.devzendo.morsetrainer
 
 import org.slf4j.LoggerFactory
 import java.util.concurrent.atomic.AtomicBoolean
-import org.devzendo.morsetrainer.prefs.MorseTrainerPrefs
+import org.devzendo.morsetrainer.prefs.{RecognitionRatePersister, MorseTrainerPrefs}
 
 object SessionController {
     private val LOGGER = LoggerFactory.getLogger(classOf[SessionController])
 }
 
-class SessionController(textAsMorseReader: TextAsMorseReader, marker: SessionMarker,
+class SessionController(textAsMorseReader: TextAsMorseReader,
                         keyGenerator: DefaultKeyboardEventGenerator,
                         sessionView: SessionView,
                         prefs: MorseTrainerPrefs,
                         textGenerator: TextGenerator,
                         textSpacingIterator: TextSpacingIterator,
-                        sessionMarker: SessionMarker) extends KeyboardObserver with Runnable {
+                        recognitionRatePersister: RecognitionRatePersister) extends KeyboardObserver with Runnable {
 
     import SessionController._
 
@@ -45,7 +45,7 @@ class SessionController(textAsMorseReader: TextAsMorseReader, marker: SessionMar
         this.sessionType = sessionType
         textGenerator.start(sessionType)
         textSpacingIterator.reset()
-        sessionMarker.reset()
+        recognitionRatePersister.reset()
         sessionView.setSessionType(sessionType)
         abandon.set(false)
         finished.set(false)
@@ -61,19 +61,20 @@ class SessionController(textAsMorseReader: TextAsMorseReader, marker: SessionMar
             abandon.set(true)
             sessionThread.interrupt()
         }
-        sessionMarker.reset()
+        recognitionRatePersister.reset()
         textSpacingIterator.reset()
         LOGGER.info("Session terminated")
     }
 
     def endOfSession() {
         LOGGER.info("Reached end of " + sessionType + " session")
+        recognitionRatePersister.persist()
         sessionView.endOfSession()
         LOGGER.info("Session ended")
     }
 
     def eventOccurred(key: KeyboardEvent) {
-        sessionMarker.keyReceived(key)
+        recognitionRatePersister.keyReceived(key)
     }
 
     trait Handler {
@@ -122,7 +123,7 @@ class SessionController(textAsMorseReader: TextAsMorseReader, marker: SessionMar
 
                     for (morseChar <- optionMorseChar) {
                         LOGGER.info("Sending '" + morseChar + "'")
-                        sessionMarker.charPlayed(morseChar)
+                        recognitionRatePersister.charPlayed(morseChar)
 
                         // TODO if space played, recalculate the TextGenerator's
                         // assessment of what needs sending (based on how wrong
