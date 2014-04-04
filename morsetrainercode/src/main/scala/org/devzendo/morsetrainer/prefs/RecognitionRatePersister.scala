@@ -17,9 +17,10 @@
 package org.devzendo.morsetrainer.prefs
 
 import org.devzendo.morsetrainer.Morse.MorseChar
-import org.devzendo.morsetrainer.{Key, Backspace, KeyboardEvent, Morse}
+import org.devzendo.morsetrainer._
 import scala.collection.mutable.ArrayBuffer
 import org.slf4j.LoggerFactory
+import org.devzendo.morsetrainer.Key
 
 object RecognitionRatePersister {
     private val LOGGER = LoggerFactory.getLogger(classOf[RecognitionRatePersister])
@@ -28,50 +29,110 @@ object RecognitionRatePersister {
 class RecognitionRatePersister(prefs: MorseTrainerPrefs) {
     import RecognitionRatePersister._
 
-    initialise()
-
-    var receivedKeys = ArrayBuffer[MorseChar]()
-    val playedChars = ArrayBuffer[MorseChar]()
+    var typedKeys = ArrayBuffer[MorseChar]()
+    val sentChars = ArrayBuffer[MorseChar]()
+    var startMap: Map[MorseChar, RecognitionRate] = initialise()
+    val sessionMap = scala.collection.mutable.Map[MorseChar, RecognitionRate]()
 
     def reset() {
-        receivedKeys.clear()
-        playedChars.clear()
+        LOGGER.debug("Resetting")
+        startMap = prefs.getCharacterRecognitionRates
+        sessionMap.clear()
+        typedKeys.clear()
+        sentChars.clear()
     }
 
     def persist() {
+        LOGGER.debug("Persisting")
+        prefs.setCharacterRecognitionRates(getRecognitionRates(Morse.chars.toSet))
+    }
 
+    private def recompute() {
+        val start = System.currentTimeMillis()
+        LOGGER.debug("Recomputing")
+
+        val typedString = new String(typedKeys.toArray)
+        LOGGER.debug("Typed chars '" + typedString + "'")
+        val sentString = new String(sentChars.toArray)
+        LOGGER.debug("Sent chars '" + sentString + "'")
+        val uniqueSentChars = sentChars.toSet
+        LOGGER.debug("Unique sent chars: " + uniqueSentChars)
+
+        sessionMap.clear()
+
+        val matcher = new EditMatcher(sentString, typedString)
+        val edits = matcher.edits()
+        LOGGER.debug("Edits: " + edits)
+        val matchingEdits = edits.filter {
+            case Match(_) => true
+            case _ => false
+        }
+        LOGGER.debug("Matching edits: " + matchingEdits)
+
+        uniqueSentChars.foreach( (ch: MorseChar) => {
+            val startRate = startMap.get(ch).get
+            LOGGER.debug("Start rate for " + ch + " is " + startRate)
+            val numMatched = matchingEdits.count {
+                case Match(mch) => mch == ch
+                case _ => false
+            }
+            LOGGER.debug("Num matched: " + numMatched)
+            val numSent = sentChars.count(_ == ch)
+            LOGGER.debug("Num sent: " + numSent)
+            val update = ch -> RecognitionRate(startRate.correct + numMatched, startRate.sentInTotal + numSent)
+            LOGGER.debug("Updating Session Map with: " + update)
+            sessionMap += update
+
+        } )
+        LOGGER.debug("Session Map: " + sessionMap)
+        val duration = System.currentTimeMillis() - start
+        LOGGER.info("Recomputation took " + duration + " ms")
     }
 
     def keyReceived(key: KeyboardEvent) {
         LOGGER.info("Received key: " + key)
         key match {
             case Backspace => {
-                if (!receivedKeys.isEmpty) {
-                    receivedKeys = receivedKeys.init
+                if (!typedKeys.isEmpty) {
+                    typedKeys = typedKeys.init
+                    recompute()
                 }
             }
             case Key(ch: Char) =>
-                receivedKeys += ch
+                typedKeys += ch
+                recompute()
         }
     }
 
     def charPlayed(ch: MorseChar) {
         LOGGER.info("Played: '" + ch + "'")
-        playedChars += ch
+        sentChars += ch
+        recompute()
     }
 
-    def initialise() {
-        val startMap = prefs.getCharacterRecognitionRates
+    def initialise(): Map[MorseChar, RecognitionRate] = {
+        LOGGER.debug("Initialising")
+        val initialRates = prefs.getCharacterRecognitionRates
+        val initialMap = if (initialRates != null) initialRates else Map[MorseChar, RecognitionRate]()
+        assert(initialMap != null)
         def charToCharPlusRecognitionRate(ch: MorseChar): (MorseChar, RecognitionRate) = {
-            val rr = startMap.getOrElse(ch, RecognitionRate(0, 0))
+            val rr = initialMap.getOrElse(ch, RecognitionRate(0, 0))
             (ch, rr)
         }
-        val initMap = Morse.chars.map(charToCharPlusRecognitionRate).toMap
-        prefs.setCharacterRecognitionRates(initMap)
+        val startMap = Morse.chars.map(charToCharPlusRecognitionRate).toMap
+        LOGGER.debug("initialised start map " + startMap)
+        prefs.setCharacterRecognitionRates(startMap)
+        startMap
     }
 
     def getRecognitionRates(forChars: Set[MorseChar]): Map[MorseChar, RecognitionRate] = {
-        val fullMap = prefs.getCharacterRecognitionRates
-        forChars.map( { ch: MorseChar => (ch, fullMap(ch)) } ).toMap
+        LOGGER.debug("Getting rates for '" + forChars + "'")
+        LOGGER.debug("session map " + sessionMap)
+        LOGGER.debug("start map " + startMap)
+
+        def getFromSessionOrStart(ch: MorseChar) = {
+            sessionMap.getOrElse(ch, startMap.getOrElse(ch, RecognitionRate(0, 0)))
+        }
+        forChars.map( { ch: MorseChar => (ch, getFromSessionOrStart(ch)) } ).toMap
     }
 }
