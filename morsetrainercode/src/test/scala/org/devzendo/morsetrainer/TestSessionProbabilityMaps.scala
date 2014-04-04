@@ -63,5 +63,4 @@ class TestSessionProbabilityMaps extends AssertionsForJUnit with MustMatchersFor
         LOGGER.info("genSimilarCharsProbMap map is " + map.getMap)
         map.get('K') must be(1.0) // has been increased since it's similar to R
     }
-
 }

@@ -76,7 +76,7 @@ class TestTextSpacingIterator extends AssertionsForJUnit with MustMatchersForJUn
 
         next(tsi) must be((None, List(CharSp), 297))
 
-        next(tsi) must be((Some('B'), List(Dah, ElementSp, Dit, ElementSp, Dit, ElementSp, Dit), 594)) // ?
+        next(tsi) must be((Some('B'), List(Dah, ElementSp, Dit, ElementSp, Dit, ElementSp, Dit), 594))
 
         finished(tsi)
     }
