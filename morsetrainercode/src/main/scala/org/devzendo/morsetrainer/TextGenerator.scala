@@ -27,6 +27,16 @@ object TextGenerator {
 }
 
 class TextGenerator(prefs: MorseTrainerPrefs, recognitionRatePersister: RecognitionRatePersister) extends Iterator[MorseChar] {
+    import TextGenerator._
+
+    var remainingCharsToEmitInWord = randomWordLength()
+
+    def randomWordLength(): Int = {
+        val out = ((Math.random() * 7) + 1).toInt
+        LOGGER.info("Next random word length is: " + out)
+
+        out
+    }
 
     var iterator: Iterator[MorseChar] = new Iterator[MorseChar] {
         def hasNext: Boolean = false
@@ -47,30 +57,37 @@ class TextGenerator(prefs: MorseTrainerPrefs, recognitionRatePersister: Recognit
     def hasNext: Boolean = iterator.hasNext
 
     def next(): MorseChar = {
-        val char = iterator.next()
-        generated += char
+        val outChar = if (remainingCharsToEmitInWord == -1) {
+            remainingCharsToEmitInWord = randomWordLength()
+            ' '
+        } else {
+            val char = iterator.next()
+            generated += char
 
-        char
+            char
+        }
+        remainingCharsToEmitInWord = remainingCharsToEmitInWord - 1
+        outChar
     }
 
     def getGeneratedString: String = generated.toString()
 }
 
-
 trait EndlessMorseCharIterator extends Iterator[MorseChar] {
     final def hasNext: Boolean = true
 }
 
-
 object KochIterator {
     private val LOGGER = LoggerFactory.getLogger(classOf[KochIterator])
 }
+
 class KochIterator(prefs: MorseTrainerPrefs, recognitionRatePersister: RecognitionRatePersister) extends EndlessMorseCharIterator {
     import KochIterator._
     val kochLevel: Int = prefs.getKochLevel
     val startSet = KochLevels.morseCharsForLevel(kochLevel)
     val definite = new DefiniteProbabilityMap[MorseChar](startSet)
     val newCharsProbMap = if (prefs.newCharsMoreFrequently) genNewCharsProbMap(kochLevel) else definite
+
 //    LOGGER.debug("newCharsProbMap: " + newCharsProbMap)
 //    val probMap = generateProbabilityMap
 
@@ -90,10 +107,8 @@ class KochIterator(prefs: MorseTrainerPrefs, recognitionRatePersister: Recogniti
     }
 
     def next(): MorseChar = {
-        // TODO need to decide how to intersperse spaces to end words
-        // TODO decide if these are too expensive to recompute for every MorseChar
         val startTime = System.currentTimeMillis()
-
+        // TODO decide if the probability map is too expensive to recompute for every MorseChar
         val probMap = generateProbabilityMap
 
         val chosen = probMap.getProbabilistically
