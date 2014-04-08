@@ -49,7 +49,7 @@ class TextGenerator(prefs: MorseTrainerPrefs, recognitionRatePersister: Recognit
         iterator = sessionType match {
             case Koch => new KochIterator(prefs, recognitionRatePersister)
             case Freestyle => new FreestyleIterator()
-            case Worst => new WorstIterator()
+            case Worst => new WorstIterator(prefs, recognitionRatePersister)
         }
         generated.clear()
     }
@@ -124,8 +124,23 @@ class FreestyleIterator extends EndlessMorseCharIterator {
     }
 }
 
-class WorstIterator extends EndlessMorseCharIterator {
+object WorstIterator {
+    private val LOGGER = LoggerFactory.getLogger(classOf[WorstIterator])
+}
+
+class WorstIterator(prefs: MorseTrainerPrefs, recognitionRatePersister: RecognitionRatePersister) extends EndlessMorseCharIterator {
+    import WorstIterator._
+
+    val startSet = KochLevels.morseCharsForLevel(prefs.getKochLevel)
+
     def next(): MorseChar = {
-        'a'
+        val startTime = System.currentTimeMillis()
+        // TODO decide if the probability map is too expensive to recompute for every MorseChar
+        val probMap = genWorstCharsProbMap(recognitionRatePersister.getRecognitionRates(startSet))
+        LOGGER.debug("WorstIterator prob map: " + probMap)
+        val chosen = probMap.getProbabilistically
+        val endTime = System.currentTimeMillis()
+        LOGGER.debug("WorstIterator chooses " + chosen._1 + " with probability " + chosen._2 + " in " + (endTime - startTime) + " ms")
+        chosen._1
     }
 }

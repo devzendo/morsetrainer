@@ -44,6 +44,16 @@ object SessionProbabilityMaps {
         new SetFnProbabilityMap[MorseChar](startSet, newCharsHigher)
     }
 
+    def genWorstCharsProbMap(ratesForStartSet: Map[MorseChar, RecognitionRate]): ProbabilityMap[MorseChar] = {
+        val startSet = ratesForStartSet.keySet
+
+        val probabilityMap = ratesForStartSet.map( { p: (MorseChar, RecognitionRate) => {
+            if (p._2.probability > 0.9) (p._1, 0.0) else (p._1, 1 - p._2.probability)
+        } } )
+
+        new SetFnProbabilityMap[MorseChar](startSet, probabilityMap.getOrElse(_, 0.0))
+    }
+
     def genMissedCharsProbMap(ratesForStartSet: Map[MorseChar, RecognitionRate]): ProbabilityMap[MorseChar] = {
         val startSet = ratesForStartSet.keySet
 

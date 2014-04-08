@@ -122,4 +122,90 @@ class TestTextGenerator extends AssertionsForJUnit with MustMatchersForJUnit wit
         EasyMock.verify(mockPrefs)
         LOGGER.info("All words sent '" + words.toSeq.mkString + "'")
     }
+
+
+    @Test
+    def testWorstGenerator() {
+        val mockPrefs = EasyMock.createMock(classOf[MorseTrainerPrefs])
+
+        mockPrefs.getKochLevel
+        EasyMock.expectLastCall().andReturn(12)
+
+        mockPrefs.getCharacterRecognitionRates
+        val rates: Map[MorseChar, RecognitionRate] = Map(
+            'K' -> RecognitionRate(9, 10),
+            'M' -> RecognitionRate(9, 10),
+            'R' -> RecognitionRate(10, 10),
+            'S' -> RecognitionRate(10, 10),
+            'U' -> RecognitionRate(0, 10),
+            'A' -> RecognitionRate(1, 10),
+            'P' -> RecognitionRate(9, 10),
+            'T' -> RecognitionRate(9, 10),
+            'L' -> RecognitionRate(9, 10),
+            'O' -> RecognitionRate(8, 10),
+            'W' -> RecognitionRate(9, 10),
+            'I' -> RecognitionRate(2, 10)
+        )
+        EasyMock.expectLastCall().andReturn(rates).anyTimes()
+
+        mockPrefs.setCharacterRecognitionRates(Map(
+            'E' -> RecognitionRate(0, 0),
+            'X' -> RecognitionRate(0, 0),
+            '8' -> RecognitionRate(0, 0),
+            '4' -> RecognitionRate(0, 0),
+            '.' -> RecognitionRate(0, 0),
+            '9' -> RecognitionRate(0, 0),
+            'N' -> RecognitionRate(0, 0),
+            'T' -> RecognitionRate(9, 10),
+            '=' -> RecognitionRate(0, 0),
+            'Y' -> RecognitionRate(0, 0),
+            'J' -> RecognitionRate(0, 0),
+            'U' -> RecognitionRate(0, 10),
+            'F' -> RecognitionRate(0, 0),
+            'A' -> RecognitionRate(1, 10),
+            '5' -> RecognitionRate(0, 0),
+            'M' -> RecognitionRate(9, 10),
+            'I' -> RecognitionRate(2, 10),
+            ',' -> RecognitionRate(0, 0),
+            'G' -> RecognitionRate(0, 0),
+            '6' -> RecognitionRate(0, 0),
+            '1' -> RecognitionRate(0, 0),
+            'V' -> RecognitionRate(0, 0),
+            'Q' -> RecognitionRate(0, 0),
+            'L' -> RecognitionRate(9, 10),
+            'B' -> RecognitionRate(0, 0),
+            'P' -> RecognitionRate(9, 10),
+            '0' -> RecognitionRate(0, 0),
+            '?' -> RecognitionRate(0, 0),
+            '2' -> RecognitionRate(0, 0),
+            'C' -> RecognitionRate(0, 0),
+            'H' -> RecognitionRate(0, 0),
+            '+' -> RecognitionRate(0, 0),
+            'W' -> RecognitionRate(9, 10),
+            '7' -> RecognitionRate(0, 0),
+            'K' -> RecognitionRate(9, 10),
+            'R' -> RecognitionRate(10, 10),
+            '3' -> RecognitionRate(0, 0),
+            'O' -> RecognitionRate(8, 10),
+            '/' -> RecognitionRate(0, 0),
+            'D' -> RecognitionRate(0, 0),
+            'Z' -> RecognitionRate(0, 0),
+            'S' -> RecognitionRate(10, 10)))
+        EasyMock.replay(mockPrefs)
+
+        val recognitionRatePersister = new RecognitionRatePersister(mockPrefs)
+        val tg = new TextGenerator(mockPrefs, recognitionRatePersister)
+        tg.start(Worst)
+        val words = new ArrayBuffer[MorseChar]()
+        for (i <- 0 to 40) {
+            val next = tg.next()
+            words += next
+            LOGGER.info("next char is " + next)
+        }
+
+        EasyMock.verify(mockPrefs)
+        LOGGER.info("All words sent (should only contain UAOI) '" + words.toSeq.mkString + "'")
+        // uaoi
+    }
+
 }
