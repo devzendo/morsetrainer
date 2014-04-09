@@ -45,10 +45,10 @@ class TextGenerator(prefs: MorseTrainerPrefs, recognitionRatePersister: Recognit
 
     val generated = ArrayBuffer[MorseChar]()
 
-    def start(sessionType: SessionType) {
+    def start(sessionType: SessionType, selected: Set[MorseChar] = Set()) {
         iterator = sessionType match {
             case Koch => new KochIterator(prefs, recognitionRatePersister)
-            case Freestyle => new FreestyleIterator()
+            case Freestyle => new FreestyleIterator(selected, recognitionRatePersister)
             case Worst => new WorstIterator(prefs, recognitionRatePersister)
         }
         generated.clear()
@@ -118,29 +118,33 @@ class KochIterator(prefs: MorseTrainerPrefs, recognitionRatePersister: Recogniti
     }
 }
 
-class FreestyleIterator extends EndlessMorseCharIterator {
-    def next(): MorseChar = {
-        'a'
-    }
-}
+class FreestyleIterator(selected: Set[MorseChar], recognitionRatePersister: RecognitionRatePersister) extends EndlessMorseCharIterator {
+    val it = new SetIterator(selected, recognitionRatePersister)
 
-object WorstIterator {
-    private val LOGGER = LoggerFactory.getLogger(classOf[WorstIterator])
+    def next(): MorseChar = it.next
 }
 
 class WorstIterator(prefs: MorseTrainerPrefs, recognitionRatePersister: RecognitionRatePersister) extends EndlessMorseCharIterator {
-    import WorstIterator._
-
     val startSet = KochLevels.morseCharsForLevel(prefs.getKochLevel)
+    val it = new SetIterator(startSet, recognitionRatePersister)
+
+    def next(): MorseChar = it.next()
+}
+
+object SetIterator {
+    private val LOGGER = LoggerFactory.getLogger(classOf[SetIterator])
+}
+
+class SetIterator(selected: Set[MorseChar], recognitionRatePersister: RecognitionRatePersister) extends EndlessMorseCharIterator {
+    import SetIterator._
 
     def next(): MorseChar = {
         val startTime = System.currentTimeMillis()
         // TODO decide if the probability map is too expensive to recompute for every MorseChar
-        val probMap = genWorstCharsProbMap(recognitionRatePersister.getRecognitionRates(startSet))
-        LOGGER.debug("WorstIterator prob map: " + probMap)
+        val probMap = genWorstCharsProbMap(recognitionRatePersister.getRecognitionRates(selected))
         val chosen = probMap.getProbabilistically
         val endTime = System.currentTimeMillis()
-        LOGGER.debug("WorstIterator chooses " + chosen._1 + " with probability " + chosen._2 + " in " + (endTime - startTime) + " ms")
+        LOGGER.debug("SetIterator chooses " + chosen._1 + " with probability " + chosen._2 + " in " + (endTime - startTime) + " ms")
         chosen._1
     }
 }

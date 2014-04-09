@@ -22,8 +22,15 @@ import org.devzendo.morsetrainer.prefs.MorseTrainerPrefs
 import java.awt.{FlowLayout, BorderLayout}
 import java.awt.event.{ActionEvent, ActionListener}
 import org.devzendo.morsetrainer.Freestyle
+import org.slf4j.LoggerFactory
+
+object FreestyleTrainerPanel {
+    private val LOGGER = LoggerFactory.getLogger(classOf[FreestyleTrainerPanel])
+}
 
 class FreestyleTrainerPanel(prefs: MorseTrainerPrefs, startTraining: StartTraining) extends JPanel with PanelTools {
+    import FreestyleTrainerPanel._
+
     setLayout(new BorderLayout())
 
     val charactersPanel = new CharactersPanel(true)
@@ -35,7 +42,9 @@ class FreestyleTrainerPanel(prefs: MorseTrainerPrefs, startTraining: StartTraini
     val startButton = new JButton("Start training")
     startButton.addActionListener(new ActionListener() {
         def actionPerformed(e: ActionEvent) {
-            startTraining.start(Freestyle)
+            val selected = charactersPanel.getSelectedMorseChars
+            LOGGER.debug("Freestyle set: '" + selected + "'")
+            startTraining.start(Freestyle, selected)
         }
     })
 
@@ -43,5 +52,4 @@ class FreestyleTrainerPanel(prefs: MorseTrainerPrefs, startTraining: StartTraini
     add(eastPanel, BorderLayout.EAST)
 
     add(new JLabel("Select the individual characters with which to test."), BorderLayout.NORTH)
-
 }

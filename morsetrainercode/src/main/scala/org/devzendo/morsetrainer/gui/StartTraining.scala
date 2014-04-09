@@ -18,17 +18,18 @@ package org.devzendo.morsetrainer.gui
 
 import org.devzendo.morsetrainer.{SessionType, SessionController}
 import org.devzendo.commonapp.spring.springloader.SpringLoader
+import org.devzendo.morsetrainer.Morse.MorseChar
 
 
 class StartTraining(mainPanel: CardLayoutMainPanel,
                     springLoader: SpringLoader) {
 
-    def start(sessionType: SessionType) {
+    def start(sessionType: SessionType, freeStyleSelected: Set[MorseChar] = Set()) {
         mainPanel.switchToPanel("sessionPanel")
         // TODO pass in starting set of characters to session controller
 
         // Getting this is dynamic to resolve construct-time circular dependencies.
         val sessionCtrl = springLoader.getBean("sessionController", classOf[SessionController])
-        sessionCtrl.start(sessionType)
+        sessionCtrl.start(sessionType, freeStyleSelected)
     }
 }

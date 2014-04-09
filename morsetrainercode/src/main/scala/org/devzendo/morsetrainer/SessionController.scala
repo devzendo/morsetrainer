@@ -19,6 +19,7 @@ package org.devzendo.morsetrainer
 import org.slf4j.LoggerFactory
 import java.util.concurrent.atomic.AtomicBoolean
 import org.devzendo.morsetrainer.prefs.{RecognitionRatePersister, MorseTrainerPrefs}
+import org.devzendo.morsetrainer.Morse.MorseChar
 
 object SessionController {
     private val LOGGER = LoggerFactory.getLogger(classOf[SessionController])
@@ -41,9 +42,9 @@ class SessionController(textAsMorseReader: TextAsMorseReader,
 
     keyGenerator.addKeyboardObserver(this)
 
-    def start(sessionType: SessionType) {
+    def start(sessionType: SessionType, freeStyleSelected: Set[MorseChar]) {
         this.sessionType = sessionType
-        textGenerator.start(sessionType)
+        textGenerator.start(sessionType, freeStyleSelected)
         textSpacingIterator.reset()
         recognitionRatePersister.reset()
         sessionView.setSessionType(sessionType)

@@ -16,11 +16,13 @@
 
 package org.devzendo.morsetrainer.gui
 
-import javax.swing.JPanel
+import javax.swing.{SwingUtilities, JPanel}
 import org.devzendo.morsetrainer.gui.dialogs.PanelTools
 import java.awt.{Dimension, GridLayout}
 import org.devzendo.morsetrainer.Morse
 import org.slf4j.LoggerFactory
+import org.devzendo.morsetrainer.Morse.MorseChar
+import org.devzendo.commonapp.gui.GUIUtils
 
 object CharactersPanel {
     private val LOGGER = LoggerFactory.getLogger(classOf[CharactersPanel])
@@ -61,6 +63,20 @@ class CharactersPanel(enableable: Boolean) extends JPanel with PanelTools {
                 charBox.setSelected(false)
             }
         }
+    }
+
+    def getSelectedMorseChars: Set[MorseChar] = {
+        assert(SwingUtilities.isEventDispatchThread)
+
+        def optionSelect(entry: (Char, CharBox)) = {
+            if (entry._2.isSelected) {
+                Some(entry._1)
+            } else {
+                None
+            }
+        }
+
+        charButtonMap.map(optionSelect).flatten.toSet
     }
 
     def select(ch: Char) {
