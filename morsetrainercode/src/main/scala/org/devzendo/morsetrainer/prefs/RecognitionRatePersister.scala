@@ -70,6 +70,8 @@ class RecognitionRatePersister(prefs: MorseTrainerPrefs) {
         LOGGER.debug("Matching edits: " + matchingEdits)
 
         uniqueSentChars.foreach( (ch: MorseChar) => {
+            LOGGER.debug("Getting start rate for '" + ch + "'")
+
             val startRate = startMap.get(ch).get
             LOGGER.debug("Start rate for " + ch + " is " + startRate)
             val numMatched = matchingEdits.count {
@@ -113,13 +115,12 @@ class RecognitionRatePersister(prefs: MorseTrainerPrefs) {
     def initialise(): Map[MorseChar, RecognitionRate] = {
         LOGGER.debug("Initialising")
         val initialRates = prefs.getCharacterRecognitionRates
-        val initialMap = if (initialRates != null) initialRates else Map[MorseChar, RecognitionRate]()
-        assert(initialMap != null)
+        assert(initialRates != null)
         def charToCharPlusRecognitionRate(ch: MorseChar): (MorseChar, RecognitionRate) = {
-            val rr = initialMap.getOrElse(ch, RecognitionRate(0, 0))
+            val rr = initialRates.getOrElse(ch, RecognitionRate(0, 0))
             (ch, rr)
         }
-        val startMap = Morse.chars.map(charToCharPlusRecognitionRate).toMap
+        val startMap = (Morse.chars + ' ').map(charToCharPlusRecognitionRate).toMap
         LOGGER.debug("initialised start map " + startMap)
         prefs.setCharacterRecognitionRates(startMap)
         startMap

@@ -65,6 +65,8 @@ class TestTextGenerator extends AssertionsForJUnit with MustMatchersForJUnit wit
         EasyMock.expectLastCall().andReturn(true).anyTimes()
 
         mockPrefs.setCharacterRecognitionRates(Map(
+            ' ' -> RecognitionRate(0, 0),
+
             'E' -> RecognitionRate(0, 0),
             'X' -> RecognitionRate(0, 0),
             '8' -> RecognitionRate(0, 0),
@@ -149,6 +151,8 @@ class TestTextGenerator extends AssertionsForJUnit with MustMatchersForJUnit wit
         EasyMock.expectLastCall().andReturn(rates).anyTimes()
 
         mockPrefs.setCharacterRecognitionRates(Map(
+            ' ' -> RecognitionRate(0, 0),
+
             'E' -> RecognitionRate(0, 0),
             'X' -> RecognitionRate(0, 0),
             '8' -> RecognitionRate(0, 0),
@@ -224,6 +228,8 @@ class TestTextGenerator extends AssertionsForJUnit with MustMatchersForJUnit wit
         EasyMock.expectLastCall().andReturn(rates).anyTimes()
 
         mockPrefs.setCharacterRecognitionRates(Map(
+            ' ' -> RecognitionRate(0, 0),
+
             'E' -> RecognitionRate(0, 0),
             'X' -> RecognitionRate(0, 0),
             '8' -> RecognitionRate(0, 0),

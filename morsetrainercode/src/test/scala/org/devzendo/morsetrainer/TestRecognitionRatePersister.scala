@@ -50,6 +50,7 @@ class TestRecognitionRatePersister extends AssertionsForJUnit with MustMatchersF
         EasyMock.expectLastCall().andReturn(rates)
 
         val initialisedRates: Map[MorseChar, RecognitionRate] = Map(
+            ' ' -> RecognitionRate(0, 0), // SPACE is added to the initialised recognition rates
             'A' -> RecognitionRate(3, 10),
             'B' -> RecognitionRate(0, 0),
             'C' -> RecognitionRate(0, 0),
