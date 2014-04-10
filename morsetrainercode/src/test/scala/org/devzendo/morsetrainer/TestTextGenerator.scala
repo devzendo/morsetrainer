@@ -22,7 +22,6 @@ import org.devzendo.morsetrainer.prefs.{RecognitionRate, RecognitionRatePersiste
 import org.junit.Test
 import org.devzendo.morsetrainer.Morse._
 import org.slf4j.LoggerFactory
-import scala.collection.mutable.ArrayBuffer
 
 object TestTextGenerator {
     private val LOGGER = LoggerFactory.getLogger(classOf[TestTextGenerator])
@@ -114,17 +113,10 @@ class TestTextGenerator extends AssertionsForJUnit with MustMatchersForJUnit wit
         val recognitionRatePersister = new RecognitionRatePersister(mockPrefs)
         val tg = new TextGenerator(mockPrefs, recognitionRatePersister)
         tg.start(Koch)
-        val words = new ArrayBuffer[MorseChar]()
-        for (i <- 0 to 40) {
-            val next = tg.next()
-            words += next
-            LOGGER.info("next char is " + next)
-        }
-
+        val words = (for { i <- 0 to 40 } yield tg.next()).mkString
         EasyMock.verify(mockPrefs)
-        LOGGER.info("All words sent '" + words.toSeq.mkString + "'")
+        LOGGER.info("All words sent '" + words + "'")
     }
-
 
     @Test
     def testWorstGenerator() {
@@ -200,24 +192,14 @@ class TestTextGenerator extends AssertionsForJUnit with MustMatchersForJUnit wit
         val recognitionRatePersister = new RecognitionRatePersister(mockPrefs)
         val tg = new TextGenerator(mockPrefs, recognitionRatePersister)
         tg.start(Worst)
-        val words = new ArrayBuffer[MorseChar]()
-        for (i <- 0 to 40) {
-            val next = tg.next()
-            words += next
-            LOGGER.info("next char is " + next)
-        }
-
+        val words = (for { i <- 0 to 40 } yield tg.next()).mkString
         EasyMock.verify(mockPrefs)
-        LOGGER.info("All words sent (should only contain UAOI) '" + words.toSeq.mkString + "'")
-        // uaoi
+        LOGGER.info("All words sent (should only contain UAOI) '" + words + "'")
     }
 
     @Test
     def testFreestyleGenerator() {
         val mockPrefs = EasyMock.createMock(classOf[MorseTrainerPrefs])
-
-//        mockPrefs.getKochLevel
-//        EasyMock.expectLastCall().andReturn(12)
 
         mockPrefs.getCharacterRecognitionRates
         val rates: Map[MorseChar, RecognitionRate] = Map(
@@ -277,15 +259,8 @@ class TestTextGenerator extends AssertionsForJUnit with MustMatchersForJUnit wit
         val recognitionRatePersister = new RecognitionRatePersister(mockPrefs)
         val tg = new TextGenerator(mockPrefs, recognitionRatePersister)
         tg.start(Freestyle, Set('K', 'M', 'R'))
-        val words = new ArrayBuffer[MorseChar]()
-        for (i <- 0 to 40) {
-            val next = tg.next()
-            words += next
-            LOGGER.info("next char is " + next)
-        }
-
+        val words = (for { i <- 0 to 40 } yield tg.next()).mkString
         EasyMock.verify(mockPrefs)
-        LOGGER.info("All words sent (should only contain KM) '" + words.toSeq.mkString + "'")
-        // KM
+        LOGGER.info("All words sent (should only contain KM) '" + words + "'")
     }
 }
