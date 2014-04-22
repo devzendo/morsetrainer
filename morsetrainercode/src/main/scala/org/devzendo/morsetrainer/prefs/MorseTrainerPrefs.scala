@@ -38,7 +38,7 @@ object MorseTrainerPrefs {
 
 case class RecognitionRate(correct: Int, sentInTotal: Int) {
     override def toString: String = correct + "/" + sentInTotal
-    def probability: Double = correct.toDouble / sentInTotal.toDouble
+    def probability: Double = if (sentInTotal == 0) 0.0 else correct.toDouble / sentInTotal.toDouble
 }
 
 trait MorseTrainerPrefs extends Prefs {
