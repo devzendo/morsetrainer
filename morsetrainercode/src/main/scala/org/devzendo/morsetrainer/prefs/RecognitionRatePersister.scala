@@ -36,7 +36,7 @@ class RecognitionRatePersister(prefs: MorseTrainerPrefs) {
 
     def reset() {
         LOGGER.debug("Resetting")
-        startMap = prefs.getCharacterRecognitionRates
+        startMap = getStartMap
         sessionMap.clear()
         typedKeys.clear()
         sentChars.clear()
@@ -72,19 +72,27 @@ class RecognitionRatePersister(prefs: MorseTrainerPrefs) {
         uniqueSentChars.foreach( (ch: MorseChar) => {
             LOGGER.debug("Getting start rate for '" + ch + "'")
 
-            val startRate = startMap.get(ch).get
-            LOGGER.debug("Start rate for " + ch + " is " + startRate)
-            val numMatched = matchingEdits.count {
-                case Match(mch) => mch == ch
-                case _ => false
+            val startRate = startMap.get(ch)
+            startRate match {
+                case Some(rate) => {
+                    LOGGER.debug("Start rate for " + ch + " is " + rate)
+                    val numMatched = matchingEdits.count {
+                        case Match(mch) => mch == ch
+                        case _ => false
+                    }
+                    LOGGER.debug("Num matched: " + numMatched)
+                    val numSent = sentChars.count(_ == ch)
+                    LOGGER.debug("Num sent: " + numSent)
+                    val update = ch -> RecognitionRate(rate.correct + numMatched, rate.sentInTotal + numSent)
+                    LOGGER.debug("Updating Session Map with: " + update)
+                    sessionMap += update
+                }
+                case None => {
+                    val msg = "Why am I being asked for the rate of '" + ch + "' that I don't store?"
+                    LOGGER.warn(msg)
+                    throw new IllegalStateException(msg)
+                }
             }
-            LOGGER.debug("Num matched: " + numMatched)
-            val numSent = sentChars.count(_ == ch)
-            LOGGER.debug("Num sent: " + numSent)
-            val update = ch -> RecognitionRate(startRate.correct + numMatched, startRate.sentInTotal + numSent)
-            LOGGER.debug("Updating Session Map with: " + update)
-            sessionMap += update
-
         } )
         LOGGER.debug("Session Map: " + sessionMap)
         val duration = System.currentTimeMillis() - start
@@ -112,15 +120,19 @@ class RecognitionRatePersister(prefs: MorseTrainerPrefs) {
         recompute()
     }
 
-    def initialise(): Map[MorseChar, RecognitionRate] = {
-        LOGGER.debug("Initialising")
+    def getStartMap: Map[Morse.MorseChar, RecognitionRate] = {
         val initialRates = prefs.getCharacterRecognitionRates
         assert(initialRates != null)
         def charToCharPlusRecognitionRate(ch: MorseChar): (MorseChar, RecognitionRate) = {
             val rr = initialRates.getOrElse(ch, RecognitionRate(0, 0))
             (ch, rr)
         }
-        val startMap = (Morse.chars + ' ').map(charToCharPlusRecognitionRate).toMap
+        (Morse.chars + ' ').map(charToCharPlusRecognitionRate).toMap
+    }
+
+    def initialise(): Map[MorseChar, RecognitionRate] = {
+        LOGGER.debug("Initialising")
+        val startMap = getStartMap
         LOGGER.debug("initialised start map " + startMap)
         prefs.setCharacterRecognitionRates(startMap)
         startMap
