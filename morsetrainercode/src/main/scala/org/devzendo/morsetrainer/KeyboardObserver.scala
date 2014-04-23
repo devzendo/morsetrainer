@@ -46,14 +46,14 @@ class DefaultKeyboardEventGenerator {
                     LOGGER.debug("Key: Backspace")
                     emit(Backspace)
                 } else {
-                    val lowerChar: Char = e.getKeyChar.toLower
-                    if ((lowerChar >= '0' && lowerChar <= '9') ||
-                        (lowerChar >= 'a' && lowerChar <= 'z') ||
-                        (lowerChar == '?' || lowerChar == '/' || lowerChar == '.' ||
-                         lowerChar == ',' || lowerChar == '?' || lowerChar == '=' ||
-                         lowerChar == ' ')) {
-                        LOGGER.debug("Key: " + lowerChar)
-                        emit(Key(lowerChar))
+                    val upperChar: Char = e.getKeyChar.toUpper
+                    if ((upperChar >= '0' && upperChar <= '9') ||
+                        (upperChar >= 'A' && upperChar <= 'Z') ||
+                        (upperChar == '?' || upperChar == '/' || upperChar == '.' ||
+                         upperChar == ',' || upperChar == '?' || upperChar == '=' ||
+                         upperChar == ' ')) {
+                        LOGGER.debug("Key: " + upperChar)
+                        emit(Key(upperChar))
                     }
                 }
             }
