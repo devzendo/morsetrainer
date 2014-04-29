@@ -28,7 +28,7 @@ import org.slf4j.LoggerFactory
 
 object MorseMainFrame {
     private val LOGGER = LoggerFactory.getLogger(classOf[MorseMainFrame])
-    private val MAIN_FRAME_NAME = "main"
+    val MAIN_FRAME_NAME = "main"
 }
 
 /**
@@ -63,6 +63,7 @@ class MorseMainFrame(
     }
 
     def setupGeometrySaveOnMoveOnClose() = {
+        setResizable(false)
         addWindowListener(new WindowAdapter() {
             override def windowClosing(e: WindowEvent) {
                 MorseMainFrame.LOGGER.debug("Detected window closing; triggering action listener for FileExit")
