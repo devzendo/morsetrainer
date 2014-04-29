@@ -92,7 +92,8 @@ class TestRecognitionRatePersister extends AssertionsForJUnit with MustMatchersF
             '.' -> RecognitionRate(0, 0),
             ',' -> RecognitionRate(0, 0),
             '=' -> RecognitionRate(0, 0),
-            '+' -> RecognitionRate(0, 0)
+            '+' -> RecognitionRate(0, 0),
+            ' ' -> RecognitionRate(0, 0)
         )
         mockPrefs.setCharacterRecognitionRates(EasyMock.eq(initialisedRates))
         mockPrefs

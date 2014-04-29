@@ -31,7 +31,7 @@ class CardLayoutMainPanel {
     val panel = new JPanel(cardLayout)
     val lookup = scala.collection.mutable.Map.empty[String, JPanel]
     val panelNames = ListBuffer.empty[String]
-    panel.setPreferredSize(new Dimension(870, 550))
+    panel.setPreferredSize(new Dimension(740, 620))
     panel.add(new JPanel(), CardLayoutMainPanel.BlankPanelName)
     switchToBlank()
 
