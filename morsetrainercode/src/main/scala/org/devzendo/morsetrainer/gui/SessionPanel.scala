@@ -23,12 +23,9 @@ import org.devzendo.morsetrainer.prefs.MorseTrainerPrefs
 import org.devzendo.morsetrainer._
 import org.devzendo.commonapp.gui.GUIUtils
 
-class SessionPanel(prefs: MorseTrainerPrefs, abandonTraining: AbandonTraining) extends JPanel with PanelTools with SessionView {
+class SessionPanel(prefs: MorseTrainerPrefs, abandonTraining: AbandonTraining, finishTraining: FinishTraining) extends JPanel with PanelTools with SessionView {
 
     setLayout(new BorderLayout())
-
-    // TODO need to know which type of training is in use to send the appropriate
-    // string to the morse player and marker?
 
     val infoPanel = new JPanel()
     infoPanel.setLayout(new GridLayout(6, 1, CharactersPanel.gap, CharactersPanel.gap))
@@ -90,6 +87,10 @@ class SessionPanel(prefs: MorseTrainerPrefs, abandonTraining: AbandonTraining) e
         GUIUtils.invokeLaterOnEventThread(new Runnable() {
             def run() {
                 typeLabel.setText("Training type: " + sessionType)
+                cancelButton.setText("Abandon session")
+                cancelButton.getActionListeners.foreach(cancelButton.removeActionListener)
+                cancelButton.addActionListener(abandonTraining)
+                progress.setValue(0)
             }
         })
 
@@ -117,8 +118,8 @@ class SessionPanel(prefs: MorseTrainerPrefs, abandonTraining: AbandonTraining) e
             def run() {
                 timerLabel.setText("Session complete!")
                 cancelButton.setText("View report")
-                cancelButton.removeActionListener(abandonTraining)
-                // TODO add viewReport action listener
+                cancelButton.getActionListeners.foreach(cancelButton.removeActionListener)
+                cancelButton.addActionListener(finishTraining)
             }
         })
     }

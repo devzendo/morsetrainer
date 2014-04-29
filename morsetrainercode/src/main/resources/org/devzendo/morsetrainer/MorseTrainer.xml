@@ -39,6 +39,12 @@
     <bean id="sessionPanel" class="org.devzendo.morsetrainer.gui.SessionPanel">
         <constructor-arg ref="prefs" />
         <constructor-arg ref="abandonTraining" />
+        <constructor-arg ref="finishTraining" />
+    </bean>
+
+    <bean id="reportPanel" class="org.devzendo.morsetrainer.gui.ReportPanel">
+        <constructor-arg ref="prefs" />
+        <constructor-arg ref="mainPanel" />
     </bean>
 
     <bean id="startTraining" class="org.devzendo.morsetrainer.gui.StartTraining">
@@ -51,6 +57,10 @@
         <constructor-arg ref="springLoader" />
     </bean>
 
+    <bean id="finishTraining" class="org.devzendo.morsetrainer.gui.FinishTraining">
+        <constructor-arg ref="mainPanel" />
+        <constructor-arg ref="reportPanel" />
+    </bean>
 
     <bean id="prefsLocation" class="org.devzendo.commonapp.prefs.DefaultPrefsLocation">
         <constructor-arg name="prefsDir" value=".morsetrainer" />
