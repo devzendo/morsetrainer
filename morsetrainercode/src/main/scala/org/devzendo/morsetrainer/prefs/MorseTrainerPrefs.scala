@@ -145,6 +145,15 @@ trait MorseTrainerPrefs extends Prefs {
     def getSessionLength: Int
     def setSessionLength(len: Int)
 
+    /**
+     * Get the recognition rates of all characters including space.
+     * @return map of MorseChar => RecognitionRate
+     */
     def getCharacterRecognitionRates: Map[MorseChar, RecognitionRate]
+
+    /**
+     * Set the recognition rates of a subset of all characters including space.
+     * @param map a map of some, possibly all of the characters => their rates.
+     */
     def setCharacterRecognitionRates(map: Map[MorseChar, RecognitionRate])
 }

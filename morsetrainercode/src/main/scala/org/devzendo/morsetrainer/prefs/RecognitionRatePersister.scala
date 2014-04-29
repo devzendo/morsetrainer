@@ -123,6 +123,7 @@ class RecognitionRatePersister(prefs: MorseTrainerPrefs) {
     def getStartMap: Map[Morse.MorseChar, RecognitionRate] = {
         val initialRates = prefs.getCharacterRecognitionRates
         assert(initialRates != null)
+        // TODO should Prefs initialise all chars+space to 0/0 or this?
         def charToCharPlusRecognitionRate(ch: MorseChar): (MorseChar, RecognitionRate) = {
             val rr = initialRates.getOrElse(ch, RecognitionRate(0, 0))
             (ch, rr)

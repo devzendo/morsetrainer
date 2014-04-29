@@ -195,7 +195,7 @@ class DefaultMorseTrainerPrefs(prefsFilePath: String) extends MorseTrainerPrefs 
     }
 
     def getCharacterRecognitionRates: Map[MorseChar, RecognitionRate] = {
-        Morse.chars.map( { ch: MorseChar => (ch, getCharacterRecognitionRate(ch)) } ).toMap
+        (Morse.chars + ' ').map( { ch: MorseChar => (ch, getCharacterRecognitionRate(ch)) } ).toMap
     }
 
     def setCharacterRecognitionRates(map: Map[Morse.MorseChar, RecognitionRate]) {
