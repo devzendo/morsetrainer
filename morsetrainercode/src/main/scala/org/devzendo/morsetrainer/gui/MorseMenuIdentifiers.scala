@@ -18,7 +18,7 @@ package org.devzendo.morsetrainer.gui
 
 import org.devzendo.commonapp.gui.menu.MenuIdentifier
 
-object MorseMenuIdentifiersS {
+object MorseMenuIdentifiers {
     val FILE_EXIT = new MenuIdentifier("FileExit")
     val TOOLS_OPTIONS = new MenuIdentifier("ToolsOptions")
     val HELP_ABOUT = new MenuIdentifier("HelpAbout")

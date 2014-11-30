@@ -34,21 +34,21 @@ class MacOSXMenuImplHelper(val wiring: MenuWiring) {
     macApp.setAboutHandler(new AboutHandler() {
         def handleAbout(ae: AboutEvent) {
             MacOSXMenuImplHelper.LOGGER.info("Handling About menu event")
-            wiring.triggerActionListener(MorseMenuIdentifiersS.HELP_ABOUT)
+            wiring.triggerActionListener(MorseMenuIdentifiers.HELP_ABOUT)
         }
     } )
 
     macApp.setPreferencesHandler(new PreferencesHandler {
         def handlePreferences(pe: PreferencesEvent) {
             MacOSXMenuImplHelper.LOGGER.info("Handling Preferences menu event")
-            wiring.triggerActionListener(MorseMenuIdentifiersS.TOOLS_OPTIONS)
+            wiring.triggerActionListener(MorseMenuIdentifiers.TOOLS_OPTIONS)
         }
     })
 
     macApp.setQuitHandler(new QuitHandler {
         def handleQuitRequestWith(pe: QuitEvent, pr: QuitResponse) {
             MacOSXMenuImplHelper.LOGGER.info("Handling Quit menu event " + pe)
-            wiring.triggerActionListener(MorseMenuIdentifiersS.FILE_EXIT)
+            wiring.triggerActionListener(MorseMenuIdentifiers.FILE_EXIT)
         }
     })
 }
