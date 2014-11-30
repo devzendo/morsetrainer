@@ -35,8 +35,8 @@ class MenuInitialisingService(springLoader: SpringLoader, menu: Menu, menuWiring
             def run() {
                 LOGGER.info("Initialising menu")
 
-                loadAndWire(MorseMenuIdentifiers.TOOLS_OPTIONS)
-                loadAndWire(MorseMenuIdentifiers.HELP_ABOUT)
+                loadAndWire(MorseMenuIdentifiersS.TOOLS_OPTIONS)
+                loadAndWire(MorseMenuIdentifiersS.HELP_ABOUT)
 
                 LOGGER.info("Menu initialised")
             }

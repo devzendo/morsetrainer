@@ -94,7 +94,7 @@ object MorseTrainer {
                         "mainFrameCloseActionListener",
                         classOf[MainFrameCloseActionListener])
                     val menuWiring = springLoader.getBean("menuWiring", classOf[MenuWiring])
-                    menuWiring.setActionListener(MorseMenuIdentifiers.FILE_EXIT, closeAL)
+                    menuWiring.setActionListener(MorseMenuIdentifiersS.FILE_EXIT, closeAL)
 
                     val serviceStartup = springLoader.getBean(
                         "serviceStartupAWTEventListener",

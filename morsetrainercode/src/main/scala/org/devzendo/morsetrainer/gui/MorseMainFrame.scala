@@ -67,7 +67,7 @@ class MorseMainFrame(
         addWindowListener(new WindowAdapter() {
             override def windowClosing(e: WindowEvent) {
                 MorseMainFrame.LOGGER.debug("Detected window closing; triggering action listener for FileExit")
-                menuWiring.triggerActionListener(MorseMenuIdentifiers.FILE_EXIT)
+                menuWiring.triggerActionListener(MorseMenuIdentifiersS.FILE_EXIT)
             }
             override def windowClosed(e: WindowEvent ) {
                 MorseMainFrame.LOGGER.debug("Detected window closed")

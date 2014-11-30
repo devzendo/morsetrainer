@@ -50,7 +50,7 @@ class FileMenu(val menuWiring: MenuWiring) extends AbstractRebuildableMenuGroup(
         if (osType != OSTypeDetect.OSType.MacOSX) {
             fileMenu.add(new JSeparator())
 
-            createMenuItem(MorseMenuIdentifiers.FILE_EXIT, "Exit", 'x', fileMenu)
+            createMenuItem(MorseMenuIdentifiersS.FILE_EXIT, "Exit", 'x', fileMenu)
         }
     }
 }
