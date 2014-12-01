@@ -45,9 +45,10 @@ class KochTrainerPanel(prefs: MorseTrainerPrefs, startTraining: StartTraining) e
 
     val comboItems: Array[AnyRef] = {
         val zip: List[(String, Int)] = KochLevels.levels.toList.zip(2 to KochLevels.levels.length + 1)
-        (zip map { tuple: (String, Int) => "" + tuple._2 + " - " + tuple._1} ).toArray
+        (zip map { tuple: (String, Int) => "" + tuple._2 + " - " + tuple._1 + "  "} ).toArray
     }
     val combo = new JComboBox(comboItems)
+    combo.setMaximumRowCount(20)
     val rflowPanel = new JPanel(new FlowLayout())
     rflowPanel.add(new JLabel("Level:"))
     rflowPanel.add(combo)
