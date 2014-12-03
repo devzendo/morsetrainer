@@ -20,6 +20,7 @@ import javax.swing.JToggleButton
 import org.devzendo.morsetrainer.Morse._
 import scala.Some
 import java.awt.Color
+import java.awt.event.{ActionEvent, ActionListener}
 
 class CharBox(letter: Char, detailFn: Option[MorseChar => String] = None, colourFn: Option[MorseChar => Color] = None) extends JToggleButton("")
 {
@@ -37,10 +38,23 @@ class CharBox(letter: Char, detailFn: Option[MorseChar => String] = None, colour
     }
     val body = "" + letter + detailsString
     setText(String.format("<html><head></head><body><center>%s</center></body></html>", body))
+    setSelectionBackgroundColor(isSelected)
+
+    addActionListener(new ActionListener() {
+        def actionPerformed(e: ActionEvent)
+        {
+            setSelectionBackgroundColor(isSelected)
+        }
+    })
 
     override def setSelected(selected: Boolean) {
         super.setSelected(selected)
 
+        setSelectionBackgroundColor(selected)
+    }
+
+
+    def setSelectionBackgroundColor(selected: Boolean) {
         colourFn match {
             case Some(fn) => {
                 val letterColour = fn(letter)
@@ -50,6 +64,5 @@ class CharBox(letter: Char, detailFn: Option[MorseChar => String] = None, colour
             }
             case None => // noop
         }
-
     }
 }

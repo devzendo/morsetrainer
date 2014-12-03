@@ -33,7 +33,7 @@ class FreestyleTrainerPanel(prefs: MorseTrainerPrefs, startTraining: StartTraini
 
     setLayout(new BorderLayout())
 
-    val charactersPanel = new CharactersPanel(true, Some(characterDetailFn(prefs)))
+    val charactersPanel = new CharactersPanel(true, Some(characterDetailFn(prefs)), Some(colourFn(prefs)))
 
     add(charactersPanel, BorderLayout.WEST)
 
