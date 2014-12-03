@@ -18,6 +18,7 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
+    <orderEntry type="library" name="Maven: com.rockymadden.stringmetric:stringmetric-core_2.10:0.27.3" level="project" />
     <orderEntry type="library" name="Maven: org.devzendo:Quaqua:7.3.4" level="project" />
     <orderEntry type="module" module-name="morsetrainercode" />
     <orderEntry type="library" name="Maven: org.slf4j:slf4j-api:1.7.5" level="project" />
@@ -38,11 +39,10 @@
     <orderEntry type="library" name="Maven: org.springframework:spring-tx:3.0.2.RELEASE" level="project" />
     <orderEntry type="library" name="Maven: backport-util-concurrent:backport-util-concurrent:3.0" level="project" />
     <orderEntry type="library" name="Maven: asm:asm-all:2.2.3" level="project" />
-    <orderEntry type="library" name="Maven: com.rockymadden.stringmetric:stringmetric-core_2.10:0.27.3" level="project" />
-    <orderEntry type="library" name="Maven: org.scala-lang:scala-library:2.10.1" level="project" />
     <orderEntry type="library" name="Maven: org.slf4j:jul-to-slf4j:1.6.4" level="project" />
     <orderEntry type="library" name="Maven: org.slf4j:log4j-over-slf4j:1.6.4" level="project" />
     <orderEntry type="library" name="Maven: org.slf4j:slf4j-log4j12:1.6.4" level="project" />
+    <orderEntry type="library" name="Maven: org.scala-lang:scala-library:2.10.1" level="project" />
     <orderEntry type="module" module-name="morsetrainermacosxcode" />
   </component>
 </module>
