@@ -16,9 +16,9 @@
 
 package org.devzendo.morsetrainer.gui
 
-import javax.swing.{SwingUtilities, JPanel}
+import javax.swing.{BoxLayout, JLabel, SwingUtilities, JPanel}
 import org.devzendo.morsetrainer.gui.dialogs.PanelTools
-import java.awt.{Dimension, GridLayout}
+import java.awt.{Color, Dimension, GridLayout}
 import org.devzendo.morsetrainer.Morse
 import org.slf4j.LoggerFactory
 import org.devzendo.morsetrainer.Morse.MorseChar
@@ -32,7 +32,7 @@ object CharactersPanel {
     val gap = 10
 }
 
-class CharactersPanel(enableable: Boolean) extends JPanel with PanelTools {
+class CharactersPanel(enableable: Boolean, detailFn: Option[MorseChar => String] = None, colourFn: Option[MorseChar => Color] = None) extends JPanel with PanelTools {
     import CharactersPanel._
 
     val chars = Morse.chars
@@ -43,7 +43,7 @@ class CharactersPanel(enableable: Boolean) extends JPanel with PanelTools {
 
     for (ch <- chars) {
         val upper: Char = ch.toUpper
-        val box: CharBox = new CharBox("" + upper)
+        val box: CharBox = new CharBox(upper, detailFn, colourFn)
         charButtonMap += (upper -> box)
 
         if (!enableable) {

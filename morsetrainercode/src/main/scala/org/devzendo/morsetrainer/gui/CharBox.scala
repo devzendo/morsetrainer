@@ -17,6 +17,25 @@
 package org.devzendo.morsetrainer.gui
 
 import javax.swing.JToggleButton
+import org.devzendo.morsetrainer.Morse._
+import scala.Some
+import java.awt.Color
 
-class CharBox(text: String) extends JToggleButton(text) {
+class CharBox(letter: Char, detailFn: Option[MorseChar => String] = None, colourFn: Option[MorseChar => Color] = None) extends JToggleButton("")
+{
+    colourFn match {
+        case Some(fn) => {
+            putClientProperty("Quaqua.Button.style","colorWell") // the style that allows a colour.
+            setBackground(fn(letter))
+        }
+        case None => // noop
+    }
+
+    val detailsString = detailFn match {
+        case Some(fn) => "<br><small>" + fn(letter) + "</small>"
+        case None => ""
+    }
+    val body = "" + letter + detailsString
+    setText(String.format("<html><head></head><body><center>%s</center></body></html>", body))
+
 }
