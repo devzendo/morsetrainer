@@ -28,12 +28,12 @@ object FreestyleTrainerPanel {
     private val LOGGER = LoggerFactory.getLogger(classOf[FreestyleTrainerPanel])
 }
 
-class FreestyleTrainerPanel(prefs: MorseTrainerPrefs, startTraining: StartTraining) extends JPanel with PanelTools {
+class FreestyleTrainerPanel(prefs: MorseTrainerPrefs, startTraining: StartTraining) extends JPanel with PanelTools with TrainerPanel {
     import FreestyleTrainerPanel._
 
     setLayout(new BorderLayout())
 
-    val charactersPanel = new CharactersPanel(true)
+    val charactersPanel = new CharactersPanel(true, Some(characterDetailFn(prefs)))
 
     add(charactersPanel, BorderLayout.WEST)
 

@@ -28,12 +28,12 @@ object KochTrainerPanel {
     private val LOGGER = LoggerFactory.getLogger(classOf[KochTrainerPanel])
 }
 
-class KochTrainerPanel(prefs: MorseTrainerPrefs, startTraining: StartTraining) extends JPanel with PanelTools {
+class KochTrainerPanel(prefs: MorseTrainerPrefs, startTraining: StartTraining) extends JPanel with PanelTools with TrainerPanel {
     import KochTrainerPanel._
 
     setLayout(new BorderLayout())
 
-    val charactersPanel = new CharactersPanel(false)
+    val charactersPanel = new CharactersPanel(false, Some(characterDetailFn(prefs)), Some(colourFn(prefs)))
 
     add(charactersPanel, BorderLayout.WEST)
     add(new JLabel("Choose one of the levels to change which characters to test with."), BorderLayout.NORTH)
@@ -48,7 +48,7 @@ class KochTrainerPanel(prefs: MorseTrainerPrefs, startTraining: StartTraining) e
         (zip map { tuple: (String, Int) => "" + tuple._2 + " - " + tuple._1 + "  "} ).toArray
     }
     val combo = new JComboBox(comboItems)
-    combo.setMaximumRowCount(20)
+
     val rflowPanel = new JPanel(new FlowLayout())
     rflowPanel.add(new JLabel("Level:"))
     rflowPanel.add(combo)

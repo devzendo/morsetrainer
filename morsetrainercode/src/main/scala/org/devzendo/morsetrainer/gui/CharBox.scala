@@ -38,4 +38,18 @@ class CharBox(letter: Char, detailFn: Option[MorseChar => String] = None, colour
     val body = "" + letter + detailsString
     setText(String.format("<html><head></head><body><center>%s</center></body></html>", body))
 
+    override def setSelected(selected: Boolean) {
+        super.setSelected(selected)
+
+        colourFn match {
+            case Some(fn) => {
+                val letterColour = fn(letter)
+                val brighter = Color.LIGHT_GRAY
+                val color = if (selected) letterColour else brighter
+                setBackground(color)
+            }
+            case None => // noop
+        }
+
+    }
 }

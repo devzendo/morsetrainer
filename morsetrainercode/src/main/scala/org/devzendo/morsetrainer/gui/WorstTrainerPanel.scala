@@ -24,38 +24,10 @@ import java.awt.event.{ActionEvent, ActionListener}
 import org.devzendo.morsetrainer.Worst
 import org.devzendo.morsetrainer.Morse.MorseChar
 
-class WorstTrainerPanel(prefs: MorseTrainerPrefs, startTraining: StartTraining) extends JPanel with PanelTools {
+class WorstTrainerPanel(prefs: MorseTrainerPrefs, startTraining: StartTraining) extends JPanel with PanelTools with TrainerPanel {
     setLayout(new BorderLayout())
 
-
-    def characterDetailFn(ch: MorseChar): String = {
-        val rates = prefs.getCharacterRecognitionRates
-        val rate = rates.getOrElse(ch, RecognitionRate(0, 0))
-        val perc = (rate.probability * 100.0).toInt
-        "" + perc + "%"
-    }
-
-    def colourFn(ch: MorseChar): Color = {
-        val probability = prefs.getCharacterRecognitionRates.getOrElse(ch, RecognitionRate(0, 0)).probability * 100.0
-        if (probability > 95.0) {
-            Color.decode("0x33FF33")
-        } else if (probability > 80.0) {
-            Color.decode("0x66FF66")
-        } else if (probability > 70.0) {
-            Color.decode("0x66FF99")
-        } else if (probability > 60.0) {
-            Color.decode("0xFFFF99")
-        } else if (probability > 40.0) {
-            Color.decode("0xFFCC33")
-        } else if (probability > 20) {
-            Color.decode("0xFF6633")
-        } else {
-            Color.decode("0xCC3300")
-        }
-    }
-
-    val charactersPanel = new CharactersPanel(false, Some(characterDetailFn), Some(colourFn))
-
+    val charactersPanel = new CharactersPanel(false, Some(characterDetailFn(prefs)), Some(colourFn(prefs)))
 
     val eastPanel = new RightHandControlsPanel()
     val startButton = new JButton("Start training")
