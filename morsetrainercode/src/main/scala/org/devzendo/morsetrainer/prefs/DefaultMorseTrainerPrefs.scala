@@ -208,4 +208,8 @@ class DefaultMorseTrainerPrefs(prefsFilePath: String) extends MorseTrainerPrefs 
         }
         iniFile.resumeWrite()
     }
+
+    def getCharacterRecognitionPercentage(ch: MorseChar): Double = {
+        getCharacterRecognitionRate(ch).probability * 100.0
+    }
 }

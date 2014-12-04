@@ -17,31 +17,28 @@
 package org.devzendo.morsetrainer.gui
 
 import org.devzendo.morsetrainer.Morse._
-import org.devzendo.morsetrainer.prefs.{MorseTrainerPrefs, RecognitionRate}
+import org.devzendo.morsetrainer.prefs.MorseTrainerPrefs
 import java.awt.Color
 
 trait TrainerPanel {
 
     def characterDetailFn(prefs: MorseTrainerPrefs)(ch: MorseChar): String = {
-        val rates = prefs.getCharacterRecognitionRates
-        val rate = rates.getOrElse(ch, RecognitionRate(0, 0))
-        val perc = (rate.probability * 100.0).toInt
-        "" + perc + "%"
+        "" + prefs.getCharacterRecognitionPercentage(ch).toInt + "%"
     }
 
     def colourFn(prefs: MorseTrainerPrefs)(ch: MorseChar): Color = {
-        val probability = prefs.getCharacterRecognitionRates.getOrElse(ch, RecognitionRate(0, 0)).probability * 100.0
-        if (probability > 95.0) {
+        val percentage = prefs.getCharacterRecognitionPercentage(ch)
+        if (percentage > 95.0) {
             Color.decode("0x33FF33")
-        } else if (probability > 80.0) {
+        } else if (percentage > 80.0) {
             Color.decode("0x66FF66")
-        } else if (probability > 70.0) {
+        } else if (percentage > 70.0) {
             Color.decode("0x66FF99")
-        } else if (probability > 60.0) {
+        } else if (percentage > 60.0) {
             Color.decode("0xFFFF99")
-        } else if (probability > 40.0) {
+        } else if (percentage > 40.0) {
             Color.decode("0xFFCC33")
-        } else if (probability > 20) {
+        } else if (percentage > 20) {
             Color.decode("0xFF6633")
         } else {
             Color.decode("0xCC3300")

@@ -156,4 +156,6 @@ trait MorseTrainerPrefs extends Prefs {
      * @param map a map of some, possibly all of the characters => their rates.
      */
     def setCharacterRecognitionRates(map: Map[MorseChar, RecognitionRate])
+
+    def getCharacterRecognitionPercentage(ch: MorseChar): Double
 }
