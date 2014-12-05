@@ -18,9 +18,14 @@ package org.devzendo.morsetrainer
 
 trait SessionView {
     def setSessionType(sessionType: SessionType)
+
     def clearCountdown()
     def setCountdownSeconds(secs: Int)
+
     def setSessionDurationSeconds(secs: Int)
     def setCurrentSessionProgressSeconds(secs: Int)
+
+    def setEnteredText(enteredText: String)
+
     def endOfSession()
 }

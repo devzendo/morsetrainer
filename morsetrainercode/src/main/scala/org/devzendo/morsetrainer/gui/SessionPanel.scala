@@ -54,7 +54,8 @@ class SessionPanel(prefs: MorseTrainerPrefs, abandonTraining: AbandonTraining, f
     entryBox.setAlignmentX(Component.CENTER_ALIGNMENT)
     entryBox.setBorder(BorderFactory.createEtchedBorder())
     entryBox.setEnabled(false)
-    entryBox.setFont(new Font("Monospaced", Font.BOLD, 48))
+    private val entryBoxFont = new Font("Monospaced", Font.BOLD, 48)
+    entryBox.setFont(entryBoxFont)
     entryPanel.add(entryBox)
     infoPanel.add(entryPanel)
 
@@ -137,6 +138,16 @@ class SessionPanel(prefs: MorseTrainerPrefs, abandonTraining: AbandonTraining, f
         GUIUtils.invokeLaterOnEventThread(new Runnable() {
             def run() {
                 progress.setValue(secs)
+            }
+        })
+    }
+
+    def setEnteredText(enteredText: String) {
+        GUIUtils.invokeLaterOnEventThread(new Runnable() {
+            def run() {
+                // flickers nastily. ugh.
+                entryBox.setText(enteredText)
+                entryBox.setCaretPosition(enteredText.length)
             }
         })
     }

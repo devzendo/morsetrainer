@@ -32,7 +32,7 @@ class SessionController(textAsMorseReader: TextAsMorseReader,
                         textGenerator: TextGenerator,
                         textSpacingIterator: TextSpacingIterator,
                         recognitionRatePersister: RecognitionRatePersister,
-                        sessionRecorder: SessionRecorder) extends KeyboardObserver with Runnable {
+                        sessionRecorder: SessionRecorder) extends Runnable {
 
     import SessionController._
 
@@ -41,7 +41,22 @@ class SessionController(textAsMorseReader: TextAsMorseReader,
     var sessionType: SessionType = Koch
     var sessionThread: Thread = null
 
-    keyGenerator.addKeyboardObserver(this)
+    keyGenerator.addKeyboardObserver(new KeyboardObserver {
+        def eventOccurred(key: KeyboardEvent) {
+            recognitionRatePersister.keyReceived(key)
+            sessionRecorder.keyReceived(key)
+        }
+    })
+
+    sessionRecorder.addSessionStateObserver(new SessionStateObserver {
+        def eventOccurred(sessionState: SessionStateEvent) {
+            sessionState match {
+                case keys: ReceivedKeys =>
+                    sessionView.setEnteredText(keys.keys)
+                case sentChars: SentCharacters => // noop
+            }
+        }
+    })
 
     def start(sessionType: SessionType, freeStyleSelected: Set[MorseChar]) {
         this.sessionType = sessionType
@@ -74,11 +89,6 @@ class SessionController(textAsMorseReader: TextAsMorseReader,
         recognitionRatePersister.persist()
         sessionView.endOfSession()
         LOGGER.info("Session ended")
-    }
-
-    def eventOccurred(key: KeyboardEvent) {
-        recognitionRatePersister.keyReceived(key)
-        sessionRecorder.keyReceived(key)
     }
 
     trait Handler {
