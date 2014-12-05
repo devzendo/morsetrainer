@@ -48,6 +48,7 @@ object SessionProbabilityMaps {
         val startSet = ratesForStartSet.keySet
 
         val probabilityMap = ratesForStartSet.map( { p: (MorseChar, RecognitionRate) => {
+            // Note that if this 0.9 limit changes, change WorstTrainerPanel's choice of selected buttons also.
             if (p._2.probability > 0.9) (p._1, 0.0) else (p._1, 1 - p._2.probability)
         } } )
 

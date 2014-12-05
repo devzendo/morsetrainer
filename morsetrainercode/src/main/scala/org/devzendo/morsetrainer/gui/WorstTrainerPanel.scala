@@ -21,7 +21,7 @@ import org.devzendo.morsetrainer.gui.dialogs.PanelTools
 import java.awt.{Color, BorderLayout, FlowLayout}
 import org.devzendo.morsetrainer.prefs.{RecognitionRate, MorseTrainerPrefs}
 import java.awt.event.{ActionEvent, ActionListener}
-import org.devzendo.morsetrainer.Worst
+import org.devzendo.morsetrainer.{KochLevels, Worst}
 import org.devzendo.morsetrainer.Morse.MorseChar
 
 class WorstTrainerPanel(prefs: MorseTrainerPrefs, startTraining: StartTraining) extends JPanel with PanelTools with TrainerPanel {
@@ -43,4 +43,15 @@ class WorstTrainerPanel(prefs: MorseTrainerPrefs, startTraining: StartTraining) 
     add(charactersPanel, BorderLayout.WEST)
     add(new JLabel("These are the characters you are worst at recognising."), BorderLayout.NORTH)
 
+    setCharPanelSelections()
+
+    // Note that if this 0.9 (90.0) limit changes, change SessionProbabilityMaps' genWorstCharsProbMap also.
+    def setCharPanelSelections() {
+        charactersPanel.deselectAll()
+        for (ch <- KochLevels.allMorseChars) {
+            if (prefs.getCharacterRecognitionPercentage(ch) <= 90.0) {
+                charactersPanel.select(ch)
+            }
+        }
+    }
 }

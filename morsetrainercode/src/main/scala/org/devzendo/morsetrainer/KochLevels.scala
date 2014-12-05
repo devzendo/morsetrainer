@@ -83,4 +83,12 @@ object KochLevels {
             ch <- levels(i)
         } yield ch).toSet[MorseChar]
     }
+
+    val allMorseChars: Set[MorseChar] = {
+        // Level starts at 2 - for the two chars KM.
+        (for {
+            i <- 0 to levels.length - 1
+            ch <- levels(i)
+        } yield ch).toSet[MorseChar]
+    }
 }
