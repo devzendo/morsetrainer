@@ -191,6 +191,10 @@
         <constructor-arg ref="textGenerator" />
         <constructor-arg ref="textSpacingIterator" />
         <constructor-arg ref="recognitionRatePersister" />
+        <constructor-arg ref="sessionRecorder" />
+    </bean>
+
+    <bean id="sessionRecorder" class="org.devzendo.morsetrainer.SessionRecorder">
     </bean>
 
 </beans>

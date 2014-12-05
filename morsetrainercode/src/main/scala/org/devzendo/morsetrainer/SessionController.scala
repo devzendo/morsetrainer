@@ -31,7 +31,8 @@ class SessionController(textAsMorseReader: TextAsMorseReader,
                         prefs: MorseTrainerPrefs,
                         textGenerator: TextGenerator,
                         textSpacingIterator: TextSpacingIterator,
-                        recognitionRatePersister: RecognitionRatePersister) extends KeyboardObserver with Runnable {
+                        recognitionRatePersister: RecognitionRatePersister,
+                        sessionRecorder: SessionRecorder) extends KeyboardObserver with Runnable {
 
     import SessionController._
 
@@ -47,6 +48,7 @@ class SessionController(textAsMorseReader: TextAsMorseReader,
         textGenerator.start(sessionType, freeStyleSelected)
         textSpacingIterator.reset()
         recognitionRatePersister.reset()
+        sessionRecorder.reset()
         sessionView.setSessionType(sessionType)
         abandon.set(false)
         finished.set(false)
@@ -76,6 +78,7 @@ class SessionController(textAsMorseReader: TextAsMorseReader,
 
     def eventOccurred(key: KeyboardEvent) {
         recognitionRatePersister.keyReceived(key)
+        sessionRecorder.keyReceived(key)
     }
 
     trait Handler {
@@ -125,6 +128,7 @@ class SessionController(textAsMorseReader: TextAsMorseReader,
                     for (morseChar <- optionMorseChar) {
                         LOGGER.info("Sending '" + morseChar + "'")
                         recognitionRatePersister.charPlayed(morseChar)
+                        sessionRecorder.charPlayed(morseChar)
 
                         // TODO if space played, recalculate the TextGenerator's
                         // assessment of what needs sending (based on how wrong
