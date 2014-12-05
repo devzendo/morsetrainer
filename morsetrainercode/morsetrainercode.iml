@@ -23,7 +23,7 @@
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" name="Maven: com.rockymadden.stringmetric:stringmetric-core_2.10:0.27.3" level="project" />
     <orderEntry type="library" name="Maven: org.slf4j:slf4j-api:1.7.5" level="project" />
-    <orderEntry type="library" name="Maven: org.devzendo:CommonGui:0.4.0" level="project" />
+    <orderEntry type="library" name="Maven: org.devzendo:CommonGui:0.4.1-SNAPSHOT" level="project" />
     <orderEntry type="library" name="Maven: org.devzendo:CommonApp:0.4.2" level="project" />
     <orderEntry type="library" name="Maven: org.devzendo:CommonCode:1.0.2" level="project" />
     <orderEntry type="library" name="Maven: log4j:log4j:1.2.16" level="project" />
@@ -40,7 +40,7 @@
     <orderEntry type="library" name="Maven: org.springframework:spring-tx:3.0.2.RELEASE" level="project" />
     <orderEntry type="library" name="Maven: backport-util-concurrent:backport-util-concurrent:3.0" level="project" />
     <orderEntry type="library" name="Maven: asm:asm-all:2.2.3" level="project" />
-    <orderEntry type="library" scope="TEST" name="Maven: org.devzendo:CommonGui:tests:0.4.0" level="project" />
+    <orderEntry type="library" scope="TEST" name="Maven: org.devzendo:CommonGui:tests:0.4.1-SNAPSHOT" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: junit:junit:4.10" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: org.hamcrest:hamcrest-core:1.1" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: org.easymock:easymock:3.1" level="project" />
